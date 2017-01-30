@@ -1,0 +1,16 @@
+<div class="container" style="margin-top:50px">
+	<form
+	    action="{% url 'dj-auth:login' %}"
+	    method="post">
+	  {% csrf_token %}
+	  {{ form.as_p }}
+	  {% if next %}
+	    <input
+	      type="hidden"
+	      name="next"
+	      value="{{ next }}">
+	  {% endif %}
+	  <button type="submit">
+	    {{ login_button|default:'Log in' }}</button>
+	</form>
+</div>

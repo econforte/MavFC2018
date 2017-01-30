@@ -1,0 +1,54 @@
+-- VERSION_4
+-- START DISKCACHE_2
+C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\.metadata\.plugins\org.eclipse.core.resources\.projects\mavfc\com.python.pydev.analysis\v2_indexcache
+user.tests|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\tests.py
+mavfc.wsgi|1485572244118378000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\mavfc\wsgi.py
+user.__init__|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\__init__.py
+mavfc.__init__|1485572244121380000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\mavfc\__init__.py
+user.urls|1485798327918460000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\urls.py
+manage|1485572244060834000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\manage.py
+user.views|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\views.py
+user.apps|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\apps.py
+user.migrations.__init__|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\migrations\__init__.py
+mavfc.settings|1485575540957542000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\mavfc\settings.py
+mavfc.urls|1485573242607311000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\mavfc\urls.py
+user.admin|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\admin.py
+user.models|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\models.py
+-- END DISKCACHE
+-- START DICTIONARY
+6
+2=mavfc.wsgi
+5=user.apps
+1=mavfc.settings
+4=mavfc.urls
+6=UserConfig
+3=user.urls
+-- END DICTIONARY
+-- START TREE 1
+21
+all|1|ALLOWED_HOSTS!11@
+app|1|application!19@
+aut|1|AUTH_PASSWORD_VALIDATORS!11@
+bas|1|BASE_DIR!11@
+dat|1|DATABASES!11@
+deb|1|DEBUG!11@
+ins|1|INSTALLED_APPS!11@
+lan|1|LANGUAGE_CODE!11@
+log|3|LOGOUT_URL!11@LOGIN_URL!11@LOGIN_REDIRECT_URL!11@
+med|2|MEDIA_ROOT!11@MEDIA_URL!11@
+mid|1|MIDDLEWARE!11@
+pas|1|password_urls!27@
+roo|1|ROOT_URLCONF!11@
+sec|1|SECRET_KEY!11@
+sit|1|SITE_ID!11@
+sta|2|STATIC_URL!11@STATICFILES_DIRS!11@
+tem|1|TEMPLATES!11@
+tim|1|TIME_ZONE!11@
+url|2|urlpatterns!35@urlpatterns!27@
+use|4|USE_L10N!11@USE_TZ!11@USE_I18N!11@UserConfig!41@
+wsg|1|WSGI_APPLICATION!11@
+-- END TREE
+-- START TREE 2
+1
+nam|1|name!6&43@
+-- END TREE

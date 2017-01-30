@@ -1,0 +1,14 @@
+{% extends parent_template|default:"user/base_user.html" %}
+{% load display_form %}
+
+{% block title %}
+{{ block.super }} - Reset Password
+{% endblock %}
+
+{% block content %}
+  <div class="center"
+    <p>Reset your password by email.</p>
+  </div>
+  {% url 'dj_auth:pw_reset_start' as form_url %}
+  {% form form_url 'Send Me Reset Instructions' %}
+{% endblock %}

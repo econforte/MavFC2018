@@ -1,0 +1,14 @@
+MODULES_MANAGER_V2
+manage|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\manage.py
+mavfc.__init__|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\mavfc\__init__.py
+mavfc.settings|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\mavfc\settings.py
+mavfc.urls|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\mavfc\urls.py
+mavfc.wsgi|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\mavfc\wsgi.py
+user.__init__|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\__init__.py
+user.admin|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\admin.py
+user.apps|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\apps.py
+user.migrations.__init__|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\migrations\__init__.py
+user.models|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\models.py
+user.tests|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\tests.py
+user.urls|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\urls.py
+user.views|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\views.py
