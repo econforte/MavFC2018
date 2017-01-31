@@ -1,0 +1,13 @@
+INSTUPuser.views
+C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\views.py
+INFOS:&&1|1|2|0&&3|3|2|1&&3|4|2|1&&2|5|2|1&&1|6|2|0&&3|7|2|6&&3|3|2|6&&3|4|2|6&&2|5|2|6&&2|8|2|6&&1|9|2|0&&3|3|2|9&&3|4|2|9&&2|5|2|9&&2|8|2|9&&1|10|2|0&&3|7|2|10&&3|3|2|10&&3|4|2|10&&2|5|2|10&&2|8|2|10
+ActivateAccount=1
+user.views=2
+template_name=4
+form_class=7
+post=8
+get=5
+CreateAccount=6
+ResendActivationEmail=10
+DisableAccount=9
+success_url=3

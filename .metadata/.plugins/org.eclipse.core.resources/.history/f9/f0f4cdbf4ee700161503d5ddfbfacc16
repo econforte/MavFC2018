@@ -1,0 +1,10 @@
+{% extends parent_template|default:"user/base_user.html" %}
+
+{% block title %}
+{{ block.super }} - Login
+{% endblock %}
+
+{% block content %}
+  {% include "user/login_form.html" %}
+{% endblock %}
+<p>TEST</p>

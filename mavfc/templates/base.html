@@ -89,7 +89,7 @@
 								</ul>
 							</li>
 						{% else %}
-							<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+							<li><a href="{% url 'dj-auth:create' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
 							<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
 						{% endif %}
 					</ul>
@@ -161,13 +161,13 @@
 					{% if msg.tags == "success" %}
 						<div class="alert alert-success alert-dismissable" style="margin-top:20px">
 					{% elif msg.tags == "info" %}
-						<div class="alert alert-info alert-dismissable">
+						<div class="alert alert-info alert-dismissable" style="margin-top:20px">
 					{% elif msg.tags == "debug" or msg.tags == "warning" %}
-						<div class="alert alert-warning alert-dismissable">
+						<div class="alert alert-warning alert-dismissable" style="margin-top:20px">
 					{% elif msg.tags == "error" %}
-						<div class="alert alert-danger alert-dismissable">
+						<div class="alert alert-danger alert-dismissable" style="margin-top:20px">
 					{% else %}
-						<div class="alert alert-info alert-dismissable">
+						<div class="alert alert-info alert-dismissable" style="margin-top:20px">
 					{% endif %}
 							<a href="#" class="close" data-dismiss="alert" aria-label="close"><span class="glyphicon glyphicon-remove"></span></a>
 							<strong>{{ msg.tags|title }}!</strong> {{ msg }}

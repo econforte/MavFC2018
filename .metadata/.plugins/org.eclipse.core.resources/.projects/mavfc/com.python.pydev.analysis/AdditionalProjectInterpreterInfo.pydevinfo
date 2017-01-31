@@ -1,54 +1,100 @@
 -- VERSION_4
 -- START DISKCACHE_2
-C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\.metadata\.plugins\org.eclipse.core.resources\.projects\mavfc\com.python.pydev.analysis\v2_indexcache
-user.tests|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\tests.py
-mavfc.wsgi|1485572244118378000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\mavfc\wsgi.py
-user.__init__|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\__init__.py
-mavfc.__init__|1485572244121380000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\mavfc\__init__.py
-user.urls|1485798327918460000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\urls.py
-manage|1485572244060834000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\manage.py
-user.views|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\views.py
-user.apps|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\apps.py
-user.migrations.__init__|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\migrations\__init__.py
-mavfc.settings|1485575540957542000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\mavfc\settings.py
-mavfc.urls|1485573242607311000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\mavfc\urls.py
-user.admin|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\admin.py
-user.models|1483572140000000000|C:\Users\chris_000\Google Drive\Programs\Python\Django\FoodComputer\mavfc\user\models.py
+C:\My Programs\Python\Django\Repo\mavfc\.metadata\.plugins\org.eclipse.core.resources\.projects\mavfc\com.python.pydev.analysis\v2_indexcache
+user.tests|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\tests.py
+mavfc.wsgi|1485572244118378000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\wsgi.py
+user.__init__|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\__init__.py
+mavfc.__init__|1485572244121380000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\__init__.py
+user.urls|1485824019511609000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\urls.py
+manage|1485572244060834000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\manage.py
+user.forms|1485820293449295000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\forms.py
+user.views|1485821195783493000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\views.py
+user.apps|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\apps.py
+user.migrations.__init__|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\migrations\__init__.py
+mavfc.settings|1485826449759774000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\settings.py
+mavfc.urls|1485803947283459000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\urls.py
+user.admin|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\admin.py
+mavfc.log_filters|1485826568226545000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\log_filters.py
+user.models|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\models.py
+user.utils|1485819339058538000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\utils.py
 -- END DISKCACHE
 -- START DICTIONARY
-6
-2=mavfc.wsgi
-5=user.apps
-1=mavfc.settings
-4=mavfc.urls
-6=UserConfig
-3=user.urls
+21
+18=ActivateAccount
+4=mavfc.wsgi
+16=CreateAccount
+17=ResendActivationEmail
+20=UserCreationForm
+11=ActivationMailFormMixin
+10=ActivationMailFormMixin.send_mail
+21=UserConfig
+7=user.urls
+5=user.forms
+2=user.views
+13=MailContextViewMixin
+9=user.apps
+15=ManagementFilter
+12=ResendActivationEmailForm
+14=UserCreationForm.Meta
+3=mavfc.settings
+8=mavfc.urls
+6=mavfc.log_filters
+19=DisableAccount
+1=user.utils
 -- END DICTIONARY
 -- START TREE 1
-21
-all|1|ALLOWED_HOSTS!11@
-app|1|application!19@
-aut|1|AUTH_PASSWORD_VALIDATORS!11@
-bas|1|BASE_DIR!11@
-dat|1|DATABASES!11@
-deb|1|DEBUG!11@
-ins|1|INSTALLED_APPS!11@
-lan|1|LANGUAGE_CODE!11@
-log|3|LOGOUT_URL!11@LOGIN_URL!11@LOGIN_REDIRECT_URL!11@
-med|2|MEDIA_ROOT!11@MEDIA_URL!11@
-mid|1|MIDDLEWARE!11@
-pas|1|password_urls!27@
-roo|1|ROOT_URLCONF!11@
-sec|1|SECRET_KEY!11@
-sit|1|SITE_ID!11@
-sta|2|STATIC_URL!11@STATICFILES_DIRS!11@
-tem|1|TEMPLATES!11@
-tim|1|TIME_ZONE!11@
-url|2|urlpatterns!35@urlpatterns!27@
-use|4|USE_L10N!11@USE_TZ!11@USE_I18N!11@UserConfig!41@
-wsg|1|WSGI_APPLICATION!11@
+31
+act|2|ActivationMailFormMixin!9@ActivateAccount!17@
+all|1|ALLOWED_HOSTS!27@
+app|1|application!35@
+aut|1|AUTH_PASSWORD_VALIDATORS!27@
+bas|1|BASE_DIR!27@
+cre|1|CreateAccount!17@
+dat|1|DATABASES!27@
+deb|1|DEBUG!27@
+def|1|DEFAULT_FROM_EMAIL!27@
+dis|1|DisableAccount!17@
+ema|6|EMAIL_PORT!27@EMAIL_SUBJECT_PREFIX!27@EMAIL_HOST_PASSWORD!27@EMAIL_BACKEND!27@EMAIL_HOST!27@EMAIL_HOST_USER!27@
+ins|1|INSTALLED_APPS!27@
+lan|1|LANGUAGE_CODE!27@
+log|6|logger!43@LOGIN_URL!27@LOGIN_REDIRECT_URL!27@logger!11@LOGGING!27@LOGOUT_URL!27@
+mai|1|MailContextViewMixin!9@
+man|1|ManagementFilter!49@
+med|2|MEDIA_ROOT!27@MEDIA_URL!27@
+mid|1|MIDDLEWARE!27@
+pas|1|password_urls!59@
+res|2|ResendActivationEmailForm!41@ResendActivationEmail!17@
+roo|1|ROOT_URLCONF!27@
+sec|1|SECRET_KEY!27@
+ser|1|SERVER_EMAIL!27@
+sit|1|SITE_ID!27@
+sta|2|STATIC_URL!27@STATICFILES_DIRS!27@
+tem|1|TEMPLATES!27@
+tim|1|TIME_ZONE!27@
+url|2|urlpatterns!67@urlpatterns!59@
+use|5|USE_L10N!27@UserCreationForm!41@USE_TZ!27@USE_I18N!27@UserConfig!73@
+ver|1|verbose!27@
+wsg|1|WSGI_APPLICATION!27@
 -- END TREE
 -- START TREE 2
-1
-nam|1|name!6&43@
+19
+_ma|1|_mail_sent!10&11@
+_se|1|_send_mail!11&10@
+ema|2|email!12&43@email_template_name!13&11@
+fie|1|fields!14&43@
+fil|1|filter!15&50@
+for|2|form_class!16&19@form_class!17&19@
+get|8|get!18&18@get!16&18@get!19&18@get!17&18@get_message!11&10@get_context_data!11&10@get_subject!11&10@get_save_kwargs!13&10@
+log|1|log_mail_error!11&10@
+mai|4|mail_sent!11&10@mail_validation_error!11&11@mail_validation_error!12&43@mail_validation_error!20&43@
+met|1|Meta!20&41@
+mod|1|model!14&43@
+nam|1|name!21&75@
+pos|3|post!16&18@post!19&18@post!17&18@
+sav|2|save!12&42@save!20&42@
+sen|1|send_mail!11&10@
+set|1|set_mail_sent!11&10@
+sub|1|subject_template_name!13&11@
+suc|4|success_url!18&19@success_url!16&19@success_url!19&19@success_url!17&19@
+tem|4|template_name!18&19@template_name!16&19@template_name!19&19@template_name!17&19@
 -- END TREE
