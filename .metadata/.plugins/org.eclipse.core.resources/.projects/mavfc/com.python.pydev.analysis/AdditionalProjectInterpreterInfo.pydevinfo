@@ -5,18 +5,18 @@ user.tests|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\use
 mavfc.wsgi|1485572244118378000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\wsgi.py
 user.__init__|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\__init__.py
 mavfc.__init__|1485572244121380000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\__init__.py
-user.urls|1485824019511609000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\urls.py
+user.urls|1485906505954854000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\urls.py
 manage|1485572244060834000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\manage.py
-user.forms|1485820293449295000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\forms.py
-user.views|1485821195783493000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\views.py
+user.forms|1485906505919813000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\forms.py
+user.views|1485906505962885000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\views.py
 user.apps|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\apps.py
 user.migrations.__init__|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\migrations\__init__.py
-mavfc.settings|1485826449759774000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\settings.py
+mavfc.settings|1485906505894784000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\settings.py
 mavfc.urls|1485803947283459000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\urls.py
 user.admin|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\admin.py
-mavfc.log_filters|1485826568226545000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\log_filters.py
+mavfc.log_filters|1485906505886776000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\log_filters.py
 user.models|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\models.py
-user.utils|1485819339058538000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\utils.py
+user.utils|1485906505956355000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\utils.py
 -- END DISKCACHE
 -- START DICTIONARY
 21
@@ -54,16 +54,16 @@ dat|1|DATABASES!27@
 deb|1|DEBUG!27@
 def|1|DEFAULT_FROM_EMAIL!27@
 dis|1|DisableAccount!17@
-ema|6|EMAIL_PORT!27@EMAIL_SUBJECT_PREFIX!27@EMAIL_HOST_PASSWORD!27@EMAIL_BACKEND!27@EMAIL_HOST!27@EMAIL_HOST_USER!27@
+ema|7|EMAIL_PORT!27@EMAIL_SUBJECT_PREFIX!27@EMAIL_HOST_PASSWORD!27@EMAIL_BACKEND!27@EMAIL_HOST!27@EMAIL_USE_TLS!27@EMAIL_HOST_USER!27@
 ins|1|INSTALLED_APPS!27@
 lan|1|LANGUAGE_CODE!27@
-log|6|logger!43@LOGIN_URL!27@LOGIN_REDIRECT_URL!27@logger!11@LOGGING!27@LOGOUT_URL!27@
+log|6|LOGIN_URL!27@logger!43@LOGIN_REDIRECT_URL!27@LOGGING!27@logger!11@LOGOUT_URL!27@
 mai|1|MailContextViewMixin!9@
 man|1|ManagementFilter!49@
 med|2|MEDIA_ROOT!27@MEDIA_URL!27@
 mid|1|MIDDLEWARE!27@
 pas|1|password_urls!59@
-res|2|ResendActivationEmailForm!41@ResendActivationEmail!17@
+res|2|ResendActivationEmail!17@ResendActivationEmailForm!41@
 roo|1|ROOT_URLCONF!27@
 sec|1|SECRET_KEY!27@
 ser|1|SERVER_EMAIL!27@
@@ -86,7 +86,7 @@ fil|1|filter!15&50@
 for|2|form_class!16&19@form_class!17&19@
 get|8|get!18&18@get!16&18@get!19&18@get!17&18@get_message!11&10@get_context_data!11&10@get_subject!11&10@get_save_kwargs!13&10@
 log|1|log_mail_error!11&10@
-mai|4|mail_sent!11&10@mail_validation_error!11&11@mail_validation_error!12&43@mail_validation_error!20&43@
+mai|4|mail_sent!11&10@mail_validation_error!12&43@mail_validation_error!20&43@mail_validation_error!11&11@
 met|1|Meta!20&41@
 mod|1|model!14&43@
 nam|1|name!21&75@

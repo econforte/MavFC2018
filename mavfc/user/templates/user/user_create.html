@@ -5,18 +5,29 @@
 {% endblock %}
 
 {% block content %}
-  <div class="container">
+	<script>
+		$(document).ready(function(){
+			$("input").addClass("form-control");
+		});
+	</script>
+  <div class="container" onload="onload()">
       <div class="center">
         <a href="{% url 'dj-auth:resend_activation' %}">
           Lost Activation E-Mail?</a>
       </div>
-      <form
-          action="{% url 'dj-auth:create' %}"
-          method="post">
+      <form action="{% url 'dj-auth:create' %}" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">
-          Create New Account</button>
+        {{ form.non_field_errors }}
+        {% for field in form %}
+        	<div class="form-group">
+        		{{ field.errors }}
+        		<label class="control-label col-sm-2" for="{{ field.id_for_label }}">{{ field.label }}:</label>
+        		<div class="col-sm-10">
+        			{{ field }}
+        		</div>
+        	</div>
+        {% endfor %}
+        <button type="submit">Create New Account</button>
       </form>
   </div>
 {% endblock %}
