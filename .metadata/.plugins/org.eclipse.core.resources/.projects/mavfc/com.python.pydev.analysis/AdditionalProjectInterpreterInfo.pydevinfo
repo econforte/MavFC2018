@@ -1,22 +1,22 @@
 -- VERSION_4
 -- START DISKCACHE_2
-C:\My Programs\Python\Django\Repo\mavfc\.metadata\.plugins\org.eclipse.core.resources\.projects\mavfc\com.python.pydev.analysis\v2_indexcache
-user.tests|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\tests.py
-mavfc.wsgi|1485572244118378000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\wsgi.py
-user.__init__|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\__init__.py
-mavfc.__init__|1485572244121380000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\__init__.py
-user.urls|1485906505954854000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\urls.py
-manage|1485572244060834000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\manage.py
-user.forms|1485906505919813000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\forms.py
-user.views|1485906505962885000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\views.py
-user.apps|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\apps.py
-user.migrations.__init__|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\migrations\__init__.py
-mavfc.settings|1485906505894784000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\settings.py
-mavfc.urls|1485803947283459000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\urls.py
-user.admin|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\admin.py
-mavfc.log_filters|1485906505886776000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\log_filters.py
-user.models|1483572140000000000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\models.py
-user.utils|1485906505956355000|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\utils.py
+D:\Github\mavfc\.metadata\.plugins\org.eclipse.core.resources\.projects\mavfc\com.python.pydev.analysis\v2_indexcache
+user.tests|1486188764525346000|D:\Github\mavfc\mavfc\user\tests.py
+mavfc.wsgi|1486188764443068000|D:\Github\mavfc\mavfc\mavfc\wsgi.py
+user.__init__|1486188764452109000|D:\Github\mavfc\mavfc\user\__init__.py
+mavfc.__init__|1486188764424653000|D:\Github\mavfc\mavfc\mavfc\__init__.py
+user.urls|1486188764527351000|D:\Github\mavfc\mavfc\user\urls.py
+manage|1486188764424653000|D:\Github\mavfc\mavfc\manage.py
+user.forms|1486188764481249000|D:\Github\mavfc\mavfc\user\forms.py
+user.views|1486188764534499000|D:\Github\mavfc\mavfc\user\views.py
+user.apps|1486188764478244000|D:\Github\mavfc\mavfc\user\apps.py
+user.migrations.__init__|1486188764481750000|D:\Github\mavfc\mavfc\user\migrations\__init__.py
+mavfc.settings|1486188764441066000|D:\Github\mavfc\mavfc\mavfc\settings.py
+mavfc.urls|1486188764441583000|D:\Github\mavfc\mavfc\mavfc\urls.py
+mavfc.log_filters|1486188764438559000|D:\Github\mavfc\mavfc\mavfc\log_filters.py
+user.admin|1486188764476743000|D:\Github\mavfc\mavfc\user\admin.py
+user.models|1486188764487157000|D:\Github\mavfc\mavfc\user\models.py
+user.utils|1486188764531857000|D:\Github\mavfc\mavfc\user\utils.py
 -- END DISKCACHE
 -- START DICTIONARY
 21
@@ -57,13 +57,13 @@ dis|1|DisableAccount!17@
 ema|7|EMAIL_PORT!27@EMAIL_SUBJECT_PREFIX!27@EMAIL_HOST_PASSWORD!27@EMAIL_BACKEND!27@EMAIL_HOST!27@EMAIL_USE_TLS!27@EMAIL_HOST_USER!27@
 ins|1|INSTALLED_APPS!27@
 lan|1|LANGUAGE_CODE!27@
-log|6|LOGIN_URL!27@logger!43@LOGIN_REDIRECT_URL!27@LOGGING!27@logger!11@LOGOUT_URL!27@
+log|6|logger!11@LOGOUT_URL!27@LOGIN_URL!27@logger!43@LOGIN_REDIRECT_URL!27@LOGGING!27@
 mai|1|MailContextViewMixin!9@
 man|1|ManagementFilter!49@
 med|2|MEDIA_ROOT!27@MEDIA_URL!27@
 mid|1|MIDDLEWARE!27@
 pas|1|password_urls!59@
-res|2|ResendActivationEmail!17@ResendActivationEmailForm!41@
+res|2|ResendActivationEmailForm!41@ResendActivationEmail!17@
 roo|1|ROOT_URLCONF!27@
 sec|1|SECRET_KEY!27@
 ser|1|SERVER_EMAIL!27@
@@ -72,7 +72,7 @@ sta|2|STATIC_URL!27@STATICFILES_DIRS!27@
 tem|1|TEMPLATES!27@
 tim|1|TIME_ZONE!27@
 url|2|urlpatterns!67@urlpatterns!59@
-use|5|USE_L10N!27@UserCreationForm!41@USE_TZ!27@USE_I18N!27@UserConfig!73@
+use|5|UserCreationForm!41@USE_L10N!27@USE_TZ!27@USE_I18N!27@UserConfig!73@
 ver|1|verbose!27@
 wsg|1|WSGI_APPLICATION!27@
 -- END TREE
@@ -86,7 +86,7 @@ fil|1|filter!15&50@
 for|2|form_class!16&19@form_class!17&19@
 get|8|get!18&18@get!16&18@get!19&18@get!17&18@get_message!11&10@get_context_data!11&10@get_subject!11&10@get_save_kwargs!13&10@
 log|1|log_mail_error!11&10@
-mai|4|mail_sent!11&10@mail_validation_error!12&43@mail_validation_error!20&43@mail_validation_error!11&11@
+mai|4|mail_sent!11&10@mail_validation_error!11&11@mail_validation_error!12&43@mail_validation_error!20&43@
 met|1|Meta!20&41@
 mod|1|model!14&43@
 nam|1|name!21&75@

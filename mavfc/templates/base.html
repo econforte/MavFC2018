@@ -64,17 +64,17 @@
 								</ul>
 							</li>
 					</ul>
-					<!-- Search Form -->
-					<!--<form class="navbar-form navbar-left">
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search">
-							<div class="input-group-btn">
-								<button class="btn btn-default" type="submit">
-									<i class="glyphicon glyphicon-search"></i>
-								</button>
-							</div>
-						</div>
-					</form>
+{#					<!-- Search Form -->#}
+{#					<form class="navbar-form navbar-left">#}
+{#						<div class="input-group">#}
+{#							<input type="text" class="form-control" placeholder="Search">#}
+{#							<div class="input-group-btn">#}
+{#								<button class="btn btn-default" type="submit">#}
+{#									<i class="glyphicon glyphicon-search"></i>#}
+{#								</button>#}
+{#							</div>#}
+{#						</div>#}
+{#					</form>#}
 					<!-- Profile Actions -->
 					<ul class="nav navbar-nav navbar-right">
 						{% if user.is_authenticated %}
@@ -120,8 +120,8 @@
 							<button type="button" class="close" data-dismiss="modal">&times;</button>
 							<h3 class="modal-title">Login</h3>
 						</div>
-						<div class="modal-body">
-							<form action="/user/login/" method="post">
+						<form action="/user/login/" method="post">
+							<div class="modal-body">
 								{% csrf_token %}							
 								<div class="form-group">
 									<label for="id_username">Username:</label>
@@ -134,13 +134,13 @@
 								{% if next %}
 							    	<input type="hidden" name="next" value="{{ next }}">
 							  	{% endif %}
-								<button type="submit" class="btn btn-default">Submit</button>
-							</form> 
-							<a href="{% url 'dj-auth:pw_reset_start' %}">Forgot password?</a>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						</div>
+							</div>
+							<div class="modal-footer">
+								<a href="{% url 'dj-auth:login' %}" class="btn btn-default pull-left">Cancel</a>
+							  	<button type="submit" class="btn btn-primary pull-right">{{ login_button|default:'Log in' }}</button>
+								<a href="{% url 'dj-auth:pw_reset_start' %}" class="btn btn-info pull-right" style="margin-right:10px">Forgot Password</a>
+							</div>
+						</form> 
 					</div>
 				</div>
 			</div>

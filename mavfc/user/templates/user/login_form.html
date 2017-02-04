@@ -1,16 +1,33 @@
-<div class="container" style="margin-top:50px">
-	<form
-	    action="{% url 'dj-auth:login' %}"
-	    method="post">
-	  {% csrf_token %}
-	  {{ form.as_p }}
-	  {% if next %}
-	    <input
-	      type="hidden"
-	      name="next"
-	      value="{{ next }}">
-	  {% endif %}
-	  <button type="submit">
-	    {{ login_button|default:'Log in' }}</button>
+<script>
+	$(document).ready(function(){
+		$("input").addClass("form-control");
+	});
+</script>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3>Login</h3>
+	</div>
+	<form action="{% url 'dj-auth:login' %}" method="post" class="form-horizontal">
+		<div class="panel-body">
+		  	{% csrf_token %}
+			{{ form.non_field_errors }}
+			{% for field in form %}
+				<div class="form-group">
+					{{ field.errors }}
+					<label class="control-label col-sm-2" for="{{ field.id_for_label }}">{{ field.label }}:</label>
+					<div class="col-sm-10">
+						{{ field }}
+					</div>
+				</div>
+			{% endfor %}
+		  	{% if next %}
+		    	<input type="hidden" name="next" value="{{ next }}">
+		  	{% endif %}
+		</div>
+		<div class="panel-footer">
+			<a href="/home/" class="btn btn-default">Cancel</a>
+		  	<button type="submit" class="btn btn-primary pull-right">{{ login_button|default:'Log in' }}</button>
+			<a href="{% url 'dj-auth:pw_reset_start' %}" class="btn btn-info pull-right" style="margin-right:10px">Forgot Password</a>
+		</div>
 	</form>
 </div>

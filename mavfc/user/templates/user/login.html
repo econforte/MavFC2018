@@ -1,9 +1,17 @@
 {% extends parent_template|default:"user/base_user.html" %}
 
 {% block title %}
-{{ block.super }} - Login
+	{{ block.super }} - Login
 {% endblock %}
 
 {% block content %}
-  {% include "user/login_form.html" %}
+	<div class="container" style="margin-top:50px">
+		<div class="row">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
+				{% include "user/login_form.html" %}
+			</div>
+			<div class="col-md-3"></div>
+		</div>
+	</div>
 {% endblock %}

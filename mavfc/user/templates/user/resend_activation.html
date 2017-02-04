@@ -1,18 +1,48 @@
 {% extends parent_template|default:"user/base_user.html" %}
 
 {% block title %}
-{{ block.super }} - Resend Activation E-Mail
+	{{ block.super }} - Resend Activation E-Mail
 {% endblock %}
 
 {% block content %}
-  	<div class="container">
-      	<div class="center">
-        	<p>Resend your account activation email.</p>
-      	</div>
-      	<form action="{% url 'dj-auth:resend_activation' %}" method="post">
-			{% csrf_token %}
-			{{ form.as_p }}
-			<button type="submit">Resend Activation E-Mail</button>
-		</form>
-  	</div>
+	<script>
+		$(document).ready(function(){
+			$("input").addClass("form-control");
+		});
+	</script>
+	<div class="container" style="margin-top:50px">
+		<div class="row">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3>Resend Activation E-Mail</h3>
+					</div>
+      				<form action="{% url 'dj-auth:resend_activation' %}" method="post" class="form-horizontal">
+						<div class="panel-body">
+							<div class="form-group">
+				    			<p style="margin-left:25px;">Resend your account activation email.</p>
+						        {% csrf_token %}
+								{{ form.non_field_errors }}
+							</div>
+							{% for field in form %}
+								<div class="form-group">
+									{{ field.errors }}
+									<label class="control-label col-sm-2" for="{{ field.id_for_label }}">{{ field.label }}:</label>
+									<div class="col-sm-10">
+										{{ field }}
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+						<div class="panel-footer">
+							<a href="{% url 'dj-auth:create' %}" class="btn btn-default">Cancel</a>
+							<button type="submit" class="btn btn-primary pull-right">Resend Activation E-Mail</button>
+					    </div>
+				    </form>
+			    </div>
+			</div>
+			<div class="col-md-3"></div>
+		</div>
+	</div>
 {% endblock %}

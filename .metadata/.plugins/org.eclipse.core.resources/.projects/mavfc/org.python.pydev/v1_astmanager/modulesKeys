@@ -1,17 +1,17 @@
 MODULES_MANAGER_V2
-manage|C:\My Programs\Python\Django\Repo\mavfc\mavfc\manage.py
-mavfc.__init__|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\__init__.py
-mavfc.log_filters|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\log_filters.py
-mavfc.settings|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\settings.py
-mavfc.urls|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\urls.py
-mavfc.wsgi|C:\My Programs\Python\Django\Repo\mavfc\mavfc\mavfc\wsgi.py
-user.__init__|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\__init__.py
-user.admin|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\admin.py
-user.apps|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\apps.py
-user.forms|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\forms.py
-user.migrations.__init__|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\migrations\__init__.py
-user.models|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\models.py
-user.tests|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\tests.py
-user.urls|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\urls.py
-user.utils|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\utils.py
-user.views|C:\My Programs\Python\Django\Repo\mavfc\mavfc\user\views.py
+manage|D:\Github\mavfc\mavfc\manage.py
+mavfc.__init__|D:\Github\mavfc\mavfc\mavfc\__init__.py
+mavfc.log_filters|D:\Github\mavfc\mavfc\mavfc\log_filters.py
+mavfc.settings|D:\Github\mavfc\mavfc\mavfc\settings.py
+mavfc.urls|D:\Github\mavfc\mavfc\mavfc\urls.py
+mavfc.wsgi|D:\Github\mavfc\mavfc\mavfc\wsgi.py
+user.__init__|D:\Github\mavfc\mavfc\user\__init__.py
+user.admin|D:\Github\mavfc\mavfc\user\admin.py
+user.apps|D:\Github\mavfc\mavfc\user\apps.py
+user.forms|D:\Github\mavfc\mavfc\user\forms.py
+user.migrations.__init__|D:\Github\mavfc\mavfc\user\migrations\__init__.py
+user.models|D:\Github\mavfc\mavfc\user\models.py
+user.tests|D:\Github\mavfc\mavfc\user\tests.py
+user.urls|D:\Github\mavfc\mavfc\user\urls.py
+user.utils|D:\Github\mavfc\mavfc\user\utils.py
+user.views|D:\Github\mavfc\mavfc\user\views.py
