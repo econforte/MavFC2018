@@ -1,4 +1,4 @@
-{% extends parent_template|default:"products/products_base.html" %}
+{% extends parent_template|default:"foodcomputer/base_foodcomputer.html" %}
 
 {% block title %}
 	{{ block.super }} - Add New {{ model_name }}
@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block content %}
+<div class="container">
 	{% if form.is_multipart %}
 	<form class="form-horizontal" enctype="multipart/form-data" action="{{ form_url }}" method="post">
 	{% else %}
@@ -40,4 +41,5 @@
 			</div>
 		</div>
 	</form>
+</div>
 {% endblock %}

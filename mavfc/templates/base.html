@@ -87,6 +87,7 @@
 									{% if user.is_staff %}
 										<li><a href="/admin/">Admin</a></li>
 									{% endif %}
+									<li><a href="{% url 'foodcomputer:piList' %}">Pi List</a></li>
 									<li><a href="{% url 'dj-auth:logout' %}?next={{ request.path }}">Logout <span class="glyphicon glyphicon-log-in"></span></a></li>
 								</ul>
 							</li>

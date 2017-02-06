@@ -1,0 +1,37 @@
+{% extends parent_template|default:"foodcomputer/base_foodcomputer.html" %}
+
+{% block title %}
+	{{ block.super }} - Pi List
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+	<h1>Raspberry Pi List  {% if user.is_staff %}<a href="{% url 'foodcomputer:pi_create' %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Pi</a>{% endif %}</h1>
+	{% if pis %}
+		<div class="panel-group" id="accordion">
+			{% for pi in pis %}
+				<div class="panel panel-default">
+				    <div class="panel-heading">
+				        <h4 class="panel-title">
+				          	<a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ pi.pk }}">{{ pi.pi_SN }}</a>
+				        </h4>
+				    </div>
+				    {% if forloop.counter == 1 %}
+				    <div id="collapse{{ pi.pk }}" class="panel-collapse collapse in">
+				    {% else %}
+				    <div id="collapse{{ pi.pk }}" class="panel-collapse collapse">
+				    {% endif %}
+				        <div class="panel-body">
+				        	<p><strong>Raspberry Pi:</strong> <a href="#{#{% url 'foodcomputer:pi_detail' pi.pk %}#}">{{ pi.pi_SN }}</a></p>
+				        	<p><strong>Address:</strong> {{ pi.address }}</p>
+				        </div>
+				    </div>
+			    </div>
+			{% endfor %}
+		</div>
+	{% else %}
+	    <p>No Raspberry Pi's are available.</p>
+	{% endif %}
+</div>
+{% endblock %}

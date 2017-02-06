@@ -1,4 +1,4 @@
-{% extends parent_template|default:"products/products_base.html" %}
+{% extends parent_template|default:"foodcomputer/base_foodcomputer.html" %}
 
 {% block title %}
 	{{ block.super }} - Update {{ model_name }}
@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block content %}
+<div class="container">
 	<form class="form-horizontal" action="{{ obj.get_update_url }}" method="post">
 		<div class="panel panel-default" style="margin-top:50px">
 			<div class="panel-heading">
@@ -37,4 +38,5 @@
 			</div>
 		</div>
 	</form>
+</div>
 {% endblock %}
