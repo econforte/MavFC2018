@@ -19,10 +19,13 @@ from django.contrib import admin
 from user import urls as user_urls
 from django.contrib.flatpages import urls as flatpage_urls
 from django.contrib.staticfiles import views
+import Experiment
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^user/', include(user_urls, app_name='user', namespace='dj-auth')),
+    url(r'^food-computer/', include("foodcomputer.urls")),
+    url(r'^experiment/', include("experiment.urls")),
     url(r'^media/(?P<path>.*)$', views.serve),
     # All other URLs should be placed above this line.
     url(r'^', include(flatpage_urls)),

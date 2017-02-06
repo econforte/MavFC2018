@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from .views import *
 
-app_name = 'experiment'
+app_name = 'foodcomputer'
 
 urlpatterns = [
     # ex: /product/list/
