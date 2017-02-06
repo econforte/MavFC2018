@@ -5,7 +5,7 @@ from django.conf import settings
 
 class Address(models.Model):
     street_line_1 = models.CharField(max_length=75,)
-    street_line_2 = models.CharField(max_length=75,)
+    street_line_2 = models.CharField(max_length=75, blank=True, null=True,)
     city = models.CharField(max_length=30,)
     state = models.CharField(max_length=2,)
     zip = models.CharField(max_length=10,)
@@ -55,7 +55,7 @@ class Device(models.Model):
     lower_variance = models.FloatField()
     
     def __str__(self):
-        return self.device_id
+        return self.device_type.name + ': ' + self.device_id
     
     def get_absolute_url(self):
         return reverse('foodcomputer:device_detail', kwargs={'pk': self.pk})
@@ -77,7 +77,7 @@ class Data(models.Model):
     is_anomaly = models.BooleanField()
     
     def __str__(self):
-        return '[' + self.timestamp + ']: ' + self.data_value
+        return '[' + str(self.timestamp) + ']: ' + str(self.data_value)
     
     def get_absolute_url(self):
         return reverse('foodcomputer:data_detail', kwargs={'pk': self.pk})
@@ -93,12 +93,14 @@ class Data(models.Model):
 
 
 class DeviceType(models.Model):
+    name = models.CharField(max_length=100,)
+    model_id = models.CharField(max_length=50, blank=True, null=True, verbose_name="Model ID")
     unit_type = models.ForeignKey('UnitType', on_delete=models.CASCADE, related_name="device_types",)
     data_type = models.ForeignKey('DataType', on_delete=models.CASCADE, related_name="device_types",)
     is_controller = models.BooleanField()
     
     def __str__(self):
-        return self.pi_SN
+        return self.name + ": " + self.unit_type.name
     
     def get_absolute_url(self):
         return reverse('foodcomputer:devicetype_detail', kwargs={'pk': self.pk})
@@ -137,8 +139,8 @@ class UnitType(models.Model):
 class DataType(models.Model):
     name = models.CharField(max_length=30,)
     descr = models.TextField()
-    min_limit = models.FloatField()
-    max_limit = models.FloatField()
+    min_limit = models.FloatField(blank=True, null=True,)
+    max_limit = models.FloatField(blank=True, null=True,)
     
     def __str__(self):
         return self.name
