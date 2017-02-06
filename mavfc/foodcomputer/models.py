@@ -14,16 +14,16 @@ class Address(models.Model):
         return "{l1}\n{l2}\n{c}, {s} {z}".format(l1=self.street_line_1, l2=self.street_line_2, c=self.city, s=self.state, z=self.zip)
     
     def get_absolute_url(self):
-        return reverse('experiment:address_detail', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:address_detail', kwargs={'pk': self.pk})
     
     def get_create_url(self):
-        return reverse('experiment:address_create')
+        return reverse('foodcomputer:address_create')
     
     def get_update_url(self):
-        return reverse('experiment:address_update', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:address_update', kwargs={'pk': self.pk})
     
     def get_delete_url(self):
-        return reverse('experiment:address_delete', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:address_delete', kwargs={'pk': self.pk})
 
 
 class Pi(models.Model):
@@ -35,21 +35,21 @@ class Pi(models.Model):
         return self.pi_SN
     
     def get_absolute_url(self):
-        return reverse('experiment:pi_detail', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:pi_detail', kwargs={'pk': self.pk})
     
     def get_create_url(self):
-        return reverse('experiment:pi_create')
+        return reverse('foodcomputer:pi_create')
     
     def get_update_url(self):
-        return reverse('experiment:pi_update', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:pi_update', kwargs={'pk': self.pk})
     
     def get_delete_url(self):
-        return reverse('experiment:pi_delete', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:pi_delete', kwargs={'pk': self.pk})
 
 
 class Device(models.Model):
     pi = models.ForeignKey(Pi, on_delete=models.CASCADE, related_name="devices",)
-    device_type = models.ForeignKey('device_type', on_delete=models.CASCADE, related_name="devices",)
+    device_type = models.ForeignKey('DeviceType', on_delete=models.CASCADE, related_name="devices",)
     device_id = models.CharField(max_length=50, verbose_name="Device ID",)
     upper_variance = models.FloatField()
     lower_variance = models.FloatField()
@@ -58,16 +58,16 @@ class Device(models.Model):
         return self.device_id
     
     def get_absolute_url(self):
-        return reverse('experiment:device_detail', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:device_detail', kwargs={'pk': self.pk})
     
     def get_create_url(self):
-        return reverse('experiment:device_create')
+        return reverse('foodcomputer:device_create')
     
     def get_update_url(self):
-        return reverse('experiment:device_update', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:device_update', kwargs={'pk': self.pk})
     
     def get_delete_url(self):
-        return reverse('experiment:device_delete', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:device_delete', kwargs={'pk': self.pk})
 
 
 class Data(models.Model):
@@ -80,40 +80,40 @@ class Data(models.Model):
         return '[' + self.timestamp + ']: ' + self.data_value
     
     def get_absolute_url(self):
-        return reverse('experiment:data_detail', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:data_detail', kwargs={'pk': self.pk})
     
     def get_create_url(self):
-        return reverse('experiment:data_create')
+        return reverse('foodcomputer:data_create')
     
     def get_update_url(self):
-        return reverse('experiment:data_update', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:data_update', kwargs={'pk': self.pk})
     
     def get_delete_url(self):
-        return reverse('experiment:data_delete', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:data_delete', kwargs={'pk': self.pk})
 
 
-class Device_Type(models.Model):
-    unit_type = models.ForeignKey('Unit_Type', on_delete=models.CASCADE, related_name="device_types",)
-    data_type = models.ForeignKey('Data_Type', on_delete=models.CASCADE, related_name="device_types",)
+class DeviceType(models.Model):
+    unit_type = models.ForeignKey('UnitType', on_delete=models.CASCADE, related_name="device_types",)
+    data_type = models.ForeignKey('DataType', on_delete=models.CASCADE, related_name="device_types",)
     is_controller = models.BooleanField()
     
     def __str__(self):
         return self.pi_SN
     
     def get_absolute_url(self):
-        return reverse('experiment:devicetype_detail', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:devicetype_detail', kwargs={'pk': self.pk})
     
     def get_create_url(self):
-        return reverse('experiment:devicetype_create')
+        return reverse('foodcomputer:devicetype_create')
     
     def get_update_url(self):
-        return reverse('experiment:devicetype_update', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:devicetype_update', kwargs={'pk': self.pk})
     
     def get_delete_url(self):
-        return reverse('experiment:devicetype_delete', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:devicetype_delete', kwargs={'pk': self.pk})
 
 
-class Unit_Type(models.Model):
+class UnitType(models.Model):
     name = models.CharField(max_length=30,)
     abbr = models.CharField(max_length=10,)
     descr = models.TextField()
@@ -122,19 +122,19 @@ class Unit_Type(models.Model):
         return self.name
     
     def get_absolute_url(self):
-        return reverse('experiment:unittype_detail', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:unittype_detail', kwargs={'pk': self.pk})
     
     def get_create_url(self):
-        return reverse('experiment:unittype_create')
+        return reverse('foodcomputer:unittype_create')
     
     def get_update_url(self):
-        return reverse('experiment:unittype_update', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:unittype_update', kwargs={'pk': self.pk})
     
     def get_delete_url(self):
-        return reverse('experiment:unittype_delete', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:unittype_delete', kwargs={'pk': self.pk})
 
 
-class Data_Type(models.Model):
+class DataType(models.Model):
     name = models.CharField(max_length=30,)
     descr = models.TextField()
     min_limit = models.FloatField()
@@ -144,16 +144,16 @@ class Data_Type(models.Model):
         return self.name
     
     def get_absolute_url(self):
-        return reverse('experiment:pi_detail', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:pi_detail', kwargs={'pk': self.pk})
     
     def get_create_url(self):
-        return reverse('experiment:pi_create')
+        return reverse('foodcomputer:pi_create')
     
     def get_update_url(self):
-        return reverse('experiment:pi_update', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:pi_update', kwargs={'pk': self.pk})
     
     def get_delete_url(self):
-        return reverse('experiment:pi_delete', kwargs={'pk': self.pk})
+        return reverse('foodcomputer:pi_delete', kwargs={'pk': self.pk})
 
 
 

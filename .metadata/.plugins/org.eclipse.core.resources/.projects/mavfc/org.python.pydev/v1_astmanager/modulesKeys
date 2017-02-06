@@ -1,4 +1,16 @@
 MODULES_MANAGER_V2
+experiment.__init__|D:\Github\mavfc\mavfc\experiment\__init__.py
+experiment.admin|D:\Github\mavfc\mavfc\experiment\admin.py
+foodcomputer.__init__|D:\Github\mavfc\mavfc\foodcomputer\__init__.py
+foodcomputer.admin|D:\Github\mavfc\mavfc\foodcomputer\admin.py
+foodcomputer.apps|D:\Github\mavfc\mavfc\foodcomputer\apps.py
+foodcomputer.forms|D:\Github\mavfc\mavfc\foodcomputer\forms.py
+foodcomputer.migrations.__init__|D:\Github\mavfc\mavfc\foodcomputer\migrations\__init__.py
+foodcomputer.models|D:\Github\mavfc\mavfc\foodcomputer\models.py
+foodcomputer.tests|D:\Github\mavfc\mavfc\foodcomputer\tests.py
+foodcomputer.urls|D:\Github\mavfc\mavfc\foodcomputer\urls.py
+foodcomputer.utils|D:\Github\mavfc\mavfc\foodcomputer\utils.py
+foodcomputer.views|D:\Github\mavfc\mavfc\foodcomputer\views.py
 manage|D:\Github\mavfc\mavfc\manage.py
 mavfc.__init__|D:\Github\mavfc\mavfc\mavfc\__init__.py
 mavfc.log_filters|D:\Github\mavfc\mavfc\mavfc\log_filters.py

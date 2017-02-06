@@ -19,7 +19,7 @@ from django.contrib import admin
 from user import urls as user_urls
 from django.contrib.flatpages import urls as flatpage_urls
 from django.contrib.staticfiles import views
-import Experiment
+import experiment
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
