@@ -1,6 +1,11 @@
 MODULES_MANAGER_V2
 experiment.__init__|D:\Github\mavfc\mavfc\experiment\__init__.py
 experiment.admin|D:\Github\mavfc\mavfc\experiment\admin.py
+experiment.apps|D:\Github\mavfc\mavfc\experiment\apps.py
+experiment.migrations.__init__|D:\Github\mavfc\mavfc\experiment\migrations\__init__.py
+experiment.models|D:\Github\mavfc\mavfc\experiment\models.py
+experiment.tests|D:\Github\mavfc\mavfc\experiment\tests.py
+experiment.views|D:\Github\mavfc\mavfc\experiment\views.py
 foodcomputer.__init__|D:\Github\mavfc\mavfc\foodcomputer\__init__.py
 foodcomputer.admin|D:\Github\mavfc\mavfc\foodcomputer\admin.py
 foodcomputer.apps|D:\Github\mavfc\mavfc\foodcomputer\apps.py

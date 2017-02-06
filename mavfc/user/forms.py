@@ -29,7 +29,7 @@ class UserCreationForm(ActivationMailFormMixin, BaseUserCreationForm):
 
     class Meta(BaseUserCreationForm.Meta):
         model = get_user_model()
-        fields = ('username', 'email', 'first_name', 'last_name',)
+        fields = ('first_name', 'last_name', 'username', 'email',)
 
     def save(self, **kwargs):
         user = super().save(commit=False)

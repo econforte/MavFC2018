@@ -1,0 +1,40 @@
+{% extends parent_template|default:"products/products_base.html" %}
+
+{% block title %}
+	{{ block.super }} - Update {{ model_name }}
+{% endblock %}
+
+{% block app_nav %}
+	{{ block.super }}
+{% endblock %}
+
+{% block content %}
+	<form class="form-horizontal" action="{{ obj.get_update_url }}" method="post">
+		<div class="panel panel-default" style="margin-top:50px">
+			<div class="panel-heading">
+				<h3>Update {{ model_name }}<a href="{{ obj.get_delete_url }}" class="btn btn-danger pull-right">Delete!</a></h3>
+			</div>
+			<div class="panel-body">
+				{% csrf_token %}
+				{{ form.non_field_errors }}
+				{% for field in form %}
+					<div class="form-group">
+						{{ field.errors }}
+						<label class="control-label col-sm-2" for="{{ field.id_for_label }}">{{ field.label }}:</label>
+						<div class="col-sm-10">
+							{{ field }}
+						</div>
+						{% if field.help_text %}
+							<span class="helptext">{{ field.help_text }}</span>
+						{% endif %}
+					</div>
+				{% endfor %}
+			</div>
+			<div class="panel-footer">
+		        <a href="{{ obj.get_absolute_url }}" class="btn btn-default">Cancel</a>
+				<button type="submit" class="btn btn-primary pull-right">Update {{ model_name }}</button>
+		        <a href="{{ obj.get_create_url }}" class="btn btn-success pull-right" style="margin-right:10px">Create New {{ model_name }}</a>
+			</div>
+		</div>
+	</form>
+{% endblock %}
