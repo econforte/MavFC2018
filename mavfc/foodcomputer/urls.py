@@ -17,4 +17,12 @@ urlpatterns = [
     url(r'^pi/(?P<pk>[0-9]+)/delete/$', PiDelete.as_view(), name='pi_delete'),
     # ex: /food-computer/pi/(pi.pk)/document/add/
 #     url(r'^pi/(?P<pk>[0-9]+)/device/add/$', .as_view(), name='device_add'),
+    # ex: /food-computer/device/(device.pk)/
+    url(r'^device/(?P<pk>[0-9]+)/$', DeviceDetail.as_view(), name='device_detail'),
+    # ex: /food-computer/device/create/
+    url(r'^device/create/$', DeviceCreate.as_view(), name='device_create'),
+    # ex: /food-computer/device/(device.pk)/update/
+    url(r'^device/(?P<pk>[0-9]+)/update/$', DeviceUpdate.as_view(), name='device_update'),
+    # ex: /food-computer/device/(device.pk)/delete/
+    url(r'^device/(?P<pk>[0-9]+)/delete/$', DeviceDelete.as_view(), name='device_delete'),
 ]

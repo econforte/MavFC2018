@@ -1,0 +1,33 @@
+{% extends parent_template|default:"foodcomputer/base_foodcomputer.html" %}
+
+{% block title %}
+	{{ block.super }} - {{ model_name }} Information
+{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        {% for bc_url, bc_name in device.get_breadcrumbs reversed %}
+            {% if bc_url == 'active' %}
+                <li class="active">{{ bc_name }}</li>
+            {% else %}
+                <li><a href="{{ bc_url }}">{{ bc_name }}</a></li>
+            {% endif %}
+        {% endfor %}
+	</ul>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                {% include "foodcomputer/device_panel.html" with device_detail="true" %}
+            </div>
+        </div>
+        <hr>
+        <div class="row" style="margin-top:5px">
+            <div class="col-md-12">
+                {% include "foodcomputer/data_panel.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

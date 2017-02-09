@@ -62,3 +62,42 @@ class PiDelete(ObjectDeleteMixin, View):
     success_url = reverse_lazy('foodcomputer:piList')
     template_name = 'foodcomputer/delete_confirm.html'
     parent_template=None
+
+
+class DeviceDetail(View):
+    model = Device
+    model_name = 'Device'
+    template_name = 'foodcomputer/device_detail.html'
+    parent_template = None
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        return render(
+            request,
+            self.template_name,
+            {'device': obj,
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
+
+
+class DeviceCreate(ObjectCreateMixin, View):
+    form_class = DeviceForm
+    template_name = 'foodcomputer/create_form.html'
+    form_url = reverse_lazy('foodcomputer:pi_create')
+    parent_template = None
+    model_name = 'Device'
+
+
+class DeviceUpdate(ObjectUpdateMixin, View):
+    form_class = DeviceForm
+    model = Device
+    template_name = 'foodcomputer/update_form.html'
+    parent_template = None
+
+
+class DeviceDelete(ObjectDeleteMixin, View):
+    model = Device
+    success_url = reverse_lazy('foodcomputer:piList')
+    template_name = 'foodcomputer/delete_confirm.html'
+    parent_template = None
