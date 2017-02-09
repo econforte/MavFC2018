@@ -1,7 +1,7 @@
 {% extends parent_template|default:"foodcomputer/base_foodcomputer.html" %}
 
 {% block title %}
-	{{ block.super }} - Update {{ model_name }}
+	{{ block.super }} - Add New {{ model_name }}
 {% endblock %}
 
 {% block app_nav %}
@@ -10,10 +10,14 @@
 
 {% block content %}
 <div class="container">
-	<form class="form-horizontal" action="{{ obj.get_update_url }}" method="post">
+	{% if form.is_multipart %}
+	<form class="form-horizontal" enctype="multipart/form-data" action="{{ form_url }}" method="post">
+	{% else %}
+	<form class="form-horizontal" action="{{ form_url }}" method="post">
+	{% endif %}
 		<div class="panel panel-default" style="margin-top:50px">
 			<div class="panel-heading">
-				<h3>Update {{ model_name }}<a href="{{ obj.get_delete_url }}" class="btn btn-danger pull-right">Delete!</a></h3>
+				<h3>Add New {{ model_name }}{% if doc %} for {{parent}}{% endif %}</h3>
 			</div>
 			<div class="panel-body">
 				{% csrf_token %}
@@ -32,9 +36,8 @@
 				{% endfor %}
 			</div>
 			<div class="panel-footer">
-		        <a href="{{ obj.get_absolute_url }}" class="btn btn-default">Cancel</a>
-				<button type="submit" class="btn btn-primary pull-right">Update {{ model_name }}</button>
-		        <a href="{{ obj.get_create_url }}" class="btn btn-success pull-right" style="margin-right:10px">Create New {{ model_name }}</a>
+				<button type="submit" class="btn btn-primary pull-right">Add New {{ model_name }}</button>
+				<div class="clearfix"></div>
 			</div>
 		</div>
 	</form>

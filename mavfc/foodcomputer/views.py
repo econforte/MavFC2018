@@ -53,7 +53,7 @@ class PiCreate(ObjectCreateMixin, View):
 class PiUpdate(ObjectUpdateMixin, View):
     form_class = PiForm
     model = Pi
-    template_name = 'foodcomputer/update_form.html'
+    template_name = 'foodcomputer/update_page.html'
     parent_template=None
 
 
@@ -92,7 +92,7 @@ class DeviceCreate(ObjectCreateMixin, View):
 class DeviceUpdate(ObjectUpdateMixin, View):
     form_class = DeviceForm
     model = Device
-    template_name = 'foodcomputer/update_form.html'
+    template_name = 'foodcomputer/update_page.html'
     parent_template = None
 
 
