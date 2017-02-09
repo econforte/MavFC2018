@@ -106,9 +106,9 @@ class Device(models.Model):
 
     def gen_breadcrumbs(self, bc=[]):
         if bc == []:
-            bc.append(('active', self.name))
+            bc.append(('active', self.device_type.name))
         else:
-            bc.append((self.get_absolute_url, self.name))
+            bc.append((self.get_absolute_url, self.device_type.name))
         return self.pi.gen_breadcrumbs(bc)
 
 
