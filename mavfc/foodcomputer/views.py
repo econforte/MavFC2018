@@ -25,6 +25,23 @@ class PiList(View):
              'parent_template': parent_template})
 
 
+class PiDetail(View):
+    model = Pi
+    model_name = 'Raspberry Pi'
+    template_name = 'foodcomputer/pi_detail.html'
+    parent_template = None
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        return render(
+            request,
+            self.template_name,
+            {'obj': obj,
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
+
+
 class PiCreate(ObjectCreateMixin, View):
     form_class = PiForm
     template_name = 'foodcomputer/create_form.html'

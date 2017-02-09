@@ -4,6 +4,7 @@ from django.conf import settings
 
 
 class Address(models.Model):
+    name = models.CharField(max_length=100,)
     street_line_1 = models.CharField(max_length=75,)
     street_line_2 = models.CharField(max_length=75, blank=True, null=True,)
     city = models.CharField(max_length=30,)
@@ -11,7 +12,7 @@ class Address(models.Model):
     zip = models.CharField(max_length=10,)
     
     def __str__(self):
-        return "{l1}\n{l2}\n{c}, {s} {z}".format(l1=self.street_line_1, l2=self.street_line_2, c=self.city, s=self.state, z=self.zip)
+        return "{n}: {c}, {s}".format(n=self.name, c=self.city, s=self.state)
     
     def get_absolute_url(self):
         return reverse('foodcomputer:address_detail', kwargs={'pk': self.pk})
@@ -25,14 +26,24 @@ class Address(models.Model):
     def get_delete_url(self):
         return reverse('foodcomputer:address_delete', kwargs={'pk': self.pk})
 
+    def get_single_line_str(self):
+        if self.street_line_2:
+            return "{l1}, {l2}, {c}, {s} {z}".format(l1=self.street_line_1, l2=self.street_line_2, c=self.city, s=self.state, z=self.zip)
+        else:
+            return "{l1}, {c}, {s} {z}".format(l1=self.street_line_1, c=self.city, s=self.state, z=self.zip)
+
+    def get_multi_line_str(self):
+        return "{l1}\n{l2}\n{c}, {s} {z}".format(l1=self.street_line_1, l2=self.street_line_2, c=self.city, s=self.state, z=self.zip)
+
 
 class Pi(models.Model):
+    name = models.CharField(max_length=100,)
     pi_SN = models.CharField(max_length=50, verbose_name="Serial Number",)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, blank=True, null=True, related_name="pis",)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True, related_name="pis",)
     
     def __str__(self):
-        return self.pi_SN
+        return self.name + ': ' + self.pi_SN
     
     def get_absolute_url(self):
         return reverse('foodcomputer:pi_detail', kwargs={'pk': self.pk})
@@ -46,15 +57,36 @@ class Pi(models.Model):
     def get_delete_url(self):
         return reverse('foodcomputer:pi_delete', kwargs={'pk': self.pk})
 
+    def get_list_url(self):
+        return reverse('foodcomputer:pi_list')
+
+    def get_device_num(self):
+        return len(self.devices.all())
+
+    def get_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[])
+
+    def gen_breadcrumbs(self, bc=[]):
+        if bc == []:
+            bc.append(('active', self.name))
+        else:
+            bc.append((self.get_absolute_url, self.name))
+        bc.append((self.get_list_url, 'Pi List'))
+        bc.append(('/home/', 'Home'))
+        return bc
+
 
 class Device(models.Model):
     pi = models.ForeignKey(Pi, on_delete=models.CASCADE, related_name="devices",)
     device_type = models.ForeignKey('DeviceType', on_delete=models.CASCADE, related_name="devices",)
     device_id = models.CharField(max_length=50, verbose_name="Device ID",)
-    upper_variance = models.FloatField()
-    lower_variance = models.FloatField()
+    upper_threshold = models.FloatField()
+    lower_threshold = models.FloatField()
     
     def __str__(self):
+        return self.pi.name + ': ' + self.device_type.name + ': ' + self.device_id
+
+    def get_device_name(self):
         return self.device_type.name + ': ' + self.device_id
     
     def get_absolute_url(self):
@@ -68,6 +100,16 @@ class Device(models.Model):
     
     def get_delete_url(self):
         return reverse('foodcomputer:device_delete', kwargs={'pk': self.pk})
+
+    def get_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[])
+
+    def gen_breadcrumbs(self, bc=[]):
+        if bc == []:
+            bc.append(('active', self.name))
+        else:
+            bc.append((self.get_absolute_url, self.name))
+        return self.pi.gen_breadcrumbs(bc)
 
 
 class Data(models.Model):
@@ -94,7 +136,7 @@ class Data(models.Model):
 
 class DeviceType(models.Model):
     name = models.CharField(max_length=100,)
-    model_id = models.CharField(max_length=50, blank=True, null=True, verbose_name="Model ID")
+    model_id = models.CharField(max_length=50, blank=True, null=True, verbose_name="Model ID",)
     unit_type = models.ForeignKey('UnitType', on_delete=models.CASCADE, related_name="device_types",)
     data_type = models.ForeignKey('DataType', on_delete=models.CASCADE, related_name="device_types",)
     is_controller = models.BooleanField()
