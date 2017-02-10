@@ -17,28 +17,30 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
                 {% include "foodcomputer/pi_panel.html" with pi_detail="true" %}
-            </div>
-        </div>
-        <hr>
-        <div class="row">
-            <div class="col-md-12">
-                <h3 style="margin-top:10px">Device List {% if user.is_staff %}<a href="#{#% url 'foodcomputer:device_add' obj.pk %#}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Device</a>{% endif %}</h3>
-            </div>
-        </div>
-        <div class="row" style="margin-top:5px">
-            {% if obj.devices.all %}
-                {% for device in obj.devices.all %}
-                    <div class="col-md-6 col-lg-4">
-                        {% include "foodcomputer/device_panel.html" %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 style="margin-top:10px">Device List {% if user.is_staff %}<a href="#{#% url 'foodcomputer:device_add' obj.pk %#}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Device</a>{% endif %}</h3>
                     </div>
-                {% endfor %}
-            {% else %}
-                <p>There are no devices available for this {{ model_name }}.</p>
-            {% endif %}
+                    <div class="panel-body">
+                        <div class="row">
+                            {% if obj.devices.all %}
+                                {% for device in obj.devices.all %}
+                                    <div class="col-md-6 col-lg-4">
+                                        {% include "foodcomputer/device_panel.html" %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p>There are no devices available for this {{ model_name }}.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
