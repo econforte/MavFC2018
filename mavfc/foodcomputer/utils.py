@@ -11,6 +11,7 @@ class ObjectCreateMixin:
     form_url = ''
     parent_template=None
     model_name = ''
+    cancel_url = ''
     
     @method_decorator(login_required)
     def get(self, request):
@@ -19,6 +20,7 @@ class ObjectCreateMixin:
             self.template_name,
             {'form': self.form_class,
              'form_url': self.form_url,
+             'cancel_url': self.cancel_url,
              'model_name': self.model_name,
              'parent_template': self.parent_template})
     

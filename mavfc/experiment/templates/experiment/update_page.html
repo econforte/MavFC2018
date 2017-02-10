@@ -1,7 +1,7 @@
 {% extends parent_template|default:"experiment/base_experiment.html" %}
 
 {% block title %}
-	{{ block.super }} - Add New {{ model_name }}
+	{{ block.super }} - Update {{ model_name }}
 {% endblock %}
 
 {% block app_nav %}
@@ -10,6 +10,6 @@
 
 {% block content %}
     <div class="container">
-        {% include 'foodcomputer/form_panel.html' with action_str='add new' form_is_multipart=form.is_multipart %}
+        {% include 'foodcomputer/form_panel.html' with form_url=obj.get_update_url action_str='update' form_is_multipart=form.is_multipart %}
     </div>
 {% endblock %}

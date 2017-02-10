@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    {% include 'foodcomputer/form_panel.html' with form_url=obj.get_update_url action_str='update' cancel_url=obj.get_absolute_url form=form form_is_multipart=form.is_multipart model_name=model_name obj_create_url=obj.get_create_url obj_delete_url=obj.get_delete_url %}
-</div>
+    <div class="container">
+        {% include 'foodcomputer/form_panel.html' with form_url=obj.get_update_url action_str='update' form_is_multipart=form.is_multipart %}
+    </div>
 {% endblock %}

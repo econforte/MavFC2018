@@ -101,6 +101,9 @@ class Device(models.Model):
     def get_delete_url(self):
         return reverse('foodcomputer:device_delete', kwargs={'pk': self.pk})
 
+    def get_list_url(self):
+        return self.pi.get_absolute_url()
+
     def get_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[])
 
@@ -132,6 +135,9 @@ class Data(models.Model):
     
     def get_delete_url(self):
         return reverse('foodcomputer:data_delete', kwargs={'pk': self.pk})
+
+    def get_list_url(self):
+        return self.device.get_absolute_url()
 
 
 class DeviceType(models.Model):

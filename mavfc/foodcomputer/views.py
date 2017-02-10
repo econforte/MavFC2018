@@ -44,7 +44,7 @@ class PiDetail(View):
 
 class PiCreate(ObjectCreateMixin, View):
     form_class = PiForm
-    template_name = 'foodcomputer/create_form.html'
+    template_name = 'foodcomputer/create_page.html'
     form_url = reverse_lazy('foodcomputer:pi_create')
     parent_template=None
     model_name = 'Pi'
@@ -83,7 +83,7 @@ class DeviceDetail(View):
 
 class DeviceCreate(ObjectCreateMixin, View):
     form_class = DeviceForm
-    template_name = 'foodcomputer/create_form.html'
+    template_name = 'foodcomputer/create_page.html'
     form_url = reverse_lazy('foodcomputer:pi_create')
     parent_template = None
     model_name = 'Device'
