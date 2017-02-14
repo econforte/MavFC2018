@@ -25,4 +25,8 @@ urlpatterns = [
     url(r'^device/(?P<pk>[0-9]+)/update/$', DeviceUpdate.as_view(), name='device_update'),
     # ex: /food-computer/device/(device.pk)/delete/
     url(r'^device/(?P<pk>[0-9]+)/delete/$', DeviceDelete.as_view(), name='device_delete'),
+    # ex: /food-computer/api/address/
+    url(r'^api/address/$', addressListJSON),
+    # ex: /food-computer/api/address/(address.pk)
+    url(r'^api/address/(?P<pk>[0-9]+)/$', addressJSON),
 ]

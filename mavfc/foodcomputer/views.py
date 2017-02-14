@@ -1,14 +1,24 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.views.generic import View
 from django.core.urlresolvers import reverse_lazy
-from django.core.files.uploadedfile import SimpleUploadedFile
+# from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.contrib.messages import success
+# from django.contrib.messages import success
+
+
+# Imports used to serve JSON
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from .serializers import AddressSerializer
+
 
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
+
 
 class PiList(View):
     
@@ -101,3 +111,58 @@ class DeviceDelete(ObjectDeleteMixin, View):
     success_url = reverse_lazy('foodcomputer:piList')
     template_name = 'foodcomputer/delete_confirm.html'
     parent_template = None
+
+
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
+
+
+@csrf_exempt
+def addressListJSON(request):
+    """
+    List all code snippets, or create a new snippet.
+    """
+    if request.method == 'GET':
+        addresses = Address.objects.all()
+        serializer = AddressSerializer(addresses, many=True)
+        return JSONResponse(serializer.data)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = AddressSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JSONResponse(serializer.data, status=201)
+        return JSONResponse(serializer.errors, status=400)
+
+@csrf_exempt
+def addressJSON(request, pk):
+    """
+    Retrieve, update or delete a code snippet.
+    """
+    try:
+        address = Address.objects.get(pk=pk)
+    except Address.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = AddressSerializer(address)
+        return JSONResponse(serializer.data)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = AddressSerializer(address, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JSONResponse(serializer.data)
+        return JSONResponse(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        address.delete()
+        return HttpResponse(status=204)
