@@ -24,7 +24,7 @@
                 {% include "foodcomputer/pi_panel.html" with pi_detail="true" %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 style="margin-top:10px">Device List {% if user.is_staff %}<a href="#{#% url 'foodcomputer:device_add' obj.pk %#}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Device</a>{% endif %}</h3>
+                        <h3 style="margin-top:10px">Device List {#% if user.is_staff %}<a href="#{% url 'foodcomputer:device_add' obj.pk %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Device</a>{% endif %#}</h3>
                     </div>
                     <div class="panel-body">
                         <div class="row">

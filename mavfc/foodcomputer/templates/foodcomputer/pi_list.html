@@ -2,7 +2,7 @@
 
 
 {% block title %}
-	{{ block.super }} - Pi List
+	{{ block.super }} - Food Computer List
 {% endblock %}
 
 
@@ -13,7 +13,7 @@
             <div class="col-md-10">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h1>Raspberry Pi List  {% if user.is_staff %}<a href="{% url 'foodcomputer:pi_create' %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>{% endif %}</h1>
+                        <h1>Food Computer List  {% if user.is_staff %}<a href="{% url 'foodcomputer:pi_create' %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>{% endif %}</h1>
                     </div>
                     <div class="panel-body">
                         <div class="row" style="margin-top:5px">
@@ -24,7 +24,7 @@
                                     </div>
                                 {% endfor %}
                             {% else %}
-                                <p>There are no Pi's.</p>
+                                <p>There are no Food Computers.</p>
                             {% endif %}
                         </div>
                     </div>
