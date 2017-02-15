@@ -41,6 +41,7 @@ class Pi(models.Model):
     pi_SN = models.CharField(max_length=50, verbose_name="Serial Number",)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, blank=True, null=True, related_name="pis",)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True, related_name="pis",)
+    manual_control = models.BooleanField(default=False,)
     
     def __str__(self):
         return self.name + ': ' + self.pi_SN
