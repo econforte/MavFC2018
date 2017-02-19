@@ -25,9 +25,5 @@ class commandsSerializer(serializers.ModelSerializer):
 class sensorValuesSerializer(serializers.ModelSerializer):
     # Also not sure if this is needed due to POST
     class Meta
-        model = Sensors
-        fields = ('pi', 'device_type', 'device_ID', 'upper_variance', 'lower_variance')
-
-class experimentsSerializer(serializers.ModelSerializer):
-    class Meta
-        fields = ('experiment_name', 'experiment_descr', 'collection_interval')
+        model = Device
+        fields = ('device', 'timestamp', 'data_value', 'is_anomaly')

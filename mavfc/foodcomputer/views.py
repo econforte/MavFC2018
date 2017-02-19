@@ -18,7 +18,6 @@ from .serializers import todoCheckSerializer
 from .serializers import keySerializer
 from .serializers import commandsSerializer
 from .serializers import sensorValuesSerializer
-from .serializers import experimentsSerializer
 
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
