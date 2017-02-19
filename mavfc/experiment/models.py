@@ -49,7 +49,6 @@ class ExperimentRule(models.Model):
     hour = models.IntegerField()
     minute = models.IntegerField()
     baseline_target = models.FloatField()
-    baseline_variance = models.FloatField()
     days = models.ManyToManyField(Day)
     
     def __str__(self):
