@@ -277,3 +277,4 @@ local.properties
 .pyc
 mavfc/user/__pycache__/__init__.cpython-35.pyc
 *.pyc
+mavfc/user/migrations/__pycache__/__init__.cpython-35.pyc
