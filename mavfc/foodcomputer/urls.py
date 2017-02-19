@@ -29,4 +29,15 @@ urlpatterns = [
     url(r'^api/address/$', addressListJSON),
     # ex: /food-computer/api/address/(address.pk)
     url(r'^api/address/(?P<pk>[0-9]+)/$', addressJSON),
+
+    # ex: /food-computer/api/todo/(foodComputerKey.pk)
+    url(r'^api/todo/(?P<pk>[0-9]+)/$', todoCheckJSON),
+    # ex: /food-computer/api/getKey/(piSerial.pk)
+    url(r'^api/getKey/(?P<pk>[0-9]+)/$', keyJSON),
+    # ex: /food-computer/api/getCommands/(foodComputerKey.pk)
+    url(r'^api/getCommands/(?P<pk>[0-9]+)/$', commandsJSON),
+    # ex: /food-computer/api/sensorValues/(foodComputerKey.pk, [data])
+    url(r'^api/sensorValues/(?P<pk>[0-9]+)/$', sensorValues),
+    # ex: /food-computer/api/getExperiment/(foodComputerKey.pk)
+    url(r'^api/getExperiment/(?P<pk>[0-9]+)/$', experimentJSON),
 ]

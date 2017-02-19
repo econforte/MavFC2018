@@ -14,6 +14,11 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from .serializers import AddressSerializer
 
+from .serializers import todoCheckSerializer
+from .serializers import keySerializer
+from .serializers import commandsSerializer
+from .serializers import sensorValuesSerializer
+from .serializers import experimentsSerializer
 
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
@@ -21,7 +26,7 @@ from .forms import *
 
 
 class PiList(View):
-    
+
     @method_decorator(login_required)
     def get(self, request, parent_template=None):
         if request.user.is_staff:
@@ -166,3 +171,23 @@ def addressJSON(request, pk):
     elif request.method == 'DELETE':
         address.delete()
         return HttpResponse(status=204)
+
+@csrf_emempt
+def todoCheckJSON(request, pk):
+    #getTodoList Implementation booleanResponse
+
+@csrf_exempt
+def keyJSON(request):
+    #getFoodComputerKey Implementation
+
+@csrf_exempt
+def commandsJSON(request):
+    #getFoodComputerCommands Implementation
+
+@csrf_exempt
+def sensorValues(request):
+    #postSensorValues Implementation
+
+@csrf_exempt
+def experimentJSON(request):
+    #getExperiment Implementation
