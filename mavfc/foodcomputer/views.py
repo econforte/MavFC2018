@@ -13,10 +13,10 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from .serializers import AddressSerializer
 
-from .serializers import todoCheckSerializer
-from .serializers import keySerializer
-from .serializers import commandsSerializer
-from .serializers import sensorValuesSerializer
+from .serializers import ToDoCheckSerializer
+from .serializers import KeySerializer
+from .serializers import CommandsSerializer
+from .serializers import SensorValuesSerializer
 
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
@@ -169,33 +169,35 @@ def addressJSON(request, pk):
         address.delete()
         return HttpResponse(status=204)
 
-@csrf_emempt
+@csrf_exempt
 def todoCheckJSON(request, pk):
     #getTodoList Implementation
     try:
-        address = Pi.objects.get(pk=pk)
-    except Address.DoesNotExist:
+        pi = Pi.objects.get(pk=pk)
+    except Pi.DoesNotExist:
         return HttpResponse(status=404)
 
 @csrf_exempt
 def keyJSON(request):
     #getFoodComputerKey Implementation
+    return HttpResponse(status=200)
 
 @csrf_exempt
 def commandsJSON(request, pk):
     #getFoodComputerCommands Implementation
+    return HttpResponse(status=200)
 
 @csrf_exempt
 def sensorValues(request, pk):
     #postSensorValues Implementation
     try:
         sensors = Device.objects.get(pk=pk)
-    except Address.DoesNotExist:
+    except Device.DoesNotExist:
         return HttpResponse(status=404)
 
     if request.method == 'PUT':
         data = JSONParser().parse(request)
-        serializer = sensorValuesSerializer(sensors, data=data)
+        serializer = SensorValuesSerializer(sensors, data=data)
         if serializer.is_valid():
             serializer.save()
             return JSONResponse(serializer.data)
@@ -203,20 +205,8 @@ def sensorValues(request, pk):
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = sensorValuesSerializer(data=data)
+        serializer = SensorValuesSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JSONResponse(serializer.data, status=201)
         return JSONResponse(serializer.errors, status=400)
-
-@csrf_exempt
-def experimentJSON(request, pk):
-    #getExperiment Implementation
-    try:
-        experiment = Experiment.objects.get(pk=pk)
-    except Experiment.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = ExperimentSerializer(experiment)
-        return JSONResponse(serializer.data)

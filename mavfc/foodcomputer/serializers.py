@@ -8,22 +8,22 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = ('pk', 'name', 'street_line_1', 'street_line_2', 'city', 'state', 'zip')
 
 #Implementation
-class todoCheckSerializer(serializers.ModelSerializer):
+class ToDoCheckSerializer(serializers.ModelSerializer):
     # Not sure this class is needed due to boolean return
-    class Meta
+    class Meta:
         fields = ()
 
-class keySerializer(serializers.ModelSerializer):
-    class Meta
+class KeySerializer(serializers.ModelSerializer):
+    class Meta:
         model = Key
         fields = ('address', 'user', 'pi_SN')
 
-class commandsSerializer(serializers.ModelSerializer):
-    class Meta
+class CommandsSerializer(serializers.ModelSerializer):
+    class Meta:
         fields = ()
 
-class sensorValuesSerializer(serializers.ModelSerializer):
+class SensorValuesSerializer(serializers.ModelSerializer):
     # Also not sure if this is needed due to POST
-    class Meta
+    class Meta:
         model = Device
         fields = ('device', 'timestamp', 'data_value', 'is_anomaly')
