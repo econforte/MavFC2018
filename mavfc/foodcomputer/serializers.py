@@ -25,7 +25,8 @@ class commandsSerializer(serializers.ModelSerializer):
 class sensorValuesSerializer(serializers.ModelSerializer):
     # Also not sure if this is needed due to POST
     class Meta
-        fields = ()
+        model = Sensors
+        fields = ('pi', 'device_type', 'device_ID', 'upper_variance', 'lower_variance')
 
 class experimentsSerializer(serializers.ModelSerializer):
     class Meta

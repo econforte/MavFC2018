@@ -174,20 +174,52 @@ def addressJSON(request, pk):
 
 @csrf_emempt
 def todoCheckJSON(request, pk):
-    #getTodoList Implementation booleanResponse
+    #getTodoList Implementation
+    try:
+        address = Pi.objects.get(pk=pk)
+    except Address.DoesNotExist:
+        return HttpResponse(status=404)
 
 @csrf_exempt
 def keyJSON(request):
     #getFoodComputerKey Implementation
 
 @csrf_exempt
-def commandsJSON(request):
+def commandsJSON(request, pk):
     #getFoodComputerCommands Implementation
 
 @csrf_exempt
-def sensorValues(request):
+def sensorValues(request, pk):
     #postSensorValues Implementation
+    try:
+        sensors = Device.objects.get(pk=pk)
+    except Address.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = sensorValuesSerializer(sensors, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JSONResponse(serializer.data)
+        return JSONResponse(serializer.errors, status=400)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = sensorValuesSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JSONResponse(serializer.data, status=201)
+        return JSONResponse(serializer.errors, status=400)
 
 @csrf_exempt
-def experimentJSON(request):
+def experimentJSON(request, pk):
     #getExperiment Implementation
+    try:
+        experiment = Experiment.objects.get(pk=pk)
+    except Experiment.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = ExperimentSerializer(experiment)
+        return JSONResponse(serializer.data)
