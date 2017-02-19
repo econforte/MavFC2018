@@ -275,3 +275,5 @@ local.properties
 .idea
 
 .pyc
+mavfc/user/__pycache__/__init__.cpython-35.pyc
+*.pyc
