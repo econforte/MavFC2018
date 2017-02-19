@@ -38,6 +38,4 @@ urlpatterns = [
     url(r'^api/getCommands/(?P<pk>[0-9]+)/$', commandsJSON),
     # ex: /food-computer/api/sensorValues/(foodComputerKey.pk, [data])
     url(r'^api/sensorValues/(?P<pk>[0-9]+)/$', sensorValues),
-    # ex: /food-computer/api/getExperiment/(foodComputerKey.pk)
-    url(r'^api/getExperiment/(?P<pk>[0-9]+)/$', experimentJSON),
 ]

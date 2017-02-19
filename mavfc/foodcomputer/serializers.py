@@ -15,7 +15,6 @@ class ToDoCheckSerializer(serializers.ModelSerializer):
 
 class KeySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Key
         fields = ('address', 'user', 'pi_SN')
 
 class CommandsSerializer(serializers.ModelSerializer):

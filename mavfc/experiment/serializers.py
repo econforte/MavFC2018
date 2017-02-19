@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from .models import Address, Pi, Device, Data, DeviceType, Unittype, DataType
 
 class ExperimentsSerializer(serializers.ModelSerializer):
     class Meta:
