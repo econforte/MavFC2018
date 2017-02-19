@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 # from django.contrib.messages import success
 
-
 # Imports used to serve JSON
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -22,7 +21,6 @@ from .serializers import sensorValuesSerializer
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
-
 
 class PiList(View):
 
