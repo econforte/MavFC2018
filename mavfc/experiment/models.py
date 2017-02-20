@@ -23,6 +23,9 @@ class Experiment(models.Model):
     def get_delete_url(self):
         return reverse('experiment:experiment_delete', kwargs={'pk': self.pk})
 
+    def get_pi(self):
+        return self.experiment_rules[:1].device.pi
+
 
 class Day(models.Model):
     name = models.CharField(max_length=9,)
