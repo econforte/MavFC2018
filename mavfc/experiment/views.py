@@ -21,3 +21,20 @@ class ExperimentList(View):
             'experiment/experiment_list.html',
             {'experiments': experiments,
              'parent_template': parent_template})
+
+
+class ExperimentDetail(View):
+    model = Experiment
+    model_name = 'Experiment'
+    template_name = 'experiment/experiment_detail.html'
+    parent_template = None
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        return render(
+            request,
+            self.template_name,
+            {'obj': obj,
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
