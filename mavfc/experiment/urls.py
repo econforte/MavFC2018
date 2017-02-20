@@ -5,6 +5,6 @@ from .views import *
 app_name = 'experiment'
 
 urlpatterns = [
-    # ex: /product/list/
-    #url(r'^list/$', ProductList.as_view(), name='productList'),
+    # ex: /experiment/list/
+    url(r'^list/$', ExperimentList.as_view(), name='experimentList'),
 ]
