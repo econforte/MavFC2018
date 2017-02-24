@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.messages import success
 
+from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
 
@@ -38,3 +39,24 @@ class ExperimentDetail(View):
             {'obj': obj,
              'model_name': self.model_name,
              'parent_template': self.parent_template})
+
+# class ExperimentCreate(ObjectCreateMixin, View):
+#     form_class = ExperimentForm
+#     template_name = 'experiment/create_page.html'
+#     form_url = reverse_lazy('experiment:experiment_create')
+#     parent_template=None
+#     model_name = 'Experiment'
+#
+#
+# class ExperimentUpdate(ObjectUpdateMixin, View):
+#     form_class = ExperimentForm
+#     model = Experiment
+#     template_name = 'experiment/update_page.html'
+#     parent_template=None
+#
+#
+# class PiDelete(ObjectDeleteMixin, View):
+#     model = Experiment
+#     success_url = reverse_lazy('experiment:experimentList')
+#     template_name = 'experiment/delete_confirm.html'
+#     parent_template=None

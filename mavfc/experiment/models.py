@@ -9,7 +9,7 @@ class Experiment(models.Model):
     collection_interval = models.IntegerField()
     
     def __str__(self):
-        return self.pi_SN
+        return self.name
     
     def get_absolute_url(self):
         return reverse('experiment:experiment_detail', kwargs={'pk': self.pk})
@@ -22,6 +22,9 @@ class Experiment(models.Model):
     
     def get_delete_url(self):
         return reverse('experiment:experiment_delete', kwargs={'pk': self.pk})
+
+    def get_list_url(self):
+        return reverse('experiment:experiment_list')
 
     def get_pi(self):
         return self.experiment_rules[:1].device.pi
@@ -55,7 +58,8 @@ class ExperimentRule(models.Model):
     days = models.ManyToManyField(Day)
     
     def __str__(self):
-        return self.pi_SN
+        return self.pi.name + ': ' + self.experiment.name
+        # need to fix this
     
     def get_absolute_url(self):
         return reverse('experiment:experimentrule_detail', kwargs={'pk': self.pk})
