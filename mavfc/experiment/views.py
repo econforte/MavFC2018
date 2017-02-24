@@ -55,8 +55,8 @@ class ExperimentDetail(View):
 #     parent_template=None
 #
 #
-# class PiDelete(ObjectDeleteMixin, View):
-#     model = Experiment
-#     success_url = reverse_lazy('experiment:experimentList')
-#     template_name = 'experiment/delete_confirm.html'
-#     parent_template=None
+class ExperimentDelete(ObjectDeleteMixin, View):
+    model = Experiment
+    success_url = reverse_lazy('experiment:experimentList')
+    template_name = 'experiment/delete_confirm.html'
+    parent_template=None

@@ -51,6 +51,7 @@ class Day(models.Model):
 
 class ExperimentRule(models.Model):
     device = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="device_rules",)
+    # should this refer to Device, not Experiment?
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="experiment_rules",)
     hour = models.IntegerField()
     minute = models.IntegerField()
@@ -59,8 +60,11 @@ class ExperimentRule(models.Model):
     
     def __str__(self):
         return self.pi.name + ': ' + self.experiment.name
-        # need to fix this
-    
+        # is this right? where is the __str__ used?
+
+    def get_experimentrule_name(self):
+        return self.experiment.name + 'Rule' + self.pk
+
     def get_absolute_url(self):
         return reverse('experiment:experimentrule_detail', kwargs={'pk': self.pk})
     

@@ -18,6 +18,6 @@ urlpatterns = [
 #    url(r'^(?P<pk>[0-9]+)/update/$', ExperimentUpdate.as_view(), name='experiment_update'),
 
     # ex: /experiment/(experiment.pk)/delete/
-#    url(r'^(?P<pk>[0-9]+)/delete/$', ExperimentDelete.as_view(), name='experiment_delete'),
+    url(r'^(?P<pk>[0-9]+)/delete/$', ExperimentDelete.as_view(), name='experiment_delete'),
 
 ]
