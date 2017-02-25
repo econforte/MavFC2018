@@ -8,6 +8,6 @@ urlpatterns = [
     # ex: /product/list/
     #url(r'^list/$', ProductList.as_view(), name='productList'),
 
-    # ex: /food-computer/api/getExperiment/(foodComputerKey.pk)
+    # ex: /experiment/api/getExperiment/(foodComputerKey.pk)
     url(r'^api/getExperiment/(?P<pk>[0-9]+)/$', experimentJSON),
 ]

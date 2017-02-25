@@ -191,8 +191,8 @@ def commandsJSON(request, pk):
 def sensorValues(request, pk):
     #postSensorValues Implementation
     try:
-        sensors = Device.objects.get(pk=pk)
-    except Device.DoesNotExist:
+        sensors = Data.objects.get(pk=pk)
+    except Data.DoesNotExist:
         return HttpResponse(status=404)
 
     if request.method == 'PUT':
@@ -203,9 +203,13 @@ def sensorValues(request, pk):
             return JSONResponse(serializer.data)
         return JSONResponse(serializer.errors, status=400)
 
+    elif request.method == 'GET':
+        serializer = SensorValuesSerializer(sensors)
+        return JSONResponse(serializer.data)
+
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = SensorValuesSerializer(data=data)
+        serializer = SensorValuesSerializer(sensors, data=data)
         if serializer.is_valid():
             serializer.save()
             return JSONResponse(serializer.data, status=201)
