@@ -16,7 +16,8 @@ from .serializers import AddressSerializer
 from .serializers import ToDoCheckSerializer
 from .serializers import KeySerializer
 from .serializers import CommandsSerializer
-from .serializers import SensorValuesSerializer
+from .serializers import dataSerializer
+from .serializers import deviceSerializer
 
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
@@ -189,27 +190,35 @@ def commandsJSON(request, pk):
 
 @csrf_exempt
 def sensorValues(request, pk):
-    #postSensorValues Implementation
     try:
-        sensors = Data.objects.get(pk=pk)
+        #sensorVals = Device.objects.all()
+        #sensors = Data.objects.get(pk=pk)
+        sensorVals = Data.objects.filter(device=pk)
     except Data.DoesNotExist:
         return HttpResponse(status=404)
 
     if request.method == 'PUT':
         data = JSONParser().parse(request)
-        serializer = SensorValuesSerializer(sensors, data=data)
+        serializer = dataSerializer(sensors, data=data)
         if serializer.is_valid():
             serializer.save()
             return JSONResponse(serializer.data)
         return JSONResponse(serializer.errors, status=400)
 
     elif request.method == 'GET':
-        serializer = SensorValuesSerializer(sensors)
+        serializer = dataSerializer(sensorVals, many=True)
         return JSONResponse(serializer.data)
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = SensorValuesSerializer(sensors, data=data)
+        # for piece in data:
+        #     try:
+        #         tester = Data.objects.get(pk=piece.device)
+        #     except Data.DoesNotExist:
+        #         return HttpResponse(status=404)
+
+        #for piece in data:
+        serializer = dataSerializer(sensorVals, data=data)
         if serializer.is_valid():
             serializer.save()
             return JSONResponse(serializer.data, status=201)
