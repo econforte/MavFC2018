@@ -193,7 +193,7 @@ def sensorValues(request, pk):
     try:
         #sensorVals = Device.objects.all()
         #sensors = Data.objects.get(pk=pk)
-        sensorVals = Data.objects.filter(device=pk)
+        sensorVals = Data.objects.get(pk=pk)
     except Data.DoesNotExist:
         return HttpResponse(status=404)
 
@@ -211,15 +211,12 @@ def sensorValues(request, pk):
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        # for piece in data:
-        #     try:
-        #         tester = Data.objects.get(pk=piece.device)
-        #     except Data.DoesNotExist:
-        #         return HttpResponse(status=404)
-
-        #for piece in data:
-        serializer = dataSerializer(sensorVals, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JSONResponse(serializer.data, status=201)
-        return JSONResponse(serializer.errors, status=400)
+        failure = False
+        for piece in data:
+            serializer = dataSerializer(sensorVals, data=piece)
+            if serializer.is_valid():
+                serializer.save()
+        #    else: failure = True
+        #if failure == True:
+                return JSONResponse(serializer.data, status=201)
+        #else: return JSONResponse(serializer.errors, status=400)
