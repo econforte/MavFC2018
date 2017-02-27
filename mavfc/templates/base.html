@@ -93,6 +93,7 @@
 										<li><a href="/admin/">Admin</a></li>
 									{% endif %}
 									<li><a href="{% url 'foodcomputer:pi_list' %}">Pi List</a></li>
+									<li><a href="{% url 'experiment:experiment_list' %}">Experiment List</a></li>
 									<li><a href="{% url 'dj-auth:logout' %}?next={{ request.path }}">Logout <span class="glyphicon glyphicon-log-in"></span></a></li>
 								</ul>
 							</li>

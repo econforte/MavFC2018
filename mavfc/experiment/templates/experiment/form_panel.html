@@ -33,11 +33,11 @@
                     {{ fm.non_field_errors }}
                 {% endfor %}
                 {% for fm in form_list %}
-                    {% include 'foodcomputer/form.html' with form=fm %}
+                    {% include 'experiment/form.html' with form=fm %}
                 {% endfor %}
             {% else %}
                 {{ form.non_field_errors }}
-                {% include 'foodcomputer/form.html' %}
+                {% include 'experiment/form.html' %}
             {% endif %}
         </div>
         <div class="panel-footer">

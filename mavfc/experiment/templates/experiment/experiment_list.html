@@ -1,0 +1,36 @@
+{% extends parent_template|default:"experiment/base_experiment.html" %}
+
+
+{% block title %}
+	{{ block.super }} - Experiment List
+{% endblock %}
+
+
+{% block content %}
+    <div class="container-fluid" style="margin-top:25px">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h1>Experiment List  {% if user.is_staff %}<a href="#" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>{% endif %}</h1>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row" style="margin-top:5px">
+                            {% if experiments %}
+                                {% for experiment in experiments %}
+                                    <div class="col-md-6">
+                                    #    {% include "experiment/experiment_panel.html" with obj=experiment %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p>There are no experiments.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+    </div>
+{% endblock %}
