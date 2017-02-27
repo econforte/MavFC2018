@@ -47,7 +47,7 @@ class Day(models.Model):
 
 
 class ExperimentRule(models.Model):
-    device = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="device_rules",)
+    device = models.ForeignKey('foodcomputer.Device', on_delete=models.CASCADE, related_name="device_rules",)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="experiment_rules",)
     hour = models.IntegerField()
     minute = models.IntegerField()
@@ -68,6 +68,9 @@ class ExperimentRule(models.Model):
     
     def get_delete_url(self):
         return reverse('experiment:experimentrule_delete', kwargs={'pk': self.pk})
+
+    def get_threshold(self):
+        return (self.device.residual_threshold + self.device.device_type.bio_threshold)
 
 
 class ExperimentInstance(models.Model):
