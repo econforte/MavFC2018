@@ -81,8 +81,7 @@ class Device(models.Model):
     pi = models.ForeignKey(Pi, on_delete=models.CASCADE, related_name="devices",)
     device_type = models.ForeignKey('DeviceType', on_delete=models.CASCADE, related_name="devices",)
     device_id = models.CharField(max_length=50, verbose_name="Device ID",)
-    upper_threshold = models.FloatField()
-    lower_threshold = models.FloatField()
+    residual_threshold = models.FloatField()
     
     def __str__(self):
         return self.pi.name + ': ' + self.device_type.name + ': ' + self.device_id
@@ -147,6 +146,7 @@ class DeviceType(models.Model):
     unit_type = models.ForeignKey('UnitType', on_delete=models.CASCADE, related_name="device_types",)
     data_type = models.ForeignKey('DataType', on_delete=models.CASCADE, related_name="device_types",)
     is_controller = models.BooleanField()
+    bio_threshold = models.FloatField(blank=True, null=True, verbose_name='Biological Threshold')
     
     def __str__(self):
         return self.name + ": " + self.unit_type.name
