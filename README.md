@@ -10,9 +10,13 @@ Django Version 1.10.5
 The source is setup as an Eclipse, PyDev Django Project.
 
 Getting Started:
+
 1.  Install Python from https://www.python.org/downloads/
+
 2.  python get-pip.py
+
 3.  pip install Django
+
 4.  pip install djangorestframework
 
 To run a test server navigate to the folder containing manage.py and run the command:
