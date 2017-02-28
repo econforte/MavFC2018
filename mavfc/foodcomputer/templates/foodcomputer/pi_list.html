@@ -21,20 +21,38 @@
             <div class="col-md-10">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h1>Food Computer List  {% if user.is_staff %}<a href="{% url 'foodcomputer:pi_create' %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>{% endif %}</h1>
+                        <h1>
+                            Food Computer List
+                            {% if user.is_staff %}
+                                <a href="{% url 'foodcomputer:pi_create' %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+                            {% endif %}
+                        </h1>
+                        <div class="clearfix"></div>
                     </div>
                     <div class="panel-body">
-                        <div class="row" style="margin-top:5px">
-                            {% if pis %}
-                                {% for pi in pis %}
-                                    <div class="col-md-6">
-                                        {% include "foodcomputer/pi_panel.html" with obj=pi %}
+                        {% if pis %}
+                            <ul class="nav nav-pills pull-right">
+                                <li class="active"><a data-toggle="pill" href="#tile"><span class="glyphicon glyphicon-th"></span></a></li>
+                                <li><a data-toggle="pill" href="#list"><span class="glyphicon glyphicon-th-list"></span></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                            <div class="tab-content">
+                                <div id="tile" class="tab-pane fade in active">
+                                    <div class="row" style="margin-top:5px">
+                                        {% for pi in pis %}
+                                            <div class="col-md-6">
+                                                {% include "foodcomputer/pi_panel.html" with obj=pi %}
+                                            </div>
+                                        {% endfor %}
                                     </div>
-                                {% endfor %}
-                            {% else %}
-                                <p>There are no Food Computers.</p>
-                            {% endif %}
-                        </div>
+                                </div>
+                                <div id="list" class="tab-pane fade">
+
+                                </div>
+                            </div>
+                        {% else %}
+                            <p>There are no Food Computers.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
