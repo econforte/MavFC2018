@@ -5,15 +5,15 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-{#    <ul class="breadcrumb">#}
-{#        {% for bc_url, bc_name in obj.get_breadcrumbs reversed %}#}
-{#            {% if bc_url == 'active' %}#}
-{#                <li class="active">{{ bc_name }}</li>#}
-{#            {% else %}#}
-{#                <li><a href="{{ bc_url }}">{{ bc_name }}</a></li>#}
-{#            {% endif %}#}
-{#        {% endfor %}#}
-{#	</ul>#}
+    <ul class="breadcrumb">
+        {% for bc_url, bc_name in obj.get_breadcrumbs reversed %}
+            {% if bc_url == 'active' %}
+                <li class="active">{{ bc_name }}</li>
+            {% else %}
+                <li><a href="{{ bc_url }}">{{ bc_name }}</a></li>
+            {% endif %}
+        {% endfor %}
+	</ul>
 {% endblock %}
 
 {% block content %}

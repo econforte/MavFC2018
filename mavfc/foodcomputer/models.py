@@ -72,7 +72,7 @@ class Pi(models.Model):
             bc.append(('active', self.name))
         else:
             bc.append((self.get_absolute_url, self.name))
-        bc.append((self.get_list_url, 'Pi List'))
+        bc.append((self.get_list_url, 'Food Computer List'))
         bc.append(('/home/', 'Home'))
         return bc
 

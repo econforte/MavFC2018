@@ -29,6 +29,18 @@ class Experiment(models.Model):
     def get_pi(self):
         return self.experiment_rules[:1].device.pi
 
+    def get_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[])
+
+    def gen_breadcrumbs(self, bc=[]):
+        if bc == []:
+            bc.append(('active', self.name))
+        else:
+            bc.append((self.get_absolute_url, self.name))
+        bc.append((self.get_list_url, 'Experiment List'))
+        bc.append(('/home/', 'Home'))
+        return bc
+
 
 class Day(models.Model):
     name = models.CharField(max_length=9,)
@@ -74,6 +86,16 @@ class ExperimentRule(models.Model):
 
     def get_threshold(self):
         return (self.device.residual_threshold + self.device.device_type.bio_threshold)
+
+    def get_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[])
+
+    def gen_breadcrumbs(self, bc=[]):
+        if bc == []:
+            bc.append(('active', self.device.device_type.name + ' Rule'))
+        else:
+            bc.append((self.get_absolute_url, self.device.device_type.name + ' Rule'))
+        return self.experiment.gen_breadcrumbs(bc)
 
 
 class ExperimentInstance(models.Model):
