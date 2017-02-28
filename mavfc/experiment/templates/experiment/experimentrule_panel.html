@@ -1,24 +1,27 @@
 <div class="panel panel-default">
     <div class="panel-heading">
-        <p>
-            {{ experimentrule.get_experimentrule_name }}
-            <a href="#" class="btn btn-default pull-right">Toggle</a>
-        </p>
+        <h3>
+            {{ experimentrule }}
+            <div class="btn-group pull-right">
+                <a href="{{ obj.experiment.get_absolute_url }}" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>
+                {% if user.is_staff %}
+                    <a href="{{ obj.get_update_url }}" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="{{ experimentrule.get_delete_url }}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                {% endif %}
+            </div>
+            <div class="clearfix"></div>
+        </h3>
     </div>
     <div class="panel-body">
         <p><strong>Hour:</strong> {{ experimentrule.hour }}</p>
         <p><strong>Minute:</strong> {{ experimentrule.minute }}</p>
         <p><strong>Baseline Target:</strong> {{ experimentrule.baseline_target }}</p>
-        <p><strong>Days:</strong> {{ experimentrule.days }}</p>
+        <p><strong>Baseline Threshold:</strong> {{ experimentrule.get_threshold }}</p>
+{#        <p><strong>Days:</strong> {{ experimentrule.days }}</p>#}
     </div>
     <div class="panel-footer">
-        <a href="#" class="btn btn-success">Experiment Rule</a>
         {% if not experimentrule_detail %}
-            <a href="{% url 'experiment:experimentrule_detail' experimentrule.pk %}" class="btn btn-primary pull-right">Details</a>
-        {% else %}
-            {% if user.is_staff %}
-                <a href="{{ experimentrule.get_delete_url }}" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
-            {% endif %}
+            <a href="{{ experimentrule.get_absolute_url }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-list-alt"></span></a>
         {% endif %}
         <div class="clearfix"></div>
     </div>

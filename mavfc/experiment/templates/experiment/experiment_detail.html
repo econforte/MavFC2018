@@ -1,43 +1,47 @@
-{% extends parent_template|default:"foodcomputer/base_foodcomputer.html" %}
+{% extends parent_template|default:"experiment/base_experiment.html" %}
 
 {% block title %}
 	{{ block.super }} - {{ model_name }} Information
 {% endblock %}
 
 {% block breadcrumbs %}
-    <ul class="breadcrumb">
-        {% for bc_url, bc_name in obj.get_breadcrumbs reversed %}
-            {% if bc_url == 'active' %}
-                <li class="active">{{ bc_name }}</li>
-            {% else %}
-                <li><a href="{{ bc_url }}">{{ bc_name }}</a></li>
-            {% endif %}
-        {% endfor %}
-	</ul>
+{#    <ul class="breadcrumb">#}
+{#        {% for bc_url, bc_name in obj.get_breadcrumbs reversed %}#}
+{#            {% if bc_url == 'active' %}#}
+{#                <li class="active">{{ bc_name }}</li>#}
+{#            {% else %}#}
+{#                <li><a href="{{ bc_url }}">{{ bc_name }}</a></li>#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
+{#	</ul>#}
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
+    <div class="container-fluid" style="margin-top:25px">
         <div class="row">
             <div class="col-md-1"></div>
             <div class="col-md-10">
                 {% include "experiment/experiment_panel.html" with experiment_detail="true" %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 style="margin-top:10px">Rules List {#% if user.is_staff %}<a href="#" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Rule</a>{% endif %#}</h3>
+                        <h3 style="margin-top:10px">Rules List
+                            {% if user.is_staff %}
+                                <a href="{% url 'experiment:experimentrule_create' %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+                            {% endif %}
+                        </h3>
                     </div>
                     <div class="panel-body">
-                        <div class="row">
-                            {% if obj.experimentrules.all %}
-                                {% for experimentrule in obj.experimentrules.all %}
+                        {% if obj.experiment_rules.all %}
+                            <div class="row">
+                                {% for experimentrule in obj.experiment_rules.all %}
                                     <div class="col-md-6 col-lg-4">
                                         {% include "experiment/experimentrule_panel.html" %}
                                     </div>
                                 {% endfor %}
-                            {% else %}
-                                <p>There are no rules available for this {{ model_name }}.</p>
-                            {% endif %}
-                        </div>
+                            </div>
+                        {% else %}
+                            <p>There are no rules available for this {{ model_name }}.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

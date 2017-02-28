@@ -146,7 +146,7 @@ class DeviceType(models.Model):
     unit_type = models.ForeignKey('UnitType', on_delete=models.CASCADE, related_name="device_types",)
     data_type = models.ForeignKey('DataType', on_delete=models.CASCADE, related_name="device_types",)
     is_controller = models.BooleanField()
-    bio_threshold = models.FloatField(blank=True, null=True, verbose_name='Biological Threshold')
+    bio_threshold = models.FloatField(verbose_name='Biological Threshold')
     
     def __str__(self):
         return self.name + ": " + self.unit_type.name

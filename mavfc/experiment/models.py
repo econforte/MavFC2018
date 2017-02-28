@@ -58,11 +58,7 @@ class ExperimentRule(models.Model):
     days = models.ManyToManyField(Day)
     
     def __str__(self):
-        return self.pi.name + ': ' + self.experiment.name
-        # is this right? where is the __str__ used?
-
-    def get_experimentrule_name(self):
-        return self.experiment.name + 'Rule' + self.pk
+        return self.experiment.name + ': ' + self.device.device_type.name + ' Rule'
 
     def get_absolute_url(self):
         return reverse('experiment:experimentrule_detail', kwargs={'pk': self.pk})
