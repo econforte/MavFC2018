@@ -24,17 +24,17 @@
                         <h1>Experiment List {% if user.is_staff %}<a href="{% url 'experiment:experiment_create' %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>{% endif %}</h1>
                     </div>
                     <div class="panel-body">
-                        <div class="row" style="margin-top:5px">
-                            {% if experiments %}
+                        {% if experiments %}
+                            <div class="row" style="margin-top:5px">
                                 {% for experiment in experiments %}
                                     <div class="col-md-6">
                                         {% include "experiment/experiment_panel.html" with obj=experiment %}
                                     </div>
                                 {% endfor %}
-                            {% else %}
-                                <p>There are no experiments.</p>
-                            {% endif %}
-                        </div>
+                            </div>
+                        {% else %}
+                            <p>No experiments found.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

@@ -5,6 +5,8 @@ from .views import *
 app_name = 'experiment'
 
 urlpatterns = [
+    # ex: /experiment/search/
+    url(r'^search/$', ExperimentSearch.as_view(), name='experiment_search'),
     # ex: /experiment/list/
     url(r'^list/$', ExperimentList.as_view(), name='experiment_list'),
     # ex: /experiment/(experiment.pk)/
@@ -22,5 +24,5 @@ urlpatterns = [
     # ex: /experiment/(experiment.pk)/update/
     url(r'^rule/(?P<pk>[0-9]+)/update/$', ExperimentRuleUpdate.as_view(), name='experimentrule_update'),
     # ex: /experiment/(experiment.pk)/delete/
-    url(r'^rule/(?P<pk>[0-9]+)/delete/$', ExperimentRuleDelete.as_view(), name='experimentrule_delete')
+    url(r'^rule/(?P<pk>[0-9]+)/delete/$', ExperimentRuleDelete.as_view(), name='experimentrule_delete'),
 ]

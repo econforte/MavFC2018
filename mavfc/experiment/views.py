@@ -10,6 +10,22 @@ from .models import *
 from .forms import *
 
 
+class ExperimentSearch(View):
+    @method_decorator(login_required)
+    def post(self, request, parent_template=None):
+        q = request.POST['experimentQuery']
+        if request.user.is_staff:
+            experiments = Experiment.objects.filter(name__contains=q)
+        else:
+            experiments = Experiment.objects.filter(name__contains=q)
+        return render(
+            request,
+            'experiment/experiment_list.html',
+            {'experiments': experiments,
+             'experimentQuery': q,
+             'parent_template': parent_template})
+
+
 class ExperimentList(View):
     @method_decorator(login_required)
     def get(self, request, parent_template=None):
