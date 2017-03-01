@@ -1,8 +1,6 @@
-
-
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h2>
+        <h3>
             {% if clps %}
                 <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
                     {{ obj.name }}
@@ -12,7 +10,7 @@
             {% endif %}
             <small>{{ obj.pi_SN }}</small>
             {% if user.is_staff %}<a href="{% url 'foodcomputer:pi_update' obj.pk %}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}
-        </h2>
+        </h3>
     </div>
     {% if clps %}
         <div id="{{ listID }}{{ obj.pk }}" class="panel-collapse collapse">

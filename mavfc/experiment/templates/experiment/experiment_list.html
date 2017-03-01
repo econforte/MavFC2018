@@ -25,13 +25,30 @@
                     </div>
                     <div class="panel-body">
                         {% if experiments %}
-                            <div class="row" style="margin-top:5px">
-                                {% for experiment in experiments %}
-                                    <div class="col-md-6">
-                                        {% include "experiment/experiment_panel.html" with obj=experiment %}
+                            <ul class="nav nav-pills pull-right">
+                                <li class="active"><a data-toggle="pill" href="#tile"><span class="glyphicon glyphicon-th"></span></a></li>
+                                <li><a data-toggle="pill" href="#list"><span class="glyphicon glyphicon-th-list"></span></a></li>
+                            </ul>
+                            <div class="clearfix" style="margin-bottom: 15px"></div>
+                            <div class="tab-content">
+                                <div id="tile" class="tab-pane fade in active">
+                                    <div class="row" style="margin-top:5px">
+                                        {% for experiment in experiments %}
+                                            <div class="col-md-6">
+                                                {% include "experiment/experiment_panel.html" with obj=experiment %}
+                                            </div>
+                                        {% endfor %}
                                     </div>
-                                {% endfor %}
-                            </div>
+                                </div>
+                                <div id="list" class="tab-pane fade">
+                                    {% with listID='experimentListID' %}
+                                        <div class="panel-group" id="{{ listID }}">
+                                            {% for experiment in experiments %}
+                                                {% include "experiment/experiment_panel.html" with obj=experiment clps='true' %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endwith %}
+                                </div>
                         {% else %}
                             <p>No experiments found.</p>
                         {% endif %}
