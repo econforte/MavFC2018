@@ -41,6 +41,7 @@ class Pi(models.Model):
     pi_SN = models.CharField(max_length=50, verbose_name="Serial Number",)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, blank=True, null=True, related_name="pis",)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True, related_name="pis",)
+    manual_control = models.BooleanField(default=False,)
 
     def __str__(self):
         return self.name + ': ' + self.pi_SN
@@ -71,7 +72,7 @@ class Pi(models.Model):
             bc.append(('active', self.name))
         else:
             bc.append((self.get_absolute_url, self.name))
-        bc.append((self.get_list_url, 'Pi List'))
+        bc.append((self.get_list_url, 'Food Computer List'))
         bc.append(('/home/', 'Home'))
         return bc
 
@@ -80,8 +81,7 @@ class Device(models.Model):
     pi = models.ForeignKey(Pi, on_delete=models.CASCADE, related_name="devices",)
     device_type = models.ForeignKey('DeviceType', on_delete=models.CASCADE, related_name="devices",)
     device_id = models.CharField(max_length=50, verbose_name="Device ID",)
-    upper_threshold = models.FloatField()
-    lower_threshold = models.FloatField()
+    residual_threshold = models.FloatField()
 
     def __str__(self):
         return self.pi.name + ': ' + self.device_type.name + ': ' + self.device_id
@@ -146,6 +146,7 @@ class DeviceType(models.Model):
     unit_type = models.ForeignKey('UnitType', on_delete=models.CASCADE, related_name="device_types",)
     data_type = models.ForeignKey('DataType', on_delete=models.CASCADE, related_name="device_types",)
     is_controller = models.BooleanField()
+    bio_threshold = models.FloatField(verbose_name='Biological Threshold')
 
     def __str__(self):
         return self.name + ": " + self.unit_type.name
