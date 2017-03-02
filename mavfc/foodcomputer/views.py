@@ -27,7 +27,7 @@ class PiList(View):
 
 class PiDetail(View):
     model = Pi
-    model_name = 'Raspberry Pi'
+    model_name = 'Food Computer'
     template_name = 'foodcomputer/pi_detail.html'
     parent_template = None
 
@@ -44,10 +44,10 @@ class PiDetail(View):
 
 class PiCreate(ObjectCreateMixin, View):
     form_class = PiForm
-    template_name = 'foodcomputer/create_form.html'
+    template_name = 'foodcomputer/create_page.html'
     form_url = reverse_lazy('foodcomputer:pi_create')
     parent_template=None
-    model_name = 'Pi'
+    model_name = 'Food Computer'
 
 
 class PiUpdate(ObjectUpdateMixin, View):
@@ -83,7 +83,7 @@ class DeviceDetail(View):
 
 class DeviceCreate(ObjectCreateMixin, View):
     form_class = DeviceForm
-    template_name = 'foodcomputer/create_form.html'
+    template_name = 'foodcomputer/create_page.html'
     form_url = reverse_lazy('foodcomputer:pi_create')
     parent_template = None
     model_name = 'Device'

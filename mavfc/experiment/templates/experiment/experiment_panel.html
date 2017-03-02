@@ -1,0 +1,37 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>
+            {% if clps %}
+                <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
+                    {{ obj.name }}
+                </a>
+            {% else %}
+                {{ obj.name }}
+            {% endif %}
+            {% if user.is_staff %}
+                <div class="btn-group pull-right">
+                    {% if clps %}
+                        <a href="{{ obj.get_absolute_url }}" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
+                    {% endif %}
+                    <a href="{{ obj.get_update_url }}" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="{{ obj.get_delete_url }}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                </div>
+            {% endif %}
+        </h3>
+    </div>
+    {% if clps %}
+        <div id="{{ listID }}{{ obj.pk }}" class="panel-collapse collapse">
+    {% endif %}
+            <div class="panel-body">
+                <p>{{ obj.descr }}</p>
+            </div>
+            <div class="panel-footer">
+                {% if not experiment_detail and not clps %}
+                    <a href="{{ obj.get_absolute_url }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-list-alt"></span></a>
+                {% endif %}
+                <div class="clearfix"></div>
+            </div>
+    {% if clps %}
+        </div>
+    {% endif %}
+</div>
