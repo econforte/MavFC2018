@@ -4,12 +4,12 @@ from django.conf import settings
 
 
 class Address(models.Model):
-    name = models.CharField(max_length=100,)
-    street_line_1 = models.CharField(max_length=75,)
-    street_line_2 = models.CharField(max_length=75, blank=True, null=True,)
-    city = models.CharField(max_length=30,)
-    state = models.CharField(max_length=2,)
-    zip = models.CharField(max_length=10,)
+    name = models.CharField(max_length=100, )
+    street_line_1 = models.CharField(max_length=75, )
+    street_line_2 = models.CharField(max_length=75, blank=True, null=True, )
+    city = models.CharField(max_length=30, )
+    state = models.CharField(max_length=2, )
+    zip = models.CharField(max_length=10, )
 
     def __str__(self):
         return "{n}: {c}, {s}".format(n=self.name, c=self.city, s=self.state)
@@ -28,20 +28,23 @@ class Address(models.Model):
 
     def get_single_line_str(self):
         if self.street_line_2:
-            return "{l1}, {l2}, {c}, {s} {z}".format(l1=self.street_line_1, l2=self.street_line_2, c=self.city, s=self.state, z=self.zip)
+            return "{l1}, {l2}, {c}, {s} {z}".format(l1=self.street_line_1, l2=self.street_line_2, c=self.city,
+                                                     s=self.state, z=self.zip)
         else:
             return "{l1}, {c}, {s} {z}".format(l1=self.street_line_1, c=self.city, s=self.state, z=self.zip)
 
     def get_multi_line_str(self):
-        return "{l1}\n{l2}\n{c}, {s} {z}".format(l1=self.street_line_1, l2=self.street_line_2, c=self.city, s=self.state, z=self.zip)
+        return "{l1}\n{l2}\n{c}, {s} {z}".format(l1=self.street_line_1, l2=self.street_line_2, c=self.city,
+                                                 s=self.state, z=self.zip)
 
 
 class Pi(models.Model):
-    name = models.CharField(max_length=100,)
-    pi_SN = models.CharField(max_length=50, verbose_name="Serial Number",)
-    address = models.ForeignKey(Address, on_delete=models.SET_NULL, blank=True, null=True, related_name="pis",)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True, related_name="pis",)
-    manual_control = models.BooleanField(default=False,)
+    name = models.CharField(max_length=100, )
+    pi_SN = models.CharField(max_length=50, verbose_name="Serial Number", )
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, blank=True, null=True, related_name="pis", )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True,
+                             related_name="pis", )
+    manual_control = models.BooleanField(default=False, )
 
     def __str__(self):
         return self.name + ': ' + self.pi_SN
@@ -78,9 +81,9 @@ class Pi(models.Model):
 
 
 class Device(models.Model):
-    pi = models.ForeignKey(Pi, on_delete=models.CASCADE, related_name="devices",)
-    device_type = models.ForeignKey('DeviceType', on_delete=models.CASCADE, related_name="devices",)
-    device_id = models.CharField(max_length=50, verbose_name="Device ID",)
+    pi = models.ForeignKey(Pi, on_delete=models.CASCADE, related_name="devices", )
+    device_type = models.ForeignKey('DeviceType', on_delete=models.CASCADE, related_name="devices", )
+    device_id = models.CharField(max_length=50, verbose_name="Device ID", )
     residual_threshold = models.FloatField()
 
     def __str__(self):
@@ -116,7 +119,7 @@ class Device(models.Model):
 
 
 class Data(models.Model):
-    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="data",)
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="data", )
     timestamp = models.DateTimeField()
     data_value = models.FloatField()
     is_anomaly = models.BooleanField()
@@ -141,10 +144,10 @@ class Data(models.Model):
 
 
 class DeviceType(models.Model):
-    name = models.CharField(max_length=100,)
-    model_id = models.CharField(max_length=50, blank=True, null=True, verbose_name="Model ID",)
-    unit_type = models.ForeignKey('UnitType', on_delete=models.CASCADE, related_name="device_types",)
-    data_type = models.ForeignKey('DataType', on_delete=models.CASCADE, related_name="device_types",)
+    name = models.CharField(max_length=100, )
+    model_id = models.CharField(max_length=50, blank=True, null=True, verbose_name="Model ID", )
+    unit_type = models.ForeignKey('UnitType', on_delete=models.CASCADE, related_name="device_types", )
+    data_type = models.ForeignKey('DataType', on_delete=models.CASCADE, related_name="device_types", )
     is_controller = models.BooleanField()
     bio_threshold = models.FloatField(verbose_name='Biological Threshold')
 
@@ -165,8 +168,8 @@ class DeviceType(models.Model):
 
 
 class UnitType(models.Model):
-    name = models.CharField(max_length=30,)
-    abbr = models.CharField(max_length=10,)
+    name = models.CharField(max_length=30, )
+    abbr = models.CharField(max_length=10, )
     descr = models.TextField()
 
     def __str__(self):
@@ -186,10 +189,10 @@ class UnitType(models.Model):
 
 
 class DataType(models.Model):
-    name = models.CharField(max_length=30,)
+    name = models.CharField(max_length=30, )
     descr = models.TextField()
-    min_limit = models.FloatField(blank=True, null=True,)
-    max_limit = models.FloatField(blank=True, null=True,)
+    min_limit = models.FloatField(blank=True, null=True, )
+    max_limit = models.FloatField(blank=True, null=True, )
 
     def __str__(self):
         return self.name
@@ -205,3 +208,22 @@ class DataType(models.Model):
 
     def get_delete_url(self):
         return reverse('foodcomputer:pi_delete', kwargs={'pk': self.pk})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
