@@ -223,6 +223,6 @@ def sensorValues(request, pk):
 
 
 def deviceCurrentValue(request, pk):
-    curVal = get_list_or_404(Data).filter(device__pk=pk).order_by(-timestamp)[:1]
+    curVal = Data.objects.filter(device__pk=pk).latest('timestamp')
     serializer = dataSerializer(curVal, many=False)
     return JSONResponse(serializer.data)

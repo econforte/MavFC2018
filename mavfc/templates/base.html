@@ -33,7 +33,9 @@
                 box-shadow: 3px 6px 9px RGBA(0, 0, 0, 0.5);
             }
         </style>
-		
+		{% block scripts %}
+
+        {% endblock %}
 	</head>
 	<body>
 	
@@ -51,7 +53,7 @@
 						<span class="icon-bar"></span> 
 					</button>
 					<!-- Home button -->
-					<a class="navbar-brand" href="/home/">MAVFC</span></a>
+					<a class="navbar-brand" href="/home/">MAVFC</a>
 				</div>
 				<!-- Mobile collapseable navigation -->
 				<div class="collapse navbar-collapse" id="myNavbar">
