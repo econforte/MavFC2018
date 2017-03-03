@@ -1,15 +1,15 @@
-{% extends parent_template|default:"foodcomputer/base_foodcomputer.html" %}
+{% extends parent_template|default:"experiment/base_experiment.html" %}
 
 
 {% block title %}
-	{{ block.super }} - Food Computer List
+	{{ block.super }} - Experiment List
 {% endblock %}
 
 
 {% block breadcrumbs %}
     <ul class="breadcrumb">
         <li><a href="/home/">Home</a></li>
-        <li class="active">Food Computer List</li>
+        <li class="active">Experiment List</li>
 	</ul>
 {% endblock %}
 
@@ -21,16 +21,10 @@
             <div class="col-md-10">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h1>
-                            Food Computer List
-                            {% if user.is_staff %}
-                                <a href="{% url 'foodcomputer:pi_create' %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
-                            {% endif %}
-                        </h1>
-                        <div class="clearfix"></div>
+                        <h1>Experiment List {% if user.is_staff %}<a href="{% url 'experiment:experiment_create' %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>{% endif %}</h1>
                     </div>
                     <div class="panel-body">
-                        {% if pis %}
+                        {% if experiments %}
                             <ul class="nav nav-pills pull-right">
                                 <li class="active"><a data-toggle="pill" href="#tile"><span class="glyphicon glyphicon-th"></span></a></li>
                                 <li><a data-toggle="pill" href="#list"><span class="glyphicon glyphicon-th-list"></span></a></li>
@@ -39,25 +33,24 @@
                             <div class="tab-content">
                                 <div id="tile" class="tab-pane fade in active">
                                     <div class="row" style="margin-top:5px">
-                                        {% for pi in pis %}
+                                        {% for experiment in experiments %}
                                             <div class="col-md-6">
-                                                {% include "foodcomputer/pi_panel.html" with obj=pi %}
+                                                {% include "experiment/experiment_panel.html" with obj=experiment %}
                                             </div>
                                         {% endfor %}
                                     </div>
                                 </div>
                                 <div id="list" class="tab-pane fade">
-                                    {% with listID='piListID' %}
+                                    {% with listID='experimentListID' %}
                                         <div class="panel-group" id="{{ listID }}">
-                                            {% for pi in pis %}
-                                                {% include "foodcomputer/pi_panel.html" with obj=pi clps='true' %}
+                                            {% for experiment in experiments %}
+                                                {% include "experiment/experiment_panel.html" with obj=experiment clps='true' %}
                                             {% endfor %}
                                         </div>
                                     {% endwith %}
                                 </div>
-                            </div>
                         {% else %}
-                            <p>There are no Food Computers.</p>
+                            <p>No experiments found.</p>
                         {% endif %}
                     </div>
                 </div>
@@ -66,5 +59,3 @@
         </div>
     </div>
 {% endblock %}
-
-

@@ -1,4 +1,4 @@
-{% extends parent_template|default:"foodcomputer/base_foodcomputer.html" %}
+{% extends parent_template|default:"experiment/base_experiment.html" %}
 
 {% block title %}
 	{{ block.super }} - Add New {{ model_name }}
@@ -10,6 +10,6 @@
 
 {% block content %}
     <div class="container">
-        {% include 'foodcomputer/form_panel.html' with action_str='add new' form_is_multipart=form.is_multipart %}
+        {% include 'experiment/form_panel.html' with action_str='add new' form_is_multipart=form.is_multipart %}
     </div>
 {% endblock %}

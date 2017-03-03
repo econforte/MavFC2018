@@ -1,4 +1,4 @@
-{% extends parent_template|default:"foodcomputer/base_foodcomputer.html" %}
+{% extends parent_template|default:"experiment/base_experiment.html" %}
 
 {% block title %}
 	{{ block.super }} - {{ model_name }} Information
@@ -6,7 +6,7 @@
 
 {% block breadcrumbs %}
     <ul class="breadcrumb">
-        {% for bc_url, bc_name in device.get_breadcrumbs reversed %}
+        {% for bc_url, bc_name in obj.get_breadcrumbs reversed %}
             {% if bc_url == 'active' %}
                 <li class="active">{{ bc_name }}</li>
             {% else %}
@@ -17,14 +17,12 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
+    <div class="container-fluid" style="margin-top:25px">
         <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-10">
-                {% include "foodcomputer/device_panel.html" with device_detail="true" %}
-                {% include "foodcomputer/data_panel.html" with data_list=device.data.all%}
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                {% include "experiment/experimentrule_panel.html" with experimentrule=obj experimentrule_detail="true" %}
             </div>
-            <div class="col-sm-1"></div>
         </div>
     </div>
 {% endblock %}

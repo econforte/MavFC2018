@@ -1,24 +1,37 @@
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h2>
-            {{ obj.name }} <small>{{ obj.pi_SN }}</small>
-            {% if user.is_staff %}<a href="{% url 'foodcomputer:pi_update' obj.pk %}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}
-        </h2>
-    </div>
-    <div class="panel-body">
-        <p><strong>Owner:</strong> {{ obj.user.get_full_name }}</p>
-        <p><strong>Address:</strong> {{ obj.address.get_single_line_str }}</p>
-        <p><strong>Device Number:</strong> {{ obj.get_device_num }}</p>
-    </div>
-    <div class="panel-footer">
-        <a href="#" class="btn btn-success">Experiment</a>
-        {% if not pi_detail %}
-            <a href="{% url 'foodcomputer:pi_detail' obj.pk %}" class="btn btn-primary pull-right">Details</a>
-        {% else %}
-            {% if user.is_staff %}
-                <a href="{{ obj.get_delete_url }}" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
+        <h3>
+            {% if clps %}
+                <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
+                    {{ obj.name }}
+                </a>
+            {% else %}
+                {{ obj.name }}
             {% endif %}
-        {% endif %}
-        <div class="clearfix"></div>
+            <small>{{ obj.pi_SN }}</small>
+            {% if user.is_staff %}<a href="{% url 'foodcomputer:pi_update' obj.pk %}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}
+        </h3>
     </div>
+    {% if clps %}
+        <div id="{{ listID }}{{ obj.pk }}" class="panel-collapse collapse">
+    {% endif %}
+            <div class="panel-body">
+                <p><strong>Owner:</strong> {{ obj.user.get_full_name }}</p>
+                <p><strong>Address:</strong> {{ obj.address.get_single_line_str }}</p>
+                <p><strong>Device Number:</strong> {{ obj.get_device_num }}</p>
+            </div>
+            <div class="panel-footer">
+                <a href="#" class="btn btn-success">Experiment</a>
+                {% if not pi_detail %}
+                    <a href="{% url 'foodcomputer:pi_detail' obj.pk %}" class="btn btn-primary pull-right">Details</a>
+                {% else %}
+                    {% if user.is_staff %}
+                        <a href="{{ obj.get_delete_url }}" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
+                    {% endif %}
+                {% endif %}
+                <div class="clearfix"></div>
+            </div>
+    {% if clps %}
+        </div>
+    {% endif %}
 </div>
