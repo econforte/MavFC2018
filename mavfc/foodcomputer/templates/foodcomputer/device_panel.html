@@ -10,6 +10,7 @@
         <p><strong>Data Type:</strong> {{ device.device_type.data_type }}</p>
         <p><strong>Lower Threshold:</strong> {{ device.lower_threshold }}</p>
         <p><strong>Upper Threshold:</strong> {{ device.upper_threshold }}</p>
+        <div id="chart_div" style="width: 400px; height: 120px;"></div>
     </div>
     <div class="panel-footer">
         <a href="#" class="btn btn-success">Experiment Rule</a>
@@ -23,3 +24,23 @@
         <div class="clearfix"></div>
     </div>
 </div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+    google.charts.load('current', {'packages':['gauge']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['{{ device.device_type.unit_type.name }}', {{ device.pk }}]
+        ]);
+        var options = {
+          width: 400, height: 120,
+          redFrom: 90, redTo: 100,
+          yellowFrom:75, yellowTo: 90,
+          minorTicks: 5, max: 14
+        };
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+</script>

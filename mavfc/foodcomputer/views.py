@@ -220,3 +220,9 @@ def sensorValues(request, pk):
         #if failure == True:
                 return JSONResponse(serializer.data, status=201)
         #else: return JSONResponse(serializer.errors, status=400)
+
+
+def deviceCurrentValue(request, pk):
+    curVal = get_list_or_404(Data).filter(device__pk=pk).order_by(-timestamp)[:1]
+    serializer = dataSerializer(curVal, many=False)
+    return JSONResponse(serializer.data)
