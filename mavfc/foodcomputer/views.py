@@ -22,6 +22,7 @@ from .serializers import deviceSerializer
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
+import time
 
 class PiList(View):
 
@@ -173,15 +174,18 @@ def addressJSON(request, pk):
 @csrf_exempt
 def todoCheckJSON(request, pk):
     #getTodoList Implementation
-    try:
-        pi = Pi.objects.get(pk=pk)
-    except Pi.DoesNotExist:
-        return HttpResponse(status=404)
+    #long polling idea
+    for i in range(60):
+        if something_happened():
+            return http.HttpResponse()
+        time.sleep(1)
+    return http.HttpResponse()
 
 @csrf_exempt
-def keyJSON(request):
+def keyJSON(request, pk):
     #getFoodComputerKey Implementation
     return HttpResponse(status=200)
+    # return HttpResponse(Pi.objects.get(pk=pk), status=200)
 
 @csrf_exempt
 def commandsJSON(request, pk):
