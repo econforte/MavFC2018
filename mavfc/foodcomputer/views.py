@@ -210,16 +210,32 @@ def sensorValues(request, pk):
         return JSONResponse(serializer.data)
 
     elif request.method == 'POST':
+# Post JSON Structure
+#       [
+#           {
+#               "device": 1,
+#               "data_value": 13,
+#               "timestamp": "2017-02-07T15:00:00Z",
+#               "is_anomaly": true
+#           },
+#           {
+#               "device": 2,
+#               "data_value": 25,
+#               "timestamp": "2017-02-07T15:00:00Z",
+#               "is_anomaly": false
+#           }
+#       ]
         data = JSONParser().parse(request)
         failure = False
         for piece in data:
             serializer = dataSerializer(sensorVals, data=piece)
             if serializer.is_valid():
                 serializer.save()
-        #    else: failure = True
-        #if failure == True:
-                return JSONResponse(serializer.data, status=201)
-        #else: return JSONResponse(serializer.errors, status=400)
+            else:
+                failure = True
+        if failure == True:
+            return JSONResponse("Upload Failed", status=400)
+        else: return JSONResponse("Upload Successful", status=201)
 
 
 def deviceCurrentValue(request, pk):
