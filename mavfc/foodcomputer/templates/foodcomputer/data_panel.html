@@ -1,14 +1,13 @@
 
 <script type="text/javascript">
-    google.charts.load('current', {'packages':['corechart']});
-  google.charts.setOnLoadCallback(drawDataChart);
+    google.charts.setOnLoadCallback(drawDataChart);
 
   function drawDataChart() {
     var data = google.visualization.arrayToDataTable([
       ['Timestamp', 'Tempature'],
         {% for data in data_list %}
             {% if not data.is_anomaly %}
-                [{{ data.timestamp }}, {{ data.data_value }}],
+                ["{{ data.timestamp|date:"M d, Y G:i:s" }}", {{ data.data_value }}],
             {% endif %}
         {% endfor %}
     ]);

@@ -1,3 +1,4 @@
+<div ng-app="myAppdiv{{ device.pk }}" ng-controller="myCtrldiv{{ device.pk }}"> </div>
 <div class="panel panel-default">
     <div class="panel-heading">
         <p>
@@ -25,19 +26,58 @@
     </div>
 </div>
 <script>
-    google.charts.load('current', {'packages':['gauge']});
+
     google.charts.setOnLoadCallback(drawChart{{ device.pk }});
 
-    function drawChart{{ device.pk }}() {
-        var data = google.visualization.arrayToDataTable([
+    var datasetG{{ device.pk }} = [
           ['Label', 'Value'],
-          ['{{ device.device_type.unit_type.name }}', {{ device.pk }}]
-        ]);
+          ['{{ device.device_type.unit_type.abbr }}', 0]
+        ];
+
+    function drawChart{{ device.pk }}() {
+        var data = google.visualization.arrayToDataTable(datasetG{{ device.pk }});
         var options = {
           width: 400, height: 120,
-          minorTicks: 5, max: 14
+          minorTicks: 5
         };
         var chart = new google.visualization.Gauge(document.getElementById('chart_div{{ device.pk }}'));
         chart.draw(data, options);
+
+        setInterval(function() {
+          dataset = google.visualization.arrayToDataTable(datasetG{{ device.pk }});
+          chart.draw(dataset, options);
+        }, 1000);
     }
+
+    var app = angular.module('myAppdiv{{ device.pk }}', []);
+
+    app.controller('myCtrldiv{{ device.pk }}', function($scope, $http, $timeout) {
+
+      $scope.theTime = new Date().toLocaleTimeString();
+      // Function to get the data
+      $scope.getData = function(){
+        $http.get("{% url 'foodcomputer:api_device_current_value' device.pk %}")
+          .success(function(data, status, headers, config) {
+            datasetG{{ device.pk }} = [
+              ['Label', 'Value'],
+              ['{{ device.device_type.unit_type.abbr }}', data.data_value]
+            ];
+          console.log('Fetched data!');
+        });
+      };
+
+      // Function to replicate setInterval using $timeout service.
+      $scope.intervalFunction = function(){
+        $timeout(function() {
+          $scope.getData();
+          $scope.intervalFunction();
+        }, 5000)
+      };
+
+      // Kick off the interval
+      $scope.intervalFunction();
+
+    });
+
+
 </script>

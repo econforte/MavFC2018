@@ -22,7 +22,7 @@
             <div class="col-md-1"></div>
             <div class="col-md-10">
                 {% include "foodcomputer/pi_panel.html" with pi_detail="true" %}
-{#                {% include "foodcomputer/data_panel.html" %}#}
+                {% include "foodcomputer/data_panel.html" %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 style="margin-top:10px">Device List {#% if user.is_staff %}<a href="#{% url 'foodcomputer:device_add' obj.pk %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Device</a>{% endif %#}</h3>

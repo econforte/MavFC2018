@@ -11,17 +11,17 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from .serializers import AddressSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework import permissions
 
-from .serializers import ToDoCheckSerializer
-from .serializers import KeySerializer
-from .serializers import CommandsSerializer
-from .serializers import dataSerializer
-from .serializers import deviceSerializer
-
+from .serializers import AddressSerializer, ToDoCheckSerializer, KeySerializer, CommandsSerializer, dataSerializer, deviceSerializer
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
+
 import time
 
 class PiList(View):
@@ -117,6 +117,18 @@ class DeviceDelete(ObjectDeleteMixin, View):
     parent_template = None
 
 
+class DeviceCurrentValueAPI(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, pk, format=None):
+        curVal = Data.objects.filter(device__pk=pk).latest('timestamp')
+        jsonObj = dataSerializer(curVal, many=False)
+        return Response(jsonObj.data)
+
+
+
+
 class JSONResponse(HttpResponse):
     """
     An HttpResponse that renders its content into JSON.
@@ -125,6 +137,14 @@ class JSONResponse(HttpResponse):
         content = JSONRenderer().render(data)
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
+
+
+
+
+def deviceCurrentValue(request, pk):
+    curVal = Data.objects.filter(device__pk=pk).latest('timestamp')
+    serializer = dataSerializer(curVal, many=False)
+    return JSONResponse(serializer.data)
 
 
 @csrf_exempt
@@ -240,9 +260,3 @@ def sensorValues(request, pk):
         if failure == True:
             return JSONResponse("Upload Failed", status=400)
         else: return JSONResponse("Upload Successful", status=201)
-
-
-def deviceCurrentValue(request, pk):
-    curVal = Data.objects.filter(device__pk=pk).latest('timestamp')
-    serializer = dataSerializer(curVal, many=False)
-    return JSONResponse(serializer.data)
