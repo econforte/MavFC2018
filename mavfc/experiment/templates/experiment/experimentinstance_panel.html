@@ -1,0 +1,28 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>
+            {{ experimentinstance }}
+            <div class="btn-group pull-right">
+                <a href="{{ obj.experiment.get_absolute_url }}" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>
+                {% if user.is_staff %}
+                    <a href="{{ obj.get_update_url }}" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="{{ experimentinstance.get_delete_url }}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                {% endif %}
+            </div>
+            <div class="clearfix"></div>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <p><strong>Start:</strong> {{ experimentinstance.start }}</p>
+        <p><strong>End:</strong> {{ experimentinstance.end }}</p>
+        <P><strong>Experiment:</strong> {{ experimentinstance.experiment }}</P>
+        <P><strong>Pi:</strong> {{ experimentinstance.pi }}</P>
+
+    </div>
+    <div class="panel-footer">
+        {% if not experimentinstance_detail %}
+            <a href="{{ experimentinstance.get_absolute_url }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-list-alt"></span></a>
+        {% endif %}
+        <div class="clearfix"></div>
+    </div>
+</div>

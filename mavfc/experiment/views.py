@@ -70,7 +70,7 @@ class ExperimentUpdate(ObjectUpdateMixin, View):
     model = Experiment
     template_name = 'experiment/update_page.html'
     parent_template = None
-
+    model_name = 'Experiment'
 
 class ExperimentDelete(ObjectDeleteMixin, View):
     model = ExperimentRule
@@ -109,6 +109,7 @@ class ExperimentRuleUpdate(ObjectUpdateMixin, View):
     model = ExperimentRule
     template_name = 'experiment/update_page.html'
     parent_template = None
+    model_name = 'Experiment Rule'
 
 
 class ExperimentRuleDelete(ObjectDeleteMixin, View):
@@ -140,14 +141,15 @@ class ExperimentInstanceCreate(ObjectCreateMixin, View):
     template_name = 'experiment/create_page.html'
     form_url = reverse_lazy('experiment:experimentinstance_create')
     parent_template = None
-    model_name = 'Experiment Rule'
+    model_name = 'Experiment Instance'
 
 
 class ExperimentInstanceUpdate(ObjectUpdateMixin, View):
     form_class = ExperimentInstanceForm
-    model = ExperimentRule
+    model = ExperimentInstance
     template_name = 'experiment/update_page.html'
     parent_template = None
+    model_name = 'Experiment Instance'
 
 
 class ExperimentInstanceDelete(ObjectDeleteMixin, View):
