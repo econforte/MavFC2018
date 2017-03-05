@@ -49,9 +49,9 @@
         }, 1000);
     }
 
-    var app = angular.module('myAppdiv{{ device.pk }}', []);
+    var app{{ device.pk }} = angular.module('myAppdiv{{ device.pk }}', []);
 
-    app.controller('myCtrldiv{{ device.pk }}', function($scope, $http, $timeout) {
+    app{{ device.pk }}.controller('myCtrldiv{{ device.pk }}', function($scope, $http, $timeout) {
 
       $scope.theTime = new Date().toLocaleTimeString();
       // Function to get the data
