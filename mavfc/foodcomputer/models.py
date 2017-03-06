@@ -104,6 +104,9 @@ class Device(models.Model):
     def get_list_url(self):
         return self.pi.get_absolute_url()
 
+    def get_current_value(self):
+        return self.data
+
     def get_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[])
 
