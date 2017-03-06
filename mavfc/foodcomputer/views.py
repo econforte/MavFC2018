@@ -17,7 +17,7 @@ from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework import permissions
 
-from .serializers import AddressSerializer, ToDoCheckSerializer, KeySerializer, CommandsSerializer, dataSerializer, deviceSerializer
+from .serializers import *
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *

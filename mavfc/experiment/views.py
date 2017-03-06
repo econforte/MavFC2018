@@ -9,6 +9,13 @@ from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
 
+# For REST API
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from .serializers import ExperimentsSerializer
+
 
 class ExperimentSearch(View):
     @method_decorator(login_required)
@@ -155,3 +162,24 @@ class ExperimentInstanceDelete(ObjectDeleteMixin, View):
     success_url = reverse_lazy('experiment:experiment_list')
     template_name = 'experiment/delete_confirm.html'
     parent_template = None
+
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
+
+@csrf_exempt
+def experimentJSON(request, pk):
+    #getExperiment Implementation
+    try:
+        experiment = Experiment.objects.get(pk=pk)
+    except Experiment.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = ExperimentsSerializer(experiment)
+        return JSONResponse(serializer.data)
