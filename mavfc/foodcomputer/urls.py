@@ -31,13 +31,13 @@ urlpatterns = [
     url(r'^api/address/(?P<pk>[0-9]+)/$', addressJSON),
 
     # ex: /food-computer/api/todo/(foodComputerKey.pk)
-    url(r'^api/todo/(?P<pk>[0-9]+)/$', todoCheckJSON),
+    url(r'^api/todo/(?P<pk>[0-9]+)/$', todoCheckJSON.as_view()),
     # ex: /food-computer/api/getKey/(piSerial.pk)
-    url(r'^api/getKey/(?P<pk>[0-9]+)/$', keyJSON),
+    url(r'^api/getKey/(?P<pk>[0-9]+)/$', keyJSON.as_view()),
     # ex: /food-computer/api/getCommands/(foodComputerKey.pk)
-    url(r'^api/getCommands/(?P<pk>[0-9]+)/$', commandsJSON),
+    url(r'^api/getCommands/(?P<pk>[0-9]+)/$', commandsJSON.as_view()),
     # ex: /food-computer/api/sensorValues/(foodComputerKey.pk, [data])
-    url(r'^api/sensorValues/(?P<pk>[0-9]+)/$', sensorValues),
+    url(r'^api/sensorValues/(?P<pk>[0-9]+)/$', sensorValues.as_view()),
     # ex: /food-computer/api/sensorValues/(foodComputerKey.pk, [data])
     url(r'^api/device/(?P<pk>[0-9]+)/current/value/$', DeviceCurrentValueAPI.as_view(), name='api_device_current_value'),
 ]

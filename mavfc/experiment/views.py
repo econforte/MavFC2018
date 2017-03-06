@@ -172,14 +172,13 @@ class JSONResponse(HttpResponse):
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
 
-@csrf_exempt
-def experimentJSON(request, pk):
-    #getExperiment Implementation
-    try:
-        experiment = Experiment.objects.get(pk=pk)
-    except Experiment.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = ExperimentsSerializer(experiment)
-        return JSONResponse(serializer.data)
+class experimentJSON(View):
+    def get(request, pk):
+        try:
+            experiment = Experiment.objects.get(pk=pk)
+        except Experiment.DoesNotExist:
+            return HttpResponse(status=404)
+            
+        if request.method == 'GET':
+            serializer = ExperimentsSerializer(experiment)
+            return JSONResponse(serializer.data)

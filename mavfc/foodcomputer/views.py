@@ -191,37 +191,35 @@ def addressJSON(request, pk):
         address.delete()
         return HttpResponse(status=204)
 
-@csrf_exempt
-def todoCheckJSON(request, pk):
+class todoCheckJSON(View):
     #getTodoList Implementation
     #long polling idea
-    for i in range(60):
-        if something_happened():
-            return http.HttpResponse()
-        time.sleep(1)
-    return http.HttpResponse()
+    def get(request, pk):
+        for i in range(60):
+            if something_happened():
+                return http.HttpResponse()
+            time.sleep(1)
+        return http.HttpResponse()
 
-@csrf_exempt
-def keyJSON(request, pk):
+class keyJSON(View):
     #getFoodComputerKey Implementation
-    return HttpResponse(status=200)
-    # return HttpResponse(Pi.objects.get(pk=pk), status=200)
+    def get(request, pk):
+        return HttpResponse(status=200)
+        # return HttpResponse(Pi.objects.get(pk=pk), status=200)
 
-@csrf_exempt
-def commandsJSON(request, pk):
+
+class commandsJSON(View):
     #getFoodComputerCommands Implementation
-    return HttpResponse(status=200)
+    def get(request, pk):
+        return HttpResponse(status=200)
 
-@csrf_exempt
-def sensorValues(request, pk):
-    try:
-        #sensorVals = Device.objects.all()
-        #sensors = Data.objects.get(pk=pk)
-        sensorVals = Data.objects.get(pk=pk)
-    except Data.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'PUT':
+class sensorValues(View):
+    
+    def put(request, pk):
+        try:
+            sensorVals = Data.objects.get(pk=pk)
+        except Data.DoesNotExist:
+            return HttpResponse(status=404)
         data = JSONParser().parse(request)
         serializer = dataSerializer(sensors, data=data)
         if serializer.is_valid():
@@ -229,11 +227,19 @@ def sensorValues(request, pk):
             return JSONResponse(serializer.data)
         return JSONResponse(serializer.errors, status=400)
 
-    elif request.method == 'GET':
+    def get(request, pk):
+        try:
+            sensorVals = Data.objects.get(pk=pk)
+        except Data.DoesNotExist:
+            return HttpResponse(status=404)
         serializer = dataSerializer(sensorVals, many=True)
         return JSONResponse(serializer.data)
 
-    elif request.method == 'POST':
+    def post(request, pk):
+        try:
+            sensorVals = Data.objects.get(pk=pk)
+        except Data.DoesNotExist:
+            return HttpResponse(status=404)
 # Post JSON Structure
 #       [
 #           {
