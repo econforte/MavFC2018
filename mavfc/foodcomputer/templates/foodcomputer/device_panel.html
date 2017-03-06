@@ -26,57 +26,54 @@
     </div>
 </div>
 <script>
+    var datasetG{{ device.pk }} = [
+        ['Label', 'Value'],
+        ['{{ device.device_type.unit_type.abbr }}', {{ device.get_current_value.data_value }}]
+    ];
 
     google.charts.setOnLoadCallback(drawChart{{ device.pk }});
-
-    var datasetG{{ device.pk }} = [
-          ['Label', 'Value'],
-          ['{{ device.device_type.unit_type.abbr }}', {{ device.get_current_value }}]
-        ];
 
     function drawChart{{ device.pk }}() {
         var data = google.visualization.arrayToDataTable(datasetG{{ device.pk }});
         var options = {
-          width: 400, height: 120,
-          minorTicks: 5
+            width: 400, height: 120,
+            minorTicks: 5
         };
         var chart = new google.visualization.Gauge(document.getElementById('chart_div{{ device.pk }}'));
         chart.draw(data, options);
 
         setInterval(function() {
-          dataset = google.visualization.arrayToDataTable(datasetG{{ device.pk }});
-          chart.draw(dataset, options);
+            var dataset = google.visualization.arrayToDataTable(datasetG{{ device.pk }});
+            chart.draw(dataset, options);
+            console.log('Updated meter {{ device.pk }}    \n'+datasetG{{ device.pk }});
         }, 1000);
     }
 
     var app{{ device.pk }} = angular.module('myAppdiv{{ device.pk }}', []);
 
     app{{ device.pk }}.controller('myCtrldiv{{ device.pk }}', function($scope, $http, $timeout) {
+        // Function to get the data
+        $scope.getData = function(){
+            $http.get("{% url 'foodcomputer:api_device_current_value' device.pk %}")
+                .success(function(data, status, headers, config) {
+                    datasetG{{ device.pk }} = [
+                        ['Label', 'Value'],
+                        ['{{ device.device_type.unit_type.abbr }}', data.data_value]
+                    ];
+                    console.log('Fetched data!    '+ data.data_value);
+            });
+        };
 
-      $scope.theTime = new Date().toLocaleTimeString();
-      // Function to get the data
-      $scope.getData = function(){
-        $http.get("{% url 'foodcomputer:api_device_current_value' device.pk %}")
-          .success(function(data, status, headers, config) {
-            datasetG{{ device.pk }} = [
-              ['Label', 'Value'],
-              ['{{ device.device_type.unit_type.abbr }}', data.data_value]
-            ];
-          console.log('Fetched data!');
-        });
-      };
+        // Function to replicate setInterval using $timeout service.
+        $scope.intervalFunction = function(){
+            $timeout(function() {
+                $scope.getData();
+                $scope.intervalFunction();
+            }, 5000)
+        };
 
-      // Function to replicate setInterval using $timeout service.
-      $scope.intervalFunction = function(){
-        $timeout(function() {
-          $scope.getData();
-          $scope.intervalFunction();
-        }, 5000)
-      };
-
-      // Kick off the interval
-      $scope.intervalFunction();
-
+        // Kick off the interval
+        $scope.intervalFunction();
     });
 
 

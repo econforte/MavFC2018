@@ -105,7 +105,7 @@ class Device(models.Model):
         return self.pi.get_absolute_url()
 
     def get_current_value(self):
-        return self.data.objects.latest('timestamp')
+        return self.data.latest('timestamp')
 
     def get_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[])
