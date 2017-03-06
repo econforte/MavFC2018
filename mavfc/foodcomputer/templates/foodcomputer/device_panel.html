@@ -31,7 +31,7 @@
 
     var datasetG{{ device.pk }} = [
           ['Label', 'Value'],
-          ['{{ device.device_type.unit_type.abbr }}', 0]
+          ['{{ device.device_type.unit_type.abbr }}', {{ device.get_current_value }}]
         ];
 
     function drawChart{{ device.pk }}() {
