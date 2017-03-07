@@ -1,4 +1,4 @@
-<div ng-app="myAppdiv{{ device.pk }}" ng-controller="myCtrldiv{{ device.pk }}"> </div>
+<div ng-controller="myCtrldiv{{ device.pk }}"> </div>
 <div class="panel panel-default">
     <div class="panel-heading">
         <p>
@@ -49,9 +49,7 @@
         }, 1000);
     }
 
-    var app{{ device.pk }} = angular.module('myAppdiv{{ device.pk }}', []);
-
-    app{{ device.pk }}.controller('myCtrldiv{{ device.pk }}', function($scope, $http, $timeout) {
+    app.controller('myCtrldiv{{ device.pk }}', function($scope, $http, $timeout) {
         // Function to get the data
         $scope.getData = function(){
             $http.get("{% url 'foodcomputer:api_device_current_value' device.pk %}")
