@@ -1,29 +1,11 @@
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-  google.charts.load('current', {'packages':['corechart']});
-  google.charts.setOnLoadCallback(drawChart);
+<head>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="mavfc/foodcomputer/templates/foodcomputer/graphics_all_variable.js"></script>
+	<link rel="stylesheet" type="text/css" href="mavfc/foodcomputer/templates/foodcomputer/data_panel.css"></link>
+</head>
 
-  function drawChart() {
-    var data = google.visualization.arrayToDataTable([
-      ['Timestamp', 'Tempature'],
-        {% for data in data_list %}
-            {% if not data.is_anomaly %}
-                [{{ data.timeStamp }}, {{ data.data_value }}],
-            {% endif %}
-        {% endfor %}
-    ]);
 
-    var options = {
-      title: 'Company Performance',
-      curveType: 'function',
-      legend: { position: 'bottom' }
-    };
 
-    var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-
-    chart.draw(data, options);
-  }
-</script>
 <div class="panel panel-default">
     <div class="panel-heading">
         <p>
