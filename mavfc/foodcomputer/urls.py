@@ -25,19 +25,15 @@ urlpatterns = [
     url(r'^device/(?P<pk>[0-9]+)/update/$', DeviceUpdate.as_view(), name='device_update'),
     # ex: /food-computer/device/(device.pk)/delete/
     url(r'^device/(?P<pk>[0-9]+)/delete/$', DeviceDelete.as_view(), name='device_delete'),
-    # ex: /food-computer/api/address/
-    url(r'^api/address/$', addressListJSON),
-    # ex: /food-computer/api/address/(address.pk)
-    url(r'^api/address/(?P<pk>[0-9]+)/$', addressJSON),
 
     # ex: /food-computer/api/todo/(foodComputerKey.pk)
-    url(r'^api/todo/(?P<pk>[0-9]+)/$', todoCheckJSON.as_view()),
+    url(r'^api/v1/todo/(?P<pk>[0-9]+)/$', todoCheckJSON.as_view()),
     # ex: /food-computer/api/getKey/(piSerial.pk)
-    url(r'^api/getKey/(?P<pk>[0-9]+)/$', keyJSON.as_view()),
+    url(r'^api/v1/getKey/(?P<pk>[0-9]+)/$', keyJSON.as_view()),
     # ex: /food-computer/api/getCommands/(foodComputerKey.pk)
-    url(r'^api/getCommands/(?P<pk>[0-9]+)/$', commandsJSON.as_view()),
+    url(r'^api/v1/getCommands/(?P<pk>[0-9]+)/$', commandsJSON.as_view()),
     # ex: /food-computer/api/sensorValues/(foodComputerKey.pk, [data])
-    url(r'^api/sensorValues/(?P<pk>[0-9]+)/$', sensorValues.as_view()),
+    url(r'^api/v1/sensorValues/(?P<pk>[0-9]+)/$', sensorValues.as_view()),
     # ex: /food-computer/api/sensorValues/(foodComputerKey.pk, [data])
-    url(r'^api/device/(?P<pk>[0-9]+)/current/value/$', DeviceCurrentValueAPI.as_view(), name='api_device_current_value'),
+    url(r'^api/v1/device/(?P<pk>[0-9]+)/current/value/$', DeviceCurrentValueAPI.as_view(), name='api_device_current_value'),
 ]
