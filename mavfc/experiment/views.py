@@ -3,7 +3,7 @@ from django.views.generic import View
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.contrib.messages import success
+from django.contrib.messages import success, error
 
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
@@ -161,9 +161,7 @@ class ExperimentInstanceDelete(ObjectDeleteMixin, View):
 
 class ExperimentInstanceAdd(View):
     form_class = ExperimentInstanceAddForm
-    model = ExperimentInstance
     parent_model = Pi
-    form_url = reverse_lazy('experiment:experimentinstance_add')
     template_name = 'experiment/create_page.html'
     parent_template = None
     model_name = 'Experiment Instance'
@@ -175,7 +173,7 @@ class ExperimentInstanceAdd(View):
             request,
             self.template_name,
             {'form': self.form_class,
-            'form_url': self.form_url,
+            'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
             'model_name': self.model_name,
             'parent_template': self.parent_template
              })
@@ -195,5 +193,6 @@ class ExperimentInstanceAdd(View):
             request,
             self.template_name,
             {'form': bound_form,
+            'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
             'model_name': self.model_name,
             'parent_template': self.parent_template})
