@@ -191,7 +191,7 @@ def addressJSON(request, pk):
         address.delete()
         return HttpResponse(status=204)
 
-class todoCheckJSON(View):
+class todoCheckJSON(APIView):
     #getTodoList Implementation
     #long polling idea
     def get(request, pk):
@@ -201,21 +201,21 @@ class todoCheckJSON(View):
             time.sleep(1)
         return http.HttpResponse()
 
-class keyJSON(View):
+class keyJSON(APIView):
     #getFoodComputerKey Implementation
     def get(request, pk):
         return HttpResponse(status=200)
         # return HttpResponse(Pi.objects.get(pk=pk), status=200)
 
 
-class commandsJSON(View):
+class commandsJSON(APIView):
     #getFoodComputerCommands Implementation
     def get(request, pk):
         return HttpResponse(status=200)
 
-class sensorValues(View):
-    
-    def put(request, pk):
+class sensorValues(APIView):
+
+    def put(self, request, pk):
         try:
             sensorVals = Data.objects.get(pk=pk)
         except Data.DoesNotExist:
@@ -227,7 +227,7 @@ class sensorValues(View):
             return JSONResponse(serializer.data)
         return JSONResponse(serializer.errors, status=400)
 
-    def get(request, pk):
+    def get(self, request, pk):
         try:
             sensorVals = Data.objects.get(pk=pk)
         except Data.DoesNotExist:
@@ -235,7 +235,7 @@ class sensorValues(View):
         serializer = dataSerializer(sensorVals, many=True)
         return JSONResponse(serializer.data)
 
-    def post(request, pk):
+    def post(self, request, pk):
         try:
             sensorVals = Data.objects.get(pk=pk)
         except Data.DoesNotExist:
