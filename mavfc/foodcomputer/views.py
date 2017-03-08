@@ -140,11 +140,11 @@ class JSONResponse(HttpResponse):
 
 
 
-
-def deviceCurrentValue(request, pk):
-    curVal = Data.objects.filter(device__pk=pk).latest('timestamp')
-    serializer = dataSerializer(curVal, many=False)
-    return JSONResponse(serializer.data)
+#
+# def deviceCurrentValue(request, pk):
+#     curVal = Data.objects.filter(device__pk=pk).latest('timestamp')
+#     serializer = dataSerializer(curVal, many=False)
+#     return JSONResponse(serializer.data)
 
 
 @csrf_exempt
@@ -216,10 +216,11 @@ class commandsJSON(APIView):
 class sensorValues(APIView):
 
     def put(self, request, pk):
-        try:
-            sensorVals = Data.objects.get(pk=pk)
-        except Data.DoesNotExist:
-            return HttpResponse(status=404)
+        sensorVals = get_object_or_404(Data, pk=pk)
+        # try:
+        #     sensorVals = Data.objects.get(pk=pk)
+        # except Data.DoesNotExist:
+        #     return HttpResponse(status=404)
         data = JSONParser().parse(request)
         serializer = dataSerializer(sensors, data=data)
         if serializer.is_valid():
@@ -232,14 +233,16 @@ class sensorValues(APIView):
             sensorVals = Data.objects.get(pk=pk)
         except Data.DoesNotExist:
             return HttpResponse(status=404)
-        serializer = dataSerializer(sensorVals, many=True)
-        return JSONResponse(serializer.data)
+        serializer = dataSerializer(sensorVals)
+        # return JSONResponse(serializer.data)
+        return Response(serializer.data)
 
     def post(self, request, pk):
-        try:
-            sensorVals = Data.objects.get(pk=pk)
-        except Data.DoesNotExist:
-            return HttpResponse(status=404)
+        # Why are we getting a data value here? the Pi should pass the pi's PK and then we get that and compare it to all device keys in JSON to make sure they belong to this Pi.
+        # try:
+        #     sensorVals = Data.objects.get(pk=pk)
+        # except Data.DoesNotExist:
+        #     return HttpResponse(status=404)
 # Post JSON Structure
 #       [
 #           {
@@ -255,14 +258,25 @@ class sensorValues(APIView):
 #               "is_anomaly": false
 #           }
 #       ]
-        data = JSONParser().parse(request)
-        failure = False
-        for piece in data:
-            serializer = dataSerializer(sensorVals, data=piece)
-            if serializer.is_valid():
-                serializer.save()
-            else:
-                failure = True
-        if failure == True:
-            return JSONResponse("Upload Failed", status=400)
-        else: return JSONResponse("Upload Successful", status=201)
+        serializer = dataSerializer(data=request.data, many=True)  # removed unneeded sensorVals var
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+        #
+        # data = JSONParser().parse(request)
+        # failure = False
+        # for piece in data:
+        #     serializer = dataSerializer(sensorVals, data=piece) # removed unneeded sensorVals var
+        #     if serializer.is_valid():
+        #         serializer.save()
+        #     else:
+        #         failure = True
+        # if failure == True:
+        #     return JSONResponse("Upload Failed", status=400)
+        # else: return JSONResponse("Upload Successful", status=201)
