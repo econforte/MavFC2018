@@ -68,7 +68,7 @@ data.shift();
 // CREATING THE GRAPH
 var dimX = 700;
 var dimY = 300;
-var margin = {top: (30+10*data.numActuators), right: (2+45*(data.colnum-data.numActuators-1)), bottom: 30, left: 50}
+var margin = {top: (30+10*numActuators), right: (2+45*(colnum-numActuators-1)), bottom: 30, left: 50}
 var width = dimX - margin.left - margin.right;
 var height = dimY - margin.top - margin.bottom;
 
@@ -98,7 +98,7 @@ var xAxis = d3.svg.axis().scale(x)
 var yAxes = Object();
 var firstflag = true;
 for (i=0;i<columns.length;i++){
-	if(data.isActuator[columns[i]] == 1){
+	if(isActuator[columns[i]] == 1){
 		continue;
 	} else if (columns[i] == "date"){
 		continue;
