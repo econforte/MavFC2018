@@ -35,7 +35,7 @@ function getColorList(colorlist){
 			        ];
 			break;
 		default:
-			return getAcceptableColors(1);
+			return getColorList(1);
 	}
 }
 
