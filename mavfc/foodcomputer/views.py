@@ -238,11 +238,6 @@ class sensorValues(APIView):
         return Response(serializer.data)
 
     def post(self, request, pk):
-        # Why are we getting a data value here? the Pi should pass the pi's PK and then we get that and compare it to all device keys in JSON to make sure they belong to this Pi.
-        # try:
-        #     sensorVals = Data.objects.get(pk=pk)
-        # except Data.DoesNotExist:
-        #     return HttpResponse(status=404)
 # Post JSON Structure
 #       [
 #           {
@@ -263,20 +258,3 @@ class sensorValues(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
-        #
-        # data = JSONParser().parse(request)
-        # failure = False
-        # for piece in data:
-        #     serializer = dataSerializer(sensorVals, data=piece) # removed unneeded sensorVals var
-        #     if serializer.is_valid():
-        #         serializer.save()
-        #     else:
-        #         failure = True
-        # if failure == True:
-        #     return JSONResponse("Upload Failed", status=400)
-        # else: return JSONResponse("Upload Successful", status=201)
