@@ -35,3 +35,13 @@ class ExperimentInstanceForm(forms.ModelForm):
     class Meta:
         model = ExperimentInstance
         fields = '__all__'
+
+class ExperimentInstanceAddForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ExperimentInstanceForm, self).__init__(*args, **kwargs)
+        for (field_name, field) in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+    class Meta:
+        model = ExperimentInstance
+        exclude = ('pi',)
