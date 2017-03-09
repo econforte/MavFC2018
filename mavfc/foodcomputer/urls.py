@@ -15,6 +15,8 @@ urlpatterns = [
     url(r'^pi/(?P<pk>[0-9]+)/update/$', PiUpdate.as_view(), name='pi_update'),
     # ex: /food-computer/pi/(pi.pk)/delete/
     url(r'^pi/(?P<pk>[0-9]+)/delete/$', PiDelete.as_view(), name='pi_delete'),
+    # ex: /food-computer/pi/(pi.pk)/get/csv/
+    url(r'^pi/(?P<pk>[0-9]+)/get/csv/$', PiData.as_view(), name='pi_get_csv'),
     # ex: /food-computer/pi/(pi.pk)/document/add/
 #     url(r'^pi/(?P<pk>[0-9]+)/device/add/$', .as_view(), name='device_add'),
     # ex: /food-computer/device/(device.pk)/
