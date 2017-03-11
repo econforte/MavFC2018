@@ -34,5 +34,5 @@ urlpatterns = [
     # ex: /experiment/(experiment.pk)/delete/
     url(r'^instance/(?P<pk>[0-9]+)/delete/$', ExperimentInstanceDelete.as_view(), name='experimentinstance_delete'),
     # ex: /experiment/api/getExperiment/(foodComputerKey.pk)
-    url(r'^api/getExperiment/(?P<pk>[0-9]+)/$', experimentJSON.as_view()),
+    url(r'^api/getexperiment/(?P<pk>[0-9]+)/$', experimentJSON.as_view()),
 ]
