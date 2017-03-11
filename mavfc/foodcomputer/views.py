@@ -237,7 +237,7 @@ class sensorValues(APIView):
         # return JSONResponse(serializer.data)
         return Response(serializer.data)
 
-    def post(self, request, pk):
+    def post(self, request):
 # Post JSON Structure
 #       [
 #           {
