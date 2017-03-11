@@ -11,13 +11,13 @@
             <small>{{ obj.pi_SN }}</small>
             <div class="btn-group pull-right">
                 <a href="#" class="btn btn-success" title="Current Experiment Instance"><span class="glyphicon glyphicon-grain"></span></a>
-                <a href="{% url 'foodcomputer:pi_get_csv' obj.pk %}" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
+                <a href="{% url 'foodcomputer:pi_get_csv' obj.pk %}" title="Download" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
                 {% if clps %}
                     <a href="{{ obj.get_absolute_url }}" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
                 {% endif %}
                 {% if user.is_staff %}
-                    <a href="{% url 'foodcomputer:pi_update' obj.pk %}" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
-                    <a href="{{ obj.get_delete_url }}" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
+                    <a href="{% url 'foodcomputer:pi_update' obj.pk %}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
                 {% endif %}
             </div>
         </h3>

@@ -22,7 +22,7 @@
             <h3>
                 {{ action_str|title }} {{ model_name }}
                 {% if obj.get_delete_url and user.is_staff %}
-                    <a href="{{ obj.get_delete_url }}" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
+                    <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
                 {% endif %}
             </h3>
         </div>

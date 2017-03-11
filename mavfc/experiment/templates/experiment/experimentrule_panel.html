@@ -3,10 +3,10 @@
         <h3>
             {{ experimentrule }}
             <div class="btn-group pull-right">
-                <a href="{{ obj.experiment.get_absolute_url }}" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>
+{#                <a href="{{ obj.experiment.get_absolute_url }}" title="C" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>#}
                 {% if user.is_staff %}
-                    <a href="{{ obj.get_update_url }}" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
-                    <a href="{{ experimentrule.get_delete_url }}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                    <a href="{{ experimentrule.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="{{ experimentrule.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                 {% endif %}
             </div>
             <div class="clearfix"></div>
@@ -21,7 +21,7 @@
     </div>
     <div class="panel-footer">
         {% if not experimentrule_detail %}
-            <a href="{{ experimentrule.get_absolute_url }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-list-alt"></span></a>
+            <a href="{{ experimentrule.get_absolute_url }}" title="Details" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-list-alt"></span></a>
         {% endif %}
         <div class="clearfix"></div>
     </div>
