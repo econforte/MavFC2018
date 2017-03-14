@@ -121,3 +121,17 @@ class DeviceDelete(ObjectDeleteMixin, View):
     success_url = reverse_lazy('foodcomputer:piList')
     template_name = 'foodcomputer/delete_confirm.html'
     parent_template = None
+
+
+class DeviceData(View):
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        device = get_object_or_404(Device, pk=pk)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="food_computer_device_'+device.device_type.name+'_data.csv"'
+        writer = csv.writer(response)
+        writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
+        for value in device.data.all():
+            writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
+        return response
