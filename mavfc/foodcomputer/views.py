@@ -127,8 +127,6 @@ class DeviceCurrentValueAPI(APIView):
         return Response(jsonObj.data)
 
 
-
-
 class JSONResponse(HttpResponse):
     """
     An HttpResponse that renders its content into JSON.
@@ -139,58 +137,6 @@ class JSONResponse(HttpResponse):
         super(JSONResponse, self).__init__(content, **kwargs)
 
 
-
-#
-# def deviceCurrentValue(request, pk):
-#     curVal = Data.objects.filter(device__pk=pk).latest('timestamp')
-#     serializer = dataSerializer(curVal, many=False)
-#     return JSONResponse(serializer.data)
-
-
-@csrf_exempt
-def addressListJSON(request):
-    """
-    List all code snippets, or create a new snippet.
-    """
-    if request.method == 'GET':
-        addresses = Address.objects.all()
-        serializer = AddressSerializer(addresses, many=True)
-        return JSONResponse(serializer.data)
-
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = AddressSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JSONResponse(serializer.data, status=201)
-        return JSONResponse(serializer.errors, status=400)
-
-@csrf_exempt
-def addressJSON(request, pk):
-    """
-    Retrieve, update or delete a code snippet.
-    """
-    try:
-        address = Address.objects.get(pk=pk)
-    except Address.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = AddressSerializer(address)
-        return JSONResponse(serializer.data)
-
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = AddressSerializer(address, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JSONResponse(serializer.data)
-        return JSONResponse(serializer.errors, status=400)
-
-    elif request.method == 'DELETE':
-        address.delete()
-        return HttpResponse(status=204)
-
 class todoCheckJSON(APIView):
     #getTodoList Implementation
     #long polling idea
@@ -200,6 +146,7 @@ class todoCheckJSON(APIView):
                 return http.HttpResponse()
             time.sleep(1)
         return http.HttpResponse()
+
 
 class keyJSON(APIView):
     #getFoodComputerKey Implementation
@@ -212,6 +159,7 @@ class commandsJSON(APIView):
     #getFoodComputerCommands Implementation
     def get(request, pk):
         return HttpResponse(status=200)
+
 
 class sensorValues(APIView):
 
