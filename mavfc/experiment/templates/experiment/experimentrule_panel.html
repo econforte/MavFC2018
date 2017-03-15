@@ -2,6 +2,14 @@
     <div class="panel-heading">
         <h3>
             {{ experimentrule }}
+        {% if clps %}
+                <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
+                    {{ obj.name }}
+                </a>
+        {% else %}
+                {{ obj.name }}
+            {% endif %}
+
             <div class="btn-group pull-right">
                 {% if experimentrule_detail %}
                     <a href="{{ obj.experiment.get_absolute_url }}" title="Current Rules" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>
@@ -15,6 +23,9 @@
             <div class="clearfix"></div>
         </h3>
     </div>
+        {% if clps %}
+            <div id="{{ listID }}{{ obj.pk }}" class="panel-collapse collapse">
+        {% endif %}
     <div class="panel-body">
         <p><strong>Hour:</strong> {{ experimentrule.hour }}</p>
         <p><strong>Minute:</strong> {{ experimentrule.minute }}</p>
@@ -28,4 +39,7 @@
         {% endif %}
         <div class="clearfix"></div>
     </div>
+    {% if clps %}
+        </div>
+    {% endif %}
 </div>
