@@ -137,16 +137,7 @@ class JSONResponse(HttpResponse):
         super(JSONResponse, self).__init__(content, **kwargs)
 
 
-class todoCheckJSON(APIView):
-    # Server Push
-    # Long polling idea
-    def get(request, pk):
-        for i in range(60):
-            if something_happened():
-                return http.HttpResponse()
-            time.sleep(1)
-        return http.HttpResponse()
-
+#----------Pi Send-------------
 
 class initPi(APIView):
     # gets the key for the pi
@@ -161,12 +152,6 @@ class initDevices(APIView):
     #
     def post(request, pk):
         return Response(status=200)
-
-
-class commandsJSON(APIView):
-    # Server Push
-    def get(request, pk):
-        return HttpResponse(status=200)
 
 class updateDeviceData(APIView):
     def put(self, request, pk):
@@ -227,3 +212,21 @@ class anomalyEmail(APIView):
     def post(self, request):
         # send email
         return Response(status=status.HTTP_200_OK)
+
+
+#----------Server Push-------------
+
+class todoCheckJSON(APIView):
+    # Server Push
+    # Long polling idea
+    def get(request, pk):
+        for i in range(60):
+            if something_happened():
+                return http.HttpResponse()
+            time.sleep(1)
+        return http.HttpResponse()
+
+class commandsJSON(APIView):
+    # Server Push
+    def get(request, pk):
+        return HttpResponse(status=200)

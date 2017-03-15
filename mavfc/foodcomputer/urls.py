@@ -26,15 +26,11 @@ urlpatterns = [
     # ex: /food-computer/device/(device.pk)/delete/
     url(r'^device/(?P<pk>[0-9]+)/delete/$', DeviceDelete.as_view(), name='device_delete'),
 
-    # ex: /food-computer/api/v1/todo/(foodComputerKey.pk)
-    url(r'^api/v1/todo/(?P<pk>[0-9]+)/$', todoCheckJSON.as_view(), name='api_device_todo'),
-
+    #----------Pi Send-------------
     # ex: /food-computer/api/v1/initpi/(piSerial.pk)
     url(r'^api/v1/initpi/$', initPi.as_view(), name='api_init_pi'),
     # ex: /food-computer/api/v1/initdevices/(piSerial.pk)
     url(r'^api/v1/initdevices/(?P<pk>[0-9]+)/$', initDevices.as_view(), name='api_init_devices'),
-    # ex: /food-computer/api/v1/getCommands/(foodComputerKey.pk)
-    url(r'^api/v1/getcommands/(?P<pk>[0-9]+)/$', commandsJSON.as_view(), name='api_get_device_commands'),
     # ex: /food-computer/api/v1/updatedevicedata/(data.pk)
     url(r'^api/v1/updatedevicedata/(?P<pk>[0-9]+)/$', updateDeviceData.as_view(), name='api_update_device_data'),
     # ex: /food-computer/api/v1/devicedata/([data])
@@ -43,4 +39,10 @@ urlpatterns = [
     url(r'^api/v1/getdevicetype/(?P<pk>[0-9]+)/$', getDeviceType.as_view(), name='api_get_device_type'),
     # ex: /food-computer/api/v1/anomalyemail/([message])
     url(r'^api/v1/anomalyemail/$', anomalyEmail.as_view(), name='api_send_anomaly_email'),
+
+    #----------Server Push-------------
+    # ex: /food-computer/api/v1/todo/(foodComputerKey.pk)
+    url(r'^api/v1/todo/(?P<pk>[0-9]+)/$', todoCheckJSON.as_view(), name='api_device_todo'),
+    # ex: /food-computer/api/v1/getCommands/(foodComputerKey.pk)
+    url(r'^api/v1/getcommands/(?P<pk>[0-9]+)/$', commandsJSON.as_view(), name='api_get_device_commands'),
 ]
