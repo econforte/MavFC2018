@@ -22,6 +22,8 @@ from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
 
+from django.core.mail import send_mail
+
 import time
 
 class PiList(View):
@@ -211,6 +213,13 @@ class getDeviceType(APIView):
 class anomalyEmail(APIView):
     def post(self, request):
         # send email
+        send_mail(
+            'Anomaly Detected!',
+            request.data,
+            'from@...',
+            ['to@...'],
+            fail_silently=True,
+        )
         return Response(status=status.HTTP_200_OK)
 
 
