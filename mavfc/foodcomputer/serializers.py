@@ -29,9 +29,14 @@ class dataSerializer(serializers.ModelSerializer):
 class deviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
-        fields = ('pi', 'device_type', 'device_id', 'upper_threshold', 'lower_threshold')
+        fields = ('pi', 'device_type', 'device_id', 'residual_threshold')
 
 class DeviceCurrentValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Data
         fields = ('data_value')
+
+class PiSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pi
+        fields = ('name', 'address', 'user', 'pi_SN', 'manual_control')

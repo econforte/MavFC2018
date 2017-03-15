@@ -142,18 +142,43 @@ class JSONResponse(HttpResponse):
 #----------Pi Send-------------
 
 class initPi(APIView):
-    # gets the key for the pi
-    #
-    # Post JSON Structure
-    #
-    def post(request, pk):
-        return Response(status=200)
-        # return HttpResponse(Pi.objects.get(pk=pk), status=200)
+    def post(self, request):
+        # Post JSON Structure
+        #       {
+        #           "name": "FoodComputer1",
+        #           "address": "123 Some Address",
+        #           "user": "DJ",
+        #           "pi_SN": 1234567890,
+        #           "manual_control": true
+        #       }
+        serializer = PiSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class initDevices(APIView):
-    #
-    def post(request, pk):
-        return Response(status=200)
+    def post(self, request):
+        # Post JSON Structure
+        #       [
+        #           {
+        #               "pi": 1,
+        #               "device_type": "Temperature Sensor",
+        #               "device_ID": 123,
+        #               "residual_threshold": 3.14
+        #           },
+        #           {
+        #               "pi": 2,
+        #               "device_type": "Grow Light",
+        #               "device_ID": 456,
+        #               "residual_threshold": .0015926
+        #           }
+        #       ]
+        serializer = deviceSerializer(data=request.data, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class updateDeviceData(APIView):
     def put(self, request, pk):
@@ -195,7 +220,7 @@ class deviceData(APIView):
         #               "is_anomaly": false
         #           }
         #       ]
-        serializer = dataSerializer(data=request.data, many=True)  # removed unneeded sensorVals var
+        serializer = dataSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
