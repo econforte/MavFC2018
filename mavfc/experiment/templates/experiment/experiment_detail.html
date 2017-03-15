@@ -42,16 +42,16 @@
                                     <div class="row" style="margin-top:5px">
                                         {% for experimentrule in obj.experiment_rules.all %}
                                             <div class="col-md-6">
-                                                {% include "experiment/experimentrule_panel.html" %}
+                                                {% include "experiment/experimentrule_panel.html" with obj=experimentrule %}
                                             </div>
                                         {% endfor %}
                                     </div>
                             </div>
                             <div id="list" class="tab-pane fade">
-                                {% with listID='experimentListID' %}
+                                {% with listID='experimentRuleID' %}
                                     <div class="panel-group" id="{{ listID }}">
                                         {% for experimentrule in obj.experimentrules.all %}
-                                            {% include "experiment/experimentrule_panel.html" with clps='true' %}
+                                            {% include "experiment/experimentrule_panel.html" with obj=experimentrule clps='true' %}
                                         {% endfor %}
                                     </div>
                                 {% endwith %}
