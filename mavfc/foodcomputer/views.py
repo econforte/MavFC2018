@@ -138,8 +138,8 @@ class JSONResponse(HttpResponse):
 
 
 class todoCheckJSON(APIView):
-    #getTodoList Implementation
-    #long polling idea
+    # Server Push
+    # Long polling idea
     def get(request, pk):
         for i in range(60):
             if something_happened():
@@ -148,21 +148,27 @@ class todoCheckJSON(APIView):
         return http.HttpResponse()
 
 
-class keyJSON(APIView):
-    #getFoodComputerKey Implementation
-    def get(request, pk):
-        return HttpResponse(status=200)
+class initPi(APIView):
+    # gets the key for the pi
+    #
+    # Post JSON Structure
+    #
+    def post(request, pk):
+        return Response(status=200)
         # return HttpResponse(Pi.objects.get(pk=pk), status=200)
+
+class initDevices(APIView):
+    #
+    def post(request, pk):
+        return Response(status=200)
 
 
 class commandsJSON(APIView):
-    #getFoodComputerCommands Implementation
+    # Server Push
     def get(request, pk):
         return HttpResponse(status=200)
 
-
-class sensorValues(APIView):
-
+class updateDeviceData(APIView):
     def put(self, request, pk):
         sensorVals = get_object_or_404(Data, pk=pk)
         # try:
@@ -185,24 +191,39 @@ class sensorValues(APIView):
         # return JSONResponse(serializer.data)
         return Response(serializer.data)
 
+class deviceData(APIView):
     def post(self, request):
-# Post JSON Structure
-#       [
-#           {
-#               "device": 1,
-#               "data_value": 13,
-#               "timestamp": "2017-02-07T15:00:00Z",
-#               "is_anomaly": true
-#           },
-#           {
-#               "device": 2,
-#               "data_value": 25,
-#               "timestamp": "2017-02-07T15:00:00Z",
-#               "is_anomaly": false
-#           }
-#       ]
+        # Post JSON Structure
+        #       [
+        #           {
+        #               "device": 1,
+        #               "data_value": 13,
+        #               "timestamp": "2017-02-07T15:00:00Z",
+        #               "is_anomaly": true
+        #           },
+        #           {
+        #               "device": 2,
+        #               "data_value": 25,
+        #               "timestamp": "2017-02-07T15:00:00Z",
+        #               "is_anomaly": false
+        #           }
+        #       ]
         serializer = dataSerializer(data=request.data, many=True)  # removed unneeded sensorVals var
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class getDeviceType(APIView):
+    def get(self, request, pk):
+        try:
+            devicetype = DeviceType.objects.get(pk=pk)
+            serializer = deviceSerializer()
+        except Device.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class anomalyEmail(APIView):
+    def post(self, request):
+        # send email
+        return Response(status=status.HTTP_200_OK)

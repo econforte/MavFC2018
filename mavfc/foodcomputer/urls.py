@@ -28,12 +28,19 @@ urlpatterns = [
 
     # ex: /food-computer/api/v1/todo/(foodComputerKey.pk)
     url(r'^api/v1/todo/(?P<pk>[0-9]+)/$', todoCheckJSON.as_view(), name='api_device_todo'),
-    # ex: /food-computer/api/v1/getKey/(piSerial.pk)
-    url(r'^api/v1/getkey/(?P<pk>[0-9]+)/$', keyJSON.as_view(), name='api_get_device_key'),
+
+    # ex: /food-computer/api/v1/initpi/(piSerial.pk)
+    url(r'^api/v1/initpi/$', initPi.as_view(), name='api_init_pi'),
+    # ex: /food-computer/api/v1/initdevices/(piSerial.pk)
+    url(r'^api/v1/initdevices/(?P<pk>[0-9]+)/$', initDevices.as_view(), name='api_init_devices'),
     # ex: /food-computer/api/v1/getCommands/(foodComputerKey.pk)
     url(r'^api/v1/getcommands/(?P<pk>[0-9]+)/$', commandsJSON.as_view(), name='api_get_device_commands'),
-    # ex: /food-computer/api/v1/sensorValues/(foodComputerKey.pk, [data])
-    url(r'^api/v1/sensorvalues/(?P<pk>[0-9]+)/$', sensorValues.as_view(), name='api_device_sensor_values'),
-    # ex: /food-computer/api/v1/sensorValues/(foodComputerKey.pk, [data])
-    url(r'^api/v1/device/(?P<pk>[0-9]+)/current/value/$', DeviceCurrentValueAPI.as_view(), name='api_device_current_value'),
+    # ex: /food-computer/api/v1/updatedevicedata/(data.pk)
+    url(r'^api/v1/updatedevicedata/(?P<pk>[0-9]+)/$', updateDeviceData.as_view(), name='api_update_device_data'),
+    # ex: /food-computer/api/v1/devicedata/([data])
+    url(r'^api/v1/devicedata/$', deviceData.as_view(), name='api_device_data'),
+    # ex: /food-computer/api/v1/getdevicetype/(devicetype.pk)
+    url(r'^api/v1/getdevicetype/(?P<pk>[0-9]+)/$', getDeviceType.as_view(), name='api_get_device_type'),
+    # ex: /food-computer/api/v1/anomalyemail/([message])
+    url(r'^api/v1/anomalyemail/$', anomalyEmail.as_view(), name='api_send_anomaly_email'),
 ]
