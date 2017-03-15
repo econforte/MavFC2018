@@ -195,4 +195,5 @@ class ExperimentInstanceAdd(View):
             {'form': bound_form,
             'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
             'model_name': self.model_name,
-            'parent_template': self.parent_template})
+            'parent_template': self.parent_template })
+
