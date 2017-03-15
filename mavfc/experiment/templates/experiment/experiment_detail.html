@@ -50,7 +50,7 @@
                             <div id="list" class="tab-pane fade">
                                 {% with listID='experimentRuleID' %}
                                     <div class="panel-group" id="{{ listID }}">
-                                        {% for experimentrule in obj.experimentrules.all %}
+                                        {% for experimentrule in obj.experiment_rules.all %}
                                             {% include "experiment/experimentrule_panel.html" with obj=experimentrule clps='true' %}
                                         {% endfor %}
                                     </div>
