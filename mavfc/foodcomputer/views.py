@@ -9,6 +9,7 @@ from django.contrib.messages import success
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
+import collections
 
 class PiList(View):
     
@@ -34,10 +35,35 @@ class PiDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        
+        #creating new obj variable that is just a string to print to the page
+        namelist = [device.device_type.name for device in obj.devices.all()]
+        actuator = {} # is the device an actuator   [name] = 0 or 1
+        for device in obj.devices.all():
+            if device.device_type.is_controller:
+                actuator[device.device_type.name] = 1
+            else:
+                actuator[device.device_type.name] = 0
+        time2readings = collections.defaultdict(dict)
+        for device in obj.devices.all():
+            for value in device.data.all():
+                if not value.is_anomaly:
+                    time2readings[str(value.timestamp)][device.device_type.name] = value.data_value 
+        prestring = "date,"+','.join(namelist) + '\n' + ','.join(["0"] + [str(actuator[x]) for x in namelist]) + '\n'
+        for t in time2readings:
+            temp = [t.split('+')[0]]
+            for name in namelist:
+                if name in time2readings[t]:
+                    temp.append(str(time2readings[t][name]))
+                else:
+                    temp.append('NA')
+            prestring += ','.join(temp) + '\n'
+            
         return render(
             request,
             self.template_name,
             {'obj': obj,
+             'prestring': prestring,
              'model_name': self.model_name,
              'parent_template': self.parent_template})
 
@@ -73,10 +99,27 @@ class DeviceDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        
+        #creating new obj variable that is just a string to print to the page
+        data = obj.data.all()
+        prestring = ""
+        if len(data) > 0:
+            dname = data[0].device.device_type.name
+            isact = data[0].device.device_type.is_controller
+            prestring = "date," + dname + '\n'
+            if isact:
+                prestring += "0,1\n"
+            else:
+                prestring += "0,0\n"
+            for value in data:
+                #prestring += value.timestamp.strftime("%Y-%m-%d %H:%M:%S") + ',' + str(value.data_value) + '\n'
+                prestring += str(value.timestamp).split('+')[0] + ',' + str(value.data_value) + '\n'
+        
         return render(
             request,
             self.template_name,
             {'device': obj,
+             'prestring': prestring,
              'model_name': self.model_name,
              'parent_template': self.parent_template})
 
