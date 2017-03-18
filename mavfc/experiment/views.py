@@ -164,7 +164,10 @@ class ExperimentInstanceDelete(ObjectDeleteMixin, View):
     model = ExperimentInstance
     success_url = reverse_lazy('experiment:experiment_list')
     template_name = 'experiment/delete_confirm.html'
-    parent_template = Noneclass ExperimentInstanceAdd(View):
+    parent_template = None
+
+
+class ExperimentInstanceAdd(View):
     form_class = ExperimentInstanceAddForm
     parent_model = Pi
     template_name = 'experiment/create_page.html'
@@ -201,11 +204,9 @@ class ExperimentInstanceDelete(ObjectDeleteMixin, View):
             'model_name': self.model_name,
             'parent_template': self.parent_template})
 
-"""
+
 class JSONResponse(HttpResponse):
-    """
-    #An HttpResponse that renders its content into JSON.
-    """
+    # An HttpResponse that renders its content into JSON.
     def __init__(self, data, **kwargs):
         content = JSONRenderer().render(data)
         kwargs['content_type'] = 'application/json'
@@ -221,4 +222,4 @@ class experimentJSON(View):
         if request.method == 'GET':
             serializer = ExperimentsSerializer(experiment)
             return JSONResponse(serializer.data)
-"""
+
