@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'experiment',
     'foodcomputer',
     'user',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

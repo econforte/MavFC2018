@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^food-computer/', include("foodcomputer.urls")),
     url(r'^experiment/', include("experiment.urls")),
     url(r'^media/(?P<path>.*)$', views.serve),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # All other URLs should be placed above this line.
     url(r'^', include(flatpage_urls)),
 ]

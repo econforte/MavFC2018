@@ -10,6 +10,13 @@ from .models import *
 from .forms import *
 from foodcomputer.models import Pi
 
+# For REST API
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from .serializers import ExperimentsSerializer
+
 
 class ExperimentSearch(View):
     @method_decorator(login_required)
@@ -157,9 +164,7 @@ class ExperimentInstanceDelete(ObjectDeleteMixin, View):
     model = ExperimentInstance
     success_url = reverse_lazy('experiment:experiment_list')
     template_name = 'experiment/delete_confirm.html'
-    parent_template = None
-
-class ExperimentInstanceAdd(View):
+    parent_template = Noneclass ExperimentInstanceAdd(View):
     form_class = ExperimentInstanceAddForm
     parent_model = Pi
     template_name = 'experiment/create_page.html'
@@ -177,7 +182,6 @@ class ExperimentInstanceAdd(View):
             'model_name': self.model_name,
             'parent_template': self.parent_template
              })
-
 
     @method_decorator(login_required)
     def post(self, request, pk):
@@ -197,3 +201,24 @@ class ExperimentInstanceAdd(View):
             'model_name': self.model_name,
             'parent_template': self.parent_template})
 
+"""
+class JSONResponse(HttpResponse):
+    """
+    #An HttpResponse that renders its content into JSON.
+    """
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
+
+class experimentJSON(View):
+    def get(request, pk):
+        try:
+            experiment = Experiment.objects.get(pk=pk)
+        except Experiment.DoesNotExist:
+            return HttpResponse(status=404)
+            
+        if request.method == 'GET':
+            serializer = ExperimentsSerializer(experiment)
+            return JSONResponse(serializer.data)
+"""
