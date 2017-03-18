@@ -44,7 +44,7 @@ class Pi(models.Model):
     manual_control = models.BooleanField(default=False,)
 
     def __str__(self):
-        return self.pk +': '+self.name + ': ' + self.pi_SN
+        return str(self.pk) +': '+self.name + ': ' + self.pi_SN
 
     def get_absolute_url(self):
         return reverse('foodcomputer:pi_detail', kwargs={'pk': self.pk})
