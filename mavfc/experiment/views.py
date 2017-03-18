@@ -3,11 +3,12 @@ from django.views.generic import View
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.contrib.messages import success
+from django.contrib.messages import success, error
 
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
+from foodcomputer.models import Pi
 
 # For REST API
 from django.http import HttpResponse
@@ -77,7 +78,7 @@ class ExperimentUpdate(ObjectUpdateMixin, View):
     model = Experiment
     template_name = 'experiment/update_page.html'
     parent_template = None
-
+    model_name = 'Experiment'
 
 class ExperimentDelete(ObjectDeleteMixin, View):
     model = ExperimentRule
@@ -116,6 +117,7 @@ class ExperimentRuleUpdate(ObjectUpdateMixin, View):
     model = ExperimentRule
     template_name = 'experiment/update_page.html'
     parent_template = None
+    model_name = 'Experiment Rule'
 
 
 class ExperimentRuleDelete(ObjectDeleteMixin, View):
@@ -147,25 +149,62 @@ class ExperimentInstanceCreate(ObjectCreateMixin, View):
     template_name = 'experiment/create_page.html'
     form_url = reverse_lazy('experiment:experimentinstance_create')
     parent_template = None
-    model_name = 'Experiment Rule'
+    model_name = 'Experiment Instance'
 
 
 class ExperimentInstanceUpdate(ObjectUpdateMixin, View):
     form_class = ExperimentInstanceForm
-    model = ExperimentRule
+    model = ExperimentInstance
     template_name = 'experiment/update_page.html'
     parent_template = None
+    model_name = 'Experiment Instance'
 
 
 class ExperimentInstanceDelete(ObjectDeleteMixin, View):
     model = ExperimentInstance
     success_url = reverse_lazy('experiment:experiment_list')
     template_name = 'experiment/delete_confirm.html'
+    parent_template = Noneclass ExperimentInstanceAdd(View):
+    form_class = ExperimentInstanceAddForm
+    parent_model = Pi
+    template_name = 'experiment/create_page.html'
     parent_template = None
+    model_name = 'Experiment Instance'
 
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        parent = get_object_or_404(self.parent_model, pk=pk)
+        return render(
+            request,
+            self.template_name,
+            {'form': self.form_class,
+            'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
+            'model_name': self.model_name,
+            'parent_template': self.parent_template
+             })
+
+    @method_decorator(login_required)
+    def post(self, request, pk):
+        parent = get_object_or_404(self.parent_model, pk=pk)
+        bound_form = self.form_class(request.POST)
+        if bound_form.is_valid():
+            new_obj = bound_form.save(commit = False)
+            new_obj.pi = parent
+            new_obj.save()
+            success(request, self.model_name + ' was successfully added.')
+            return redirect(new_obj)
+        return render(
+            request,
+            self.template_name,
+            {'form': bound_form,
+            'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
+            'model_name': self.model_name,
+            'parent_template': self.parent_template})
+
+"""
 class JSONResponse(HttpResponse):
     """
-    An HttpResponse that renders its content into JSON.
+    #An HttpResponse that renders its content into JSON.
     """
     def __init__(self, data, **kwargs):
         content = JSONRenderer().render(data)
@@ -182,3 +221,4 @@ class experimentJSON(View):
         if request.method == 'GET':
             serializer = ExperimentsSerializer(experiment)
             return JSONResponse(serializer.data)
+"""

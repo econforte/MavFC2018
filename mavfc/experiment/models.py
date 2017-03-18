@@ -105,7 +105,7 @@ class ExperimentInstance(models.Model):
     end = models.DateTimeField()
     
     def __str__(self):
-        return self.pi_SN
+        return self.pi.name + ': ' + self.experiment.name
     
     def get_absolute_url(self):
         return reverse('experiment:experimentinstance_detail', kwargs={'pk': self.pk})
@@ -126,7 +126,7 @@ class UserExperimentInstance(models.Model):
     is_user = models.BooleanField()
     
     def __str__(self):
-        return self.pi_SN
+        return self.experiment_instance.pi.name + ": " + self.user.get_username
     
     def get_absolute_url(self):
         return reverse('experiment:userexperimentinstance_detail', kwargs={'pk': self.pk})

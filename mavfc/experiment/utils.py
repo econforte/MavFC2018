@@ -42,6 +42,7 @@ class ObjectUpdateMixin:
     model = None
     template_name = ''
     parent_template=None
+    model_name=''
     
     @method_decorator(login_required)
     def get(self, request, pk):
@@ -51,7 +52,7 @@ class ObjectUpdateMixin:
             self.template_name,
             {'form': self.form_class(instance=obj),
              'obj': obj,
-             'model_name': self.model.__name__,
+             'model_name': self.model_name,
              'parent_template': self.parent_template})
     
     @method_decorator(login_required)

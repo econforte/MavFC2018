@@ -4,10 +4,11 @@ from django.core.urlresolvers import reverse_lazy
 # from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-# from django.contrib.messages import success
+from django.contrib.messages import success
+from django.http import HttpResponse
+from django.core.mail import send_mail
 
 # Imports used to serve JSON
-from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
@@ -22,9 +23,8 @@ from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
 
-from django.core.mail import send_mail
-
 import time
+import csv
 
 class PiList(View):
 
@@ -80,6 +80,22 @@ class PiDelete(ObjectDeleteMixin, View):
     parent_template=None
 
 
+class PiData(View):
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        pi = get_object_or_404(Pi, pk=pk)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="food_computer_data.csv"'
+        writer = csv.writer(response)
+        writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
+        for device in pi.devices.all():
+            for value in device.data.all():
+                writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
+        return response
+
+
+
 class DeviceDetail(View):
     model = Device
     model_name = 'Device'
@@ -117,6 +133,20 @@ class DeviceDelete(ObjectDeleteMixin, View):
     success_url = reverse_lazy('foodcomputer:piList')
     template_name = 'foodcomputer/delete_confirm.html'
     parent_template = None
+    
+    
+class DeviceData(View):
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        device = get_object_or_404(Device, pk=pk)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="food_computer_device_'+device.device_type.name+'_data.csv"'
+        writer = csv.writer(response)
+        writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
+        for value in device.data.all():
+            writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
+        return response
 
 
 class DeviceCurrentValueAPI(APIView):
