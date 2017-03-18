@@ -1,18 +1,34 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.views.generic import View
 from django.core.urlresolvers import reverse_lazy
-from django.core.files.uploadedfile import SimpleUploadedFile
+# from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.messages import success
+from django.http import HttpResponse
+from django.core.mail import send_mail
 
+# Imports used to serve JSON
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework import permissions
+
+from .serializers import *
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
 import collections
 
+import time
+import csv
+
 class PiList(View):
-    
+
     @method_decorator(login_required)
     def get(self, request, parent_template=None):
         if request.user.is_staff:
@@ -90,6 +106,22 @@ class PiDelete(ObjectDeleteMixin, View):
     parent_template=None
 
 
+class PiData(View):
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        pi = get_object_or_404(Pi, pk=pk)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="food_computer_data.csv"'
+        writer = csv.writer(response)
+        writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
+        for device in pi.devices.all():
+            for value in device.data.all():
+                writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
+        return response
+
+
+
 class DeviceDetail(View):
     model = Device
     model_name = 'Device'
@@ -144,3 +176,165 @@ class DeviceDelete(ObjectDeleteMixin, View):
     success_url = reverse_lazy('foodcomputer:piList')
     template_name = 'foodcomputer/delete_confirm.html'
     parent_template = None
+    
+    
+class DeviceData(View):
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        device = get_object_or_404(Device, pk=pk)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="food_computer_device_'+device.device_type.name+'_data.csv"'
+        writer = csv.writer(response)
+        writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
+        for value in device.data.all():
+            writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
+        return response
+
+
+class DeviceCurrentValueAPI(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, pk, format=None):
+        curVal = Data.objects.filter(device__pk=pk).latest('timestamp')
+        jsonObj = dataSerializer(curVal, many=False)
+        return Response(jsonObj.data)
+
+
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
+
+
+#----------Pi Send-------------
+
+class initPi(APIView):
+    def post(self, request):
+        # Post JSON Structure
+        #       {
+        #           "name": "FoodComputer1",
+        #           "address": "123 Some Address",
+        #           "user": "DJ",
+        #           "pi_SN": 1234567890,
+        #           "manual_control": true
+        #       }
+        serializer = PiSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class initDevices(APIView):
+    def post(self, request):
+        # Post JSON Structure
+        #       [
+        #           {
+        #               "pi": 1,
+        #               "device_type": "Temperature Sensor",
+        #               "device_ID": 123,
+        #               "residual_threshold": 3.14
+        #           },
+        #           {
+        #               "pi": 2,
+        #               "device_type": "Grow Light",
+        #               "device_ID": 456,
+        #               "residual_threshold": .0015926
+        #           }
+        #       ]
+        serializer = deviceSerializer(data=request.data, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class updateDeviceData(APIView):
+    def put(self, request, pk):
+        # Put JSON Structure
+        #   {
+        #       "device": 1,
+        #       "timestamp": "2017-02-06T15:00:00Z",
+        #       "data_value": 1.0,
+        #       "is_anomaly": false
+        #   }
+        test = get_object_or_404(Data, pk=pk)
+        serializer = dataSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, pk):
+        try:
+            sensorVals = Data.objects.get(pk=pk)
+        except Data.DoesNotExist:
+            return HttpResponse(status=404)
+        serializer = dataSerializer(sensorVals)
+        return Response(serializer.data)
+
+class deviceData(APIView):
+    def post(self, request):
+        # Post JSON Structure
+        #       [
+        #           {
+        #               "device": 1,
+        #               "data_value": 13,
+        #               "timestamp": "2017-02-07T15:00:00Z",
+        #               "is_anomaly": true
+        #           },
+        #           {
+        #               "device": 2,
+        #               "data_value": 25,
+        #               "timestamp": "2017-02-07T15:00:00Z",
+        #               "is_anomaly": false
+        #           }
+        #       ]
+        serializer = dataSerializer(data=request.data, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class getDeviceType(APIView):
+    def get(self, request, pk):
+        try:
+            devicetype = DeviceType.objects.get(pk=pk)
+            serializer = deviceTypeSerializer()
+        except Device.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class anomalyEmail(APIView):
+    def post(self, request):
+        # send email
+        send_mail(
+            'Anomaly Detected!',
+            request.data,
+            'from@...',
+            ['to@...'],
+            fail_silently=True,
+        )
+        return Response(status=status.HTTP_200_OK)
+
+
+#----------Server Push-------------
+
+class todoCheckJSON(APIView):
+    # Server Push
+    # Long polling idea
+    def get(request, pk):
+        for i in range(60):
+            if something_happened():
+                return http.HttpResponse()
+            time.sleep(1)
+        return http.HttpResponse()
+
+class commandsJSON(APIView):
+    # Server Push
+    def get(request, pk):
+        return HttpResponse(status=200)

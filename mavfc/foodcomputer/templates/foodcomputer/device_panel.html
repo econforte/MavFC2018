@@ -1,8 +1,11 @@
+<div ng-controller="myCtrldiv{{ device.pk }}"> </div>
 <div class="panel panel-default">
     <div class="panel-heading">
         <p>
             {{ device.get_device_name }}
-            <a href="#" class="btn btn-default pull-right">Toggle</a>
+            <a href="#" class="btn btn-success pull-right">Experiment Rule</a>
+
+{#            <a href="#" class="btn btn-default pull-right">Toggle</a>#}
         </p>
     </div>
     <div class="panel-body">
@@ -10,9 +13,10 @@
         <p><strong>Data Type:</strong> {{ device.device_type.data_type }}</p>
         <p><strong>Lower Threshold:</strong> {{ device.lower_threshold }}</p>
         <p><strong>Upper Threshold:</strong> {{ device.upper_threshold }}</p>
+        <div id="chart_div{{ device.pk }}" style="width: 400px; height: 120px;"></div>
     </div>
     <div class="panel-footer">
-        <a href="#" class="btn btn-success">Experiment Rule</a>
+{#        <a href="#" class="btn btn-success">Experiment Rule</a>#}
         {% if not device_detail %}
             <a href="{% url 'foodcomputer:device_detail' device.pk %}" class="btn btn-primary pull-right">Details</a>
         {% else %}
@@ -23,3 +27,54 @@
         <div class="clearfix"></div>
     </div>
 </div>
+<script>
+    var datasetG{{ device.pk }} = [
+        ['Label', 'Value'],
+        ['{{ device.device_type.unit_type.abbr }}', {{ device.get_current_value.data_value }}]
+    ];
+
+    google.charts.setOnLoadCallback(drawChart{{ device.pk }});
+
+    function drawChart{{ device.pk }}() {
+        var data = google.visualization.arrayToDataTable(datasetG{{ device.pk }});
+        var options = {
+            width: 400, height: 120,
+            minorTicks: 5
+        };
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div{{ device.pk }}'));
+        chart.draw(data, options);
+
+        setInterval(function() {
+            var dataset = google.visualization.arrayToDataTable(datasetG{{ device.pk }});
+            chart.draw(dataset, options);
+            console.log('Updated meter {{ device.pk }}    \n'+datasetG{{ device.pk }});
+        }, 1000);
+    }
+
+    app.controller('myCtrldiv{{ device.pk }}', function($scope, $http, $timeout) {
+        // Function to get the data
+        $scope.getData = function(){
+            $http.get("{% url 'foodcomputer:api_device_current_value' device.pk %}")
+                .success(function(data, status, headers, config) {
+                    datasetG{{ device.pk }} = [
+                        ['Label', 'Value'],
+                        ['{{ device.device_type.unit_type.abbr }}', data.data_value]
+                    ];
+                    console.log('Fetched data!    '+ data.data_value);
+            });
+        };
+
+        // Function to replicate setInterval using $timeout service.
+        $scope.intervalFunction = function(){
+            $timeout(function() {
+                $scope.getData();
+                $scope.intervalFunction();
+            }, 5000)
+        };
+
+        // Kick off the interval
+        $scope.intervalFunction();
+    });
+
+
+</script>

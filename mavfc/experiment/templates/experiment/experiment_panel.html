@@ -11,10 +11,10 @@
             {% if user.is_staff %}
                 <div class="btn-group pull-right">
                     {% if clps %}
-                        <a href="{{ obj.get_absolute_url }}" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
+                        <a href="{{ obj.get_absolute_url }}" title="Details" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
                     {% endif %}
-                    <a href="{{ obj.get_update_url }}" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
-                    <a href="{{ obj.get_delete_url }}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                    <a href="{{ obj.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                 </div>
             {% endif %}
         </h3>
@@ -27,7 +27,7 @@
             </div>
             <div class="panel-footer">
                 {% if not experiment_detail and not clps %}
-                    <a href="{{ obj.get_absolute_url }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-list-alt"></span></a>
+                    <a href="{{ obj.get_absolute_url }}" title="Details" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-list-alt"></span></a>
                 {% endif %}
                 <div class="clearfix"></div>
             </div>
