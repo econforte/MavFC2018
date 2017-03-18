@@ -182,13 +182,15 @@ class initDevices(APIView):
 
 class updateDeviceData(APIView):
     def put(self, request, pk):
-        sensorVals = get_object_or_404(Data, pk=pk)
-        # try:
-        #     sensorVals = Data.objects.get(pk=pk)
-        # except Data.DoesNotExist:
-        #     return HttpResponse(status=404)
-        data = JSONParser().parse(request)
-        serializer = dataSerializer(data=data)
+        # Put JSON Structure
+        #   {
+        #       "device": 1,
+        #       "timestamp": "2017-02-06T15:00:00Z",
+        #       "data_value": 1.0,
+        #       "is_anomaly": false
+        #   }
+        test = get_object_or_404(Data, pk=pk)
+        serializer = dataSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -200,7 +202,6 @@ class updateDeviceData(APIView):
         except Data.DoesNotExist:
             return HttpResponse(status=404)
         serializer = dataSerializer(sensorVals)
-        # return JSONResponse(serializer.data)
         return Response(serializer.data)
 
 class deviceData(APIView):
