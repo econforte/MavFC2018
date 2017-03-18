@@ -25,6 +25,8 @@ urlpatterns = [
     url(r'^device/(?P<pk>[0-9]+)/update/$', DeviceUpdate.as_view(), name='device_update'),
     # ex: /food-computer/device/(device.pk)/delete/
     url(r'^device/(?P<pk>[0-9]+)/delete/$', DeviceDelete.as_view(), name='device_delete'),
+    # ex: /food-computer/api/v1/sensorValues/(foodComputerKey.pk, [data])
+    url(r'^api/v1/device/(?P<pk>[0-9]+)/current/value/$', DeviceCurrentValueAPI.as_view(), name='api_device_current_value'),
 
     #----------Pi Send-------------
     # ex: /food-computer/api/v1/initpi/(piSerial.pk)
