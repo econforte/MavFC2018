@@ -26,10 +26,15 @@ class dataSerializer(serializers.ModelSerializer):
         model = Data
         fields = ('device', 'timestamp', 'data_value', 'is_anomaly')
 
-class deviceSerializer(serializers.ModelSerializer):
+class deviceTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceType
         fields = ('name', 'model_id', 'unit_type', 'data_type', 'is_controller', 'bio_threshold')
+
+class deviceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Device
+        fields = ('pi', 'device_type', 'device_id', 'residual_threshold')
 
 class DeviceCurrentValueSerializer(serializers.ModelSerializer):
     class Meta:
