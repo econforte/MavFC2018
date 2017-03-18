@@ -188,11 +188,11 @@ class updateDeviceData(APIView):
         # except Data.DoesNotExist:
         #     return HttpResponse(status=404)
         data = JSONParser().parse(request)
-        serializer = dataSerializer(sensors, data=data)
+        serializer = dataSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return JSONResponse(serializer.data)
-        return JSONResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, pk):
         try:
