@@ -119,6 +119,9 @@ class ExperimentInstance(models.Model):
     def get_delete_url(self):
         return reverse('experiment:experimentinstance_delete', kwargs={'pk': self.pk})
 
+    def get_csv_url(self):
+        return reverse('experiment:experimentinstance_get_csv', kwargs={'pk': self.pk})
+
 
 class UserExperimentInstance(models.Model):
     experiment_instance = models.ForeignKey(ExperimentInstance, on_delete=models.CASCADE, related_name="instance_users",)

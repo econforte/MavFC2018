@@ -15,6 +15,7 @@
                     {% if experimentinstance_detail %}
                         <a href="{{ obj.experiment.get_absolute_url }}" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>
                     {% endif %}
+                        <a href="{{ obj.get_csv_url }}" title="Download Instance CSV File" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
                         <a href="{{ obj.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ experimentinstance.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                 </div>
