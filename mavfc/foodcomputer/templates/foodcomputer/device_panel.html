@@ -1,4 +1,4 @@
-<div ng-controller="myCtrldiv{{ device.pk }}"> </div>
+<div ng-controller="myCtrldiv{{ device.pk }}">
 <div class="panel panel-default">
     <div class="panel-heading">
         <p>
@@ -9,11 +9,26 @@
         <div class="clearfix"></div>
     </div>
     <div class="panel-body">
-        <p><strong>Unit Type:</strong> {{ device.device_type.unit_type }}</p>
-        <p><strong>Data Type:</strong> {{ device.device_type.data_type }}</p>
-        <p><strong>Lower Threshold:</strong> {{ device.lower_threshold }}</p>
-        <p><strong>Upper Threshold:</strong> {{ device.upper_threshold }}</p>
-        <div id="chart_div{{ device.pk }}" style="width: 400px; height: 120px;"></div>
+        <div class="row">
+            <div class="col-sm-6">
+                <p><strong>Unit Type:</strong> {{ device.device_type.unit_type }}</p>
+                <p><strong>Data Type:</strong> {{ device.device_type.data_type }}</p>
+                <p><strong>Lower Threshold:</strong> {{ device.lower_threshold }}</p>
+                <p><strong>Upper Threshold:</strong> {{ device.upper_threshold }}</p>
+            </div>
+            <div class="col-sm-6">
+                {% if device.device_type.is_controller %}
+                    <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ device.pk }} == 1.0">
+                        <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:40px;"></span></strong>
+                    </button>
+                    <button type="button" class="btn btn-default" ng-click="toggle(1.0)" ng-if="controllerToggle{{ device.pk }} == 0.0">
+                        <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:40px;"></span></strong>
+                    </button>
+                {% else %}
+                    <div id="chart_div{{ device.pk }}" style="width: 400px; height: 120px;"></div>
+                {% endif %}
+            </div>
+        </div>
     </div>
     <div class="panel-footer">
 {#        <a href="#" class="btn btn-success">Experiment Rule</a>#}
@@ -27,12 +42,14 @@
         <div class="clearfix"></div>
     </div>
 </div>
+</div>
 <script>
     var datasetG{{ device.pk }} = [
         ['Label', 'Value'],
         ['{{ device.device_type.unit_type.abbr }}', {{ device.get_current_value.data_value }}]
     ];
 
+    {% if not device.device_type.is_controller %}
     google.charts.setOnLoadCallback(drawChart{{ device.pk }});
 
     function drawChart{{ device.pk }}() {
@@ -50,8 +67,14 @@
             console.log('Updated meter {{ device.pk }}    \n'+datasetG{{ device.pk }});
         }, 1000);
     }
+    {% endif %}
 
     app.controller('myCtrldiv{{ device.pk }}', function($scope, $http, $timeout) {
+
+        {% if device.device_type.is_controller %}
+            $scope.controllerToggle{{ device.pk }} = 0;
+        {% endif %}
+
         // Function to get the data
         $scope.getData = function(){
             $http.get("{% url 'foodcomputer:api_device_current_value' device.pk %}")
@@ -60,9 +83,20 @@
                         ['Label', 'Value'],
                         ['{{ device.device_type.unit_type.abbr }}', data.data_value]
                     ];
+                    {% if device.device_type.is_controller %}
+                        $scope.controllerToggle{{ device.pk }} = data.data_value;
+                    {% endif %}
                     console.log('Fetched data!    '+ data.data_value);
             });
         };
+
+
+        {% if device.device_type.is_controller %}
+        $scope.toggle = function(v) {
+{#            Send API to update controller here.#}
+             $scope.controllerToggle{{ device.pk }} = v; {# Remove line when API is added #}
+        };
+        {% endif %}
 
         // Function to replicate setInterval using $timeout service.
         $scope.intervalFunction = function(){
@@ -75,6 +109,4 @@
         // Kick off the interval
         $scope.intervalFunction();
     });
-
-
 </script>
