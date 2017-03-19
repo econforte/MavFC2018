@@ -26,7 +26,7 @@ class dataSerializer(serializers.ModelSerializer):
         model = Data
         fields = ('device', 'timestamp', 'data_value', 'is_anomaly')
 
-class deviceTypeSerializer(serializers.ModelSerializer):
+class deviceTypesSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceType
         fields = ('name', 'model_id', 'unit_type', 'data_type', 'is_controller', 'bio_threshold')

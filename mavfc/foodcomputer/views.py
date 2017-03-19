@@ -51,7 +51,7 @@ class PiDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-        
+
         #creating new obj variable that is just a string to print to the page
         namelist = [device.device_type.name for device in obj.devices.all()]
         actuator = {} # is the device an actuator   [name] = 0 or 1
@@ -64,7 +64,7 @@ class PiDetail(View):
         for device in obj.devices.all():
             for value in device.data.all():
                 if not value.is_anomaly:
-                    time2readings[str(value.timestamp)][device.device_type.name] = value.data_value 
+                    time2readings[str(value.timestamp)][device.device_type.name] = value.data_value
         prestring = "date,"+','.join(namelist) + '\n' + ','.join(["0"] + [str(actuator[x]) for x in namelist]) + '\n'
         for t in time2readings:
             temp = [t.split('+')[0]]
@@ -74,7 +74,7 @@ class PiDetail(View):
                 else:
                     temp.append('NA')
             prestring += ','.join(temp) + '\n'
-            
+
         return render(
             request,
             self.template_name,
@@ -131,7 +131,7 @@ class DeviceDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-        
+
         #creating new obj variable that is just a string to print to the page
         data = obj.data.all()
         prestring = ""
@@ -146,7 +146,7 @@ class DeviceDetail(View):
             for value in data:
                 #prestring += value.timestamp.strftime("%Y-%m-%d %H:%M:%S") + ',' + str(value.data_value) + '\n'
                 prestring += str(value.timestamp).split('+')[0] + ',' + str(value.data_value) + '\n'
-        
+
         return render(
             request,
             self.template_name,
@@ -176,8 +176,8 @@ class DeviceDelete(ObjectDeleteMixin, View):
     success_url = reverse_lazy('foodcomputer:piList')
     template_name = 'foodcomputer/delete_confirm.html'
     parent_template = None
-    
-    
+
+
 class DeviceData(View):
 
     @method_decorator(login_required)
@@ -300,11 +300,11 @@ class deviceData(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class getDeviceType(APIView):
-    def get(self, request, pk):
+class getDeviceTypes(APIView):
+    def get(self, request):
         try:
-            devicetype = DeviceType.objects.get(pk=pk)
-            serializer = deviceTypeSerializer()
+            devicetypes = DeviceType.objects.all()
+            serializer = deviceTypesSerializer(devicetypes, many=True)
         except Device.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.data, status=status.HTTP_200_OK)

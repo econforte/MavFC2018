@@ -42,7 +42,7 @@ urlpatterns = [
     # ex: /food-computer/api/v1/devicedata/([data])
     url(r'^api/v1/devicedata/$', deviceData.as_view(), name='api_device_data'),
     # ex: /food-computer/api/v1/getdevicetype/(devicetype.pk)
-    url(r'^api/v1/getdevicetype/(?P<pk>[0-9]+)/$', getDeviceType.as_view(), name='api_get_device_type'),
+    url(r'^api/v1/getdevicetypes/$', getDeviceTypes.as_view(), name='api_get_device_types'),
     # ex: /food-computer/api/v1/anomalyemail/([message])
     url(r'^api/v1/anomalyemail/$', anomalyEmail.as_view(), name='api_send_anomaly_email'),
 
