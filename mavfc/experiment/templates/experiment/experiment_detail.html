@@ -17,49 +17,102 @@
 {% endblock %}
 
 {% block content %}
+
     <div class="container-fluid" style="margin-top:25px">
         <div class="row">
             <div class="col-md-1"></div>
             <div class="col-md-10">
                 {% include "experiment/experiment_panel.html" with experiment_detail="true" %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 style="margin-top:10px">Rules List
-                            {% if user.is_staff %}
-                                <a href="{% url 'experiment:experimentrule_create' %}" title="Create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
-                            {% endif %}
-                        </h3>
-                    </div>
-                    <div class="panel-body">
-                    {% if obj.experiment_rules.all %}
-                            <ul class="nav nav-pills pull-right">
-                                <li class="active"><a data-toggle="pill" href="#tile"><span class="glyphicon glyphicon-th"></span></a></li>
-                                <li><a data-toggle="pill" href="#list"><span class="glyphicon glyphicon-th-list"></span></a></li>
-                            </ul>
-                            <div class="clearfix" style="margin-bottom: 15px"></div>
-                            <div class="tab-content">
-                            <div id="tile" class="tab-pane fade in active">
-                                    <div class="row" style="margin-top:5px">
-                                        {% for experimentrule in obj.experiment_rules.all %}
-                                            <div class="col-md-6">
-                                                {% include "experiment/experimentrule_panel.html" with obj=experimentrule %}
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                            </div>
-                            <div id="list" class="tab-pane fade">
-                                {% with listID='experimentRuleID' %}
-                                    <div class="panel-group" id="{{ listID }}">
-                                        {% for experimentrule in obj.experiment_rules.all %}
-                                            {% include "experiment/experimentrule_panel.html" with obj=experimentrule clps='true' %}
-                                        {% endfor %}
-                                    </div>
-                                {% endwith %}
-                            </div>
-                                {% else %}
-                            <p>There are no rules available for this {{ model_name }}.</p>
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="pill" href="#rules">Rules</a></li>
+                            <li><a data-toggle="pill" href="#instances">Instances</a></li>
+                        </ul>
+                <div class="tab-content">
+                    <div id="rules" class="panel panel-default tab-pane fade in active">
+                        <div class="panel-heading">
+                            <h3 style="margin-top:10px">Rules List
+                                {% if user.is_staff %}
+                                    <a href="{% url 'experiment:experimentrule_create' %}" title="Create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
                                 {% endif %}
-                            </div>
+                            </h3>
+                        </div>
+
+                        <div class="panel-body">
+
+                            {% if obj.experiment_rules.all %}
+                                    <ul class="nav nav-pills pull-right">
+                                        <li class="active"><a data-toggle="pill" href="#tile"><span class="glyphicon glyphicon-th"></span></a></li>
+                                        <li><a data-toggle="pill" href="#list"><span class="glyphicon glyphicon-th-list"></span></a></li>
+                                    </ul>
+                                    <div class="clearfix" style="margin-bottom: 15px"></div>
+                                    <div class="tab-content">
+                                        <div id="tile" class="tab-pane fade in active">
+                                                <div class="row" style="margin-top:5px">
+                                                    {% for experimentrule in obj.experiment_rules.all %}
+                                                        <div class="col-md-6">
+                                                            {% include "experiment/experimentrule_panel.html" with obj=experimentrule %}
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                        </div>
+                                        <div id="list" class="tab-pane fade">
+                                            {% with listID='experimentRuleID' %}
+                                                <div class="panel-group" id="{{ listID }}">
+                                                    {% for experimentrule in obj.experiment_rules.all %}
+                                                        {% include "experiment/experimentrule_panel.html" with obj=experimentrule clps='true' %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endwith %}
+                                        </div>
+                                            {% else %}
+                                        <p>There are no rules available for this {{ model_name }}.</p>
+                                            {% endif %}
+                                    </div>
+                        </div>
+                    </div>
+
+                    <div id="instances" class="panel panel-default tab-pane fade">
+                        <div class="panel-heading">
+                            <h3 style="margin-top:10px">Instances List
+                                {% if user.is_staff %}
+                                    <a href="{% url 'experiment:experimentinstance_create' %}" title="Create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+                                {% endif %}
+                            </h3>
+                        </div>
+
+                        <div class="panel-body">
+
+                            {% if obj.experiment_instances.all %}
+                                <ul class="nav nav-pills pull-right">
+                                    <li class="active"><a data-toggle="pill" href="#tile"><span class="glyphicon glyphicon-th"></span></a></li>
+                                    <li><a data-toggle="pill" href="#list"><span class="glyphicon glyphicon-th-list"></span></a></li>
+                                </ul>
+                                <div class="clearfix" style="margin-bottom: 15px"></div>
+                                <div class="tab-content">
+                                    <div id="tile" class="tab-pane fade in active">
+                                            <div class="row" style="margin-top:5px">
+                                                {% for experimentinstance in obj.experiment_instances.all %}
+                                                    <div class="col-md-6">
+                                                        {% include "experiment/experimentinstance_panel.html" with obj=experimentinstance %}
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                    </div>
+                                    <div id="list" class="tab-pane fade">
+                                        {% with listID='experimentInstanceID' %}
+                                            <div class="panel-group" id="{{ listID }}">
+                                                {% for experimentinstance in obj.experiment_instances.all %}
+                                                    {% include "experiment/experimentinstance_panel.html" with obj=experimentinstance clps='true' %}
+                                                {% endfor %}
+                                            </div>
+                                        {% endwith %}
+                                    </div>
+                                        {% else %}
+                                    <p>There are no instances available for this {{ model_name }}.</p>
+                                        {% endif %}
+                                </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
