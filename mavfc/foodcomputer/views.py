@@ -219,9 +219,9 @@ class initPi(APIView):
         # Post JSON Structure
         #       {
         #           "name": "FoodComputer1",
-        #           "address": "123 Some Address",
-        #           "user": "DJ",
-        #           "pi_SN": 1234567890,
+        #           "address": 34,
+        #           "user": 23,
+        #           "pi_SN": "1234567890",
         #           "manual_control": true
         #       }
         serializer = PiSerializer(data=request.data)
