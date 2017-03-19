@@ -29,7 +29,8 @@ class dataSerializer(serializers.ModelSerializer):
 class deviceTypesSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceType
-        fields = ('name', 'model_id', 'unit_type', 'data_type', 'is_controller', 'bio_threshold')
+        fields = ('pk', 'name', 'model_id', 'unit_type', 'data_type', 'is_controller', 'bio_threshold')
+        depth = 1
 
 class deviceSerializer(serializers.ModelSerializer):
     class Meta:
