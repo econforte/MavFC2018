@@ -285,13 +285,23 @@ class getDeviceTypes(APIView):
 
 class anomalyEmail(APIView):
     def post(self, request):
-        # send email
+        # Post JSON Structure
+        #   {
+        #       "subject": "FC1 Crashed and Burned.",
+        #       "message": "It was Sean and his team of dolphins.",
+        #       "frm": "FC1",
+        #       "to": ["username@unomaha.edu","username2@unomaha.edu"]
+        #   }
+        subject = request.data.get('subject')
+        message = request.data.get('message')
+        frm = request.data.get('frm')
+        to = request.data.get('to')
         send_mail(
-            'Anomaly Detected!',
-            request.data,
-            'from@...',
-            ['to@...'],
-            fail_silently=True,
+            subject,
+            message,
+            frm,
+            to,
+            fail_silently=False,
         )
         return Response(status=status.HTTP_200_OK)
 
