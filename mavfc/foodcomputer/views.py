@@ -219,8 +219,6 @@ class initPi(APIView):
         # Post JSON Structure
         #       {
         #           "name": "FoodComputer1",
-        #           "address": 34,
-        #           "user": 23,
         #           "pi_SN": "1234567890",
         #           "manual_control": true
         #       }

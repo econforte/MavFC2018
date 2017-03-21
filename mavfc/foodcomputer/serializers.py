@@ -45,4 +45,4 @@ class DeviceCurrentValueSerializer(serializers.ModelSerializer):
 class PiSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pi
-        fields = ('name', 'address', 'user', 'pi_SN', 'manual_control')
+        fields = ('name', 'pi_SN', 'manual_control')
