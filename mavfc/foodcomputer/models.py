@@ -12,7 +12,7 @@ class Address(models.Model):
     zip = models.CharField(max_length=10,)
 
     def __str__(self):
-        return "{n}: {c}, {s}".format(n=self.name, c=self.city, s=self.state)
+        return "{p} {n}: {c}, {s}".format(p=self.pk, n=self.name, c=self.city, s=self.state)
 
     def get_absolute_url(self):
         return reverse('foodcomputer:address_detail', kwargs={'pk': self.pk})
@@ -84,7 +84,7 @@ class Device(models.Model):
     residual_threshold = models.FloatField()
 
     def __str__(self):
-        return self.pi.name + ': ' + self.device_type.name + ': ' + self.device_id
+        return str(self.pk)+ ": " + self.pi.name + ': ' + self.device_type.name + ': ' + self.device_id
 
     def get_device_name(self):
         return self.device_type.name + ': ' + self.device_id
@@ -125,7 +125,7 @@ class Data(models.Model):
     is_anomaly = models.BooleanField()
 
     def __str__(self):
-        return '[' + str(self.timestamp) + ']: ' + str(self.data_value)
+        return str(self.pk) + ' [' + str(self.timestamp) + ']: ' + str(self.data_value)
 
     def get_absolute_url(self):
         return reverse('foodcomputer:data_detail', kwargs={'pk': self.pk})
@@ -152,7 +152,7 @@ class DeviceType(models.Model):
     bio_threshold = models.FloatField(verbose_name='Biological Threshold')
 
     def __str__(self):
-        return self.name + ": " + self.unit_type.name
+        return str(self.pk)+ " " + self.name + ": " + self.unit_type.name
 
     def get_absolute_url(self):
         return reverse('foodcomputer:devicetype_detail', kwargs={'pk': self.pk})
@@ -173,7 +173,7 @@ class UnitType(models.Model):
     descr = models.TextField()
 
     def __str__(self):
-        return self.name
+        return str(self.pk) + str(": ") + self.name
 
     def get_absolute_url(self):
         return reverse('foodcomputer:unittype_detail', kwargs={'pk': self.pk})
@@ -195,7 +195,7 @@ class DataType(models.Model):
     max_limit = models.FloatField(blank=True, null=True,)
 
     def __str__(self):
-        return self.name
+        return str(self.pk) + str(": ") + self.name
 
     def get_absolute_url(self):
         return reverse('foodcomputer:pi_detail', kwargs={'pk': self.pk})
