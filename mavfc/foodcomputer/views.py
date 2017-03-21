@@ -251,30 +251,6 @@ class initDevices(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class updateDeviceData(APIView):
-    def put(self, request, pk):
-        # Put JSON Structure
-        #   {
-        #       "device": 1,
-        #       "timestamp": "2017-02-06T15:00:00Z",
-        #       "data_value": 1.0,
-        #       "is_anomaly": false
-        #   }
-        test = get_object_or_404(Data, pk=pk)
-        serializer = dataSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def get(self, request, pk):
-        try:
-            sensorVals = Data.objects.get(pk=pk)
-        except Data.DoesNotExist:
-            return HttpResponse(status=404)
-        serializer = dataSerializer(sensorVals)
-        return Response(serializer.data)
-
 class deviceData(APIView):
     def post(self, request):
         # Post JSON Structure
