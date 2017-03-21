@@ -221,6 +221,42 @@ class ExperimentInstanceData(View):
                 writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
         return response
 
+class UserExperimentInstanceAdd(View):
+    form_class = UserExperimentInstanceAddForm
+    parent_model = ExperimentInstance
+    template_name = 'experiment/create_page.html'
+    parent_template = None
+    model_name = 'User Experiment Instance'
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        parent = get_object_or_404(self.parent_model, pk=pk)
+        return render(
+            request,
+            self.template_name,
+            {'form': self.form_class,
+             'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'parent_template': self.parent_template
+             })
+
+    @method_decorator(login_required)
+    def post(self, request, pk):
+        parent = get_object_or_404(self.parent_model, pk=pk)
+        bound_form = self.form_class(request.POST)
+        if bound_form.is_valid():
+            new_obj = bound_form.save(commit=False)
+            new_obj.experiment_instance = parent
+            new_obj.save()
+            success(request, self.model_name + ' was successfully added.')
+            return redirect(new_obj)
+        return render(
+            request,
+            self.template_name,
+            {'form': bound_form,
+             'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
 
 class JSONResponse(HttpResponse):
     # An HttpResponse that renders its content into JSON.

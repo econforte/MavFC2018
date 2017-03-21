@@ -1,7 +1,7 @@
 from django import forms
 # from django.core.exceptions import ValidationError
 
-from .models import Experiment, ExperimentRule, ExperimentInstance
+from .models import Experiment, ExperimentRule, ExperimentInstance, UserExperimentInstance
 
 
 class ExperimentForm(forms.ModelForm):
@@ -46,3 +46,14 @@ class ExperimentInstanceAddForm(forms.ModelForm):
     class Meta:
         model = ExperimentInstance
         exclude = ('pi',)
+
+
+class  UserExperimentInstanceAddForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(UserExperimentInstanceAddForm, self).__init__(*args, **kwargs)
+        for (field_name, field) in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+    class Meta:
+        model = UserExperimentInstance
+        fields = ['user', 'is_user']
