@@ -37,8 +37,6 @@ urlpatterns = [
     url(r'^api/v1/initpi/$', initPi.as_view(), name='api_init_pi'),
     # ex: /food-computer/api/v1/initdevices/(piSerial.pk)
     url(r'^api/v1/initdevices/$', initDevices.as_view(), name='api_init_devices'),
-    # ex: /food-computer/api/v1/updatedevicedata/(data.pk)
-    url(r'^api/v1/updatedevicedata/(?P<pk>[0-9]+)/$', updateDeviceData.as_view(), name='api_update_device_data'),
     # ex: /food-computer/api/v1/devicedata/([data])
     url(r'^api/v1/devicedata/$', deviceData.as_view(), name='api_device_data'),
     # ex: /food-computer/api/v1/getdevicetype/(devicetype.pk)
