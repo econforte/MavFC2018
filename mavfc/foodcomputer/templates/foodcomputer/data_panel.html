@@ -1,6 +1,6 @@
 
 <style>
-	pre {display:none;}
+
     body {
         font: 12px Arial;
     }
@@ -103,6 +103,11 @@ $( document ).ready( function () {
 	  })
 	});
 	data.shift();
+    function sortByDate(x, y) {
+      return x["date"] - y["date"];
+    }
+	data = data.sort(sortByDate);
+	
 	console.log("");
 	console.log(data);
 	console.log("");
@@ -189,6 +194,7 @@ $( document ).ready( function () {
 	      console.log("is date");
 	  } else {
   	  yines[column] = d3.svg.line()
+  	      .defined(function(d) { return d[column]; })
 	      .x(function (d) { return x(d["date"]); })
 	      .y(function (d) { return ys[column](d[column]); });
 	    console.log("is sensor");
