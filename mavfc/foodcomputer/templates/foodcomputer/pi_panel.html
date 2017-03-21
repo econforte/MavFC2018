@@ -9,25 +9,32 @@
                 {{ obj.name }}
             {% endif %}
             <small>{{ obj.pi_SN }}</small>
-            {% if user.is_staff %}<a href="{% url 'foodcomputer:pi_update' obj.pk %}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}
+            <div class="btn-group pull-right">
+                <a href="#" class="btn btn-success" title="Current Experiment Instance"><span class="glyphicon glyphicon-grain"></span></a>
+                <a href="{% url 'foodcomputer:pi_get_csv' obj.pk %}" title="Download CSV of the Food Computer's Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
+                {% if clps %}
+                    <a href="{{ obj.get_absolute_url }}" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
+                {% endif %}
+                {% if user.is_staff %}
+                    <a href="{% url 'foodcomputer:pi_update' obj.pk %}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
+                {% endif %}
+            </div>
         </h3>
     </div>
     {% if clps %}
         <div id="{{ listID }}{{ obj.pk }}" class="panel-collapse collapse">
     {% endif %}
             <div class="panel-body">
+                <p><strong>Serial Number:</strong> {{ obj.pi_SN }}</p>
                 <p><strong>Owner:</strong> {{ obj.user.get_full_name }}</p>
                 <p><strong>Address:</strong> {{ obj.address.get_single_line_str }}</p>
+                <p><strong>In Manual Mode:</strong> {{ obj.manual_control }}</p>
                 <p><strong>Device Number:</strong> {{ obj.get_device_num }}</p>
             </div>
             <div class="panel-footer">
-                <a href="#" class="btn btn-success">Experiment</a>
-                {% if not pi_detail %}
-                    <a href="{% url 'foodcomputer:pi_detail' obj.pk %}" class="btn btn-primary pull-right">Details</a>
-                {% else %}
-                    {% if user.is_staff %}
-                        <a href="{{ obj.get_delete_url }}" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
-                    {% endif %}
+                {% if not pi_detail and not clps %}
+                    <a href="{% url 'foodcomputer:pi_detail' obj.pk %}" class="btn btn-primary pull-right" title="Details"><span class="glyphicon glyphicon-list-alt"></span></a>
                 {% endif %}
                 <div class="clearfix"></div>
             </div>

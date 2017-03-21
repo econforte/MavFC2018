@@ -1,28 +1,46 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3>
-            {{ experimentrule }}
+            {% if clps %}
+                <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
+                    {{ obj.experiment.name }}: {{ obj.device.device_type.name|title }} Rule
+                </a>
+            {% else %}
+                {{ obj.experiment.name }}: {{ obj.device.device_type.name|title }} Rule
+            {% endif %}
+            {% if user.is_staff %}
+                <div class="btn-group pull-right">
+                    {% if experimentrule_detail %}
+                        <a href="{{ obj.experiment.get_absolute_url }}" title="Current Rules" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>
+                    {% endif %}
+                    {% if clps %}
+                        <a href="{{ obj.get_absolute_url }}" title="Details" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
+                    {% endif %}
+                    <a href="{{ obj.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                </div>
+            {% endif %}
             <div class="btn-group pull-right">
-                <a href="{{ obj.experiment.get_absolute_url }}" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>
-                {% if user.is_staff %}
-                    <a href="{{ obj.get_update_url }}" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
-                    <a href="{{ experimentrule.get_delete_url }}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
-                {% endif %}
-            </div>
-            <div class="clearfix"></div>
         </h3>
     </div>
-    <div class="panel-body">
-        <p><strong>Hour:</strong> {{ experimentrule.hour }}</p>
-        <p><strong>Minute:</strong> {{ experimentrule.minute }}</p>
-        <p><strong>Baseline Target:</strong> {{ experimentrule.baseline_target }}</p>
-        <p><strong>Baseline Threshold:</strong> {{ experimentrule.get_threshold }}</p>
-{#        <p><strong>Days:</strong> {{ experimentrule.days }}</p>#}
-    </div>
-    <div class="panel-footer">
-        {% if not experimentrule_detail %}
-            <a href="{{ experimentrule.get_absolute_url }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-list-alt"></span></a>
-        {% endif %}
-        <div class="clearfix"></div>
-    </div>
+    {% if clps %}
+        <div id="{{ listID }}{{ obj.pk }}" class="panel-collapse collapse">
+    {% endif %}
+
+        <div class="panel-body">
+            <p><strong>Hour:</strong> {{ obj.hour }}</p>
+            <p><strong>Minute:</strong> {{ obj.minute }}</p>
+            <p><strong>Baseline Target:</strong> {{ obj.baseline_target }}</p>
+            <p><strong>Baseline Threshold:</strong> {{ obj.get_threshold }}</p>
+    {#        <p><strong>Days:</strong> {{ experimentrule.days }}</p>#}
+        </div>
+        <div class="panel-footer">
+            {% if not experimentrule_detail and not clps %}
+                <a href="{{ obj.get_absolute_url }}" title="Details" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-list-alt"></span></a>
+            {% endif %}
+            <div class="clearfix"></div>
+        </div>
+    {% if clps %}
+        </div>
+    {% endif %}
 </div>

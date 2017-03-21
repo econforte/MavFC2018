@@ -99,13 +99,13 @@ class ExperimentRule(models.Model):
 
 
 class ExperimentInstance(models.Model):
-    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="instance_rules",)
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="instances",)
     pi = models.ForeignKey('foodcomputer.Pi', on_delete=models.CASCADE, related_name="experiment_instances",)
     start = models.DateTimeField()
     end = models.DateTimeField()
     
     def __str__(self):
-        return self.pi_SN
+        return self.pi.name + ': ' + self.experiment.name
     
     def get_absolute_url(self):
         return reverse('experiment:experimentinstance_detail', kwargs={'pk': self.pk})
@@ -119,6 +119,9 @@ class ExperimentInstance(models.Model):
     def get_delete_url(self):
         return reverse('experiment:experimentinstance_delete', kwargs={'pk': self.pk})
 
+    def get_csv_url(self):
+        return reverse('experiment:experimentinstance_get_csv', kwargs={'pk': self.pk})
+
 
 class UserExperimentInstance(models.Model):
     experiment_instance = models.ForeignKey(ExperimentInstance, on_delete=models.CASCADE, related_name="instance_users",)
@@ -126,7 +129,7 @@ class UserExperimentInstance(models.Model):
     is_user = models.BooleanField()
     
     def __str__(self):
-        return self.pi_SN
+        return self.experiment_instance.pi.name + ": " + self.user.get_username
     
     def get_absolute_url(self):
         return reverse('experiment:userexperimentinstance_detail', kwargs={'pk': self.pk})

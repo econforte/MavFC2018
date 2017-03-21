@@ -15,6 +15,8 @@ urlpatterns = [
     url(r'^pi/(?P<pk>[0-9]+)/update/$', PiUpdate.as_view(), name='pi_update'),
     # ex: /food-computer/pi/(pi.pk)/delete/
     url(r'^pi/(?P<pk>[0-9]+)/delete/$', PiDelete.as_view(), name='pi_delete'),
+    # ex: /food-computer/pi/(pi.pk)/get/csv/
+    url(r'^pi/(?P<pk>[0-9]+)/get/csv/$', PiData.as_view(), name='pi_get_csv'),
     # ex: /food-computer/pi/(pi.pk)/document/add/
 #     url(r'^pi/(?P<pk>[0-9]+)/device/add/$', .as_view(), name='device_add'),
     # ex: /food-computer/device/(device.pk)/
@@ -25,4 +27,28 @@ urlpatterns = [
     url(r'^device/(?P<pk>[0-9]+)/update/$', DeviceUpdate.as_view(), name='device_update'),
     # ex: /food-computer/device/(device.pk)/delete/
     url(r'^device/(?P<pk>[0-9]+)/delete/$', DeviceDelete.as_view(), name='device_delete'),
+    # ex: /food-computer/pi/(pi.pk)/get/csv/
+    url(r'^device/(?P<pk>[0-9]+)/get/csv/$', DeviceData.as_view(), name='device_get_csv'),
+    # ex: /food-computer/api/v1/sensorValues/(foodComputerKey.pk, [data])
+    url(r'^api/v1/device/(?P<pk>[0-9]+)/current/value/$', DeviceCurrentValueAPI.as_view(), name='api_device_current_value'),
+
+    #----------Pi Send-------------
+    # ex: /food-computer/api/v1/initpi/(piSerial.pk)
+    url(r'^api/v1/initpi/$', initPi.as_view(), name='api_init_pi'),
+    # ex: /food-computer/api/v1/initdevices/(piSerial.pk)
+    url(r'^api/v1/initdevices/$', initDevices.as_view(), name='api_init_devices'),
+    # ex: /food-computer/api/v1/updatedevicedata/(data.pk)
+    url(r'^api/v1/updatedevicedata/(?P<pk>[0-9]+)/$', updateDeviceData.as_view(), name='api_update_device_data'),
+    # ex: /food-computer/api/v1/devicedata/([data])
+    url(r'^api/v1/devicedata/$', deviceData.as_view(), name='api_device_data'),
+    # ex: /food-computer/api/v1/getdevicetype/(devicetype.pk)
+    url(r'^api/v1/getdevicetypes/$', getDeviceTypes.as_view(), name='api_get_device_types'),
+    # ex: /food-computer/api/v1/anomalyemail/([message])
+    url(r'^api/v1/anomalyemail/$', anomalyEmail.as_view(), name='api_send_anomaly_email'),
+
+    #----------Server Push-------------
+    # ex: /food-computer/api/v1/todo/(foodComputerKey.pk)
+    url(r'^api/v1/todo/(?P<pk>[0-9]+)/$', todoCheckJSON.as_view(), name='api_device_todo'),
+    # ex: /food-computer/api/v1/getCommands/(foodComputerKey.pk)
+    url(r'^api/v1/getcommands/(?P<pk>[0-9]+)/$', commandsJSON.as_view(), name='api_get_device_commands'),
 ]

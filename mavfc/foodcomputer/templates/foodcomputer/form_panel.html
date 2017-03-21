@@ -22,7 +22,7 @@
             <h3>
                 {{ action_str|title }} {{ model_name }}
                 {% if obj.get_delete_url and user.is_staff %}
-                    <a href="{{ obj.get_delete_url }}" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
+                    <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
                 {% endif %}
             </h3>
         </div>
@@ -44,12 +44,13 @@
             {% if cancel_url %}
                 <a href="{{ cancel_url }}" class="btn btn-default">Cancel</a>
             {% elif obj.get_absolute_url %}
-                <a href="{{ obj.get_absolute_url }}" class="btn btn-default">Cancel</a>
+                <a href="{{ obj.get_absolute_url }}" class="btn btn-default"><span class="glyphicon glyphicon-step-backward"></span></a>
             {% endif %}
-            <button type="submit" class="btn btn-primary pull-right">{{ action_str|title }} {{ model_name }}</button>
-            {% if obj.get_create_url %}
-                <a href="{{ obj.get_create_url }}" class="btn btn-success pull-right" style="margin-right:10px">Create New {{ model_name }}</a>
-            {% endif %}
+            <button type="submit" class="btn btn-primary pull-right" title="Save"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+{#            <button type="submit" class="btn btn-primary pull-right">{{ action_str|title }} {{ model_name }}</button>#}
+{#            {% if obj.get_create_url %}#}
+{#                <a href="{{ obj.get_create_url }}" class="btn btn-success pull-right" style="margin-right:10px">Create New {{ model_name }}</a>#}
+{#            {% endif %}#}
             <div class="clearfix"></div>
         </div>
     </div>
