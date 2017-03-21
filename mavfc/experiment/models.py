@@ -99,7 +99,7 @@ class ExperimentRule(models.Model):
 
 
 class ExperimentInstance(models.Model):
-    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="instance_rules",)
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="instances",)
     pi = models.ForeignKey('foodcomputer.Pi', on_delete=models.CASCADE, related_name="experiment_instances",)
     start = models.DateTimeField()
     end = models.DateTimeField()
