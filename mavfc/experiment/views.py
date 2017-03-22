@@ -221,6 +221,7 @@ class ExperimentInstanceData(View):
                 writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
         return response
 
+
 class UserExperimentInstanceAdd(View):
     form_class = UserExperimentInstanceAddForm
     parent_model = ExperimentInstance
@@ -249,7 +250,7 @@ class UserExperimentInstanceAdd(View):
             new_obj.experiment_instance = parent
             new_obj.save()
             success(request, self.model_name + ' was successfully added.')
-            return redirect(new_obj)
+            return redirect(parent)
         return render(
             request,
             self.template_name,
@@ -257,6 +258,7 @@ class UserExperimentInstanceAdd(View):
              'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
              'model_name': self.model_name,
              'parent_template': self.parent_template})
+
 
 class JSONResponse(HttpResponse):
     # An HttpResponse that renders its content into JSON.
