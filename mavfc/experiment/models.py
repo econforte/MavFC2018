@@ -131,18 +131,18 @@ class UserExperimentInstance(models.Model):
     def __str__(self):
         return self.experiment_instance.pi.name + ": " + self.user.get_username
     
-    def get_absolute_url(self):
-        return reverse('experiment:userexperimentinstance_detail', kwargs={'pk': self.pk})
+   #def get_absolute_url(self):
+        #return reverse('experiment:userexperimentinstance_detail', kwargs={'pk': self.pk})
     
-    def get_create_url(self):
-        return reverse('experiment:userexperimentinstance_create')
+   # def get_create_url(self):
+        #return reverse('experiment:userexperimentinstance_create')
     
-    def get_update_url(self):
-        return reverse('experiment:userexperimentinstance_update', kwargs={'pk': self.pk})
+    #def get_update_url(self):
+       # return reverse('experiment:userexperimentinstance_update', kwargs={'pk': self.pk})
     
-    def get_delete_url(self):
-        return reverse('experiment:userexperimentinstance_delete', kwargs={'pk': self.pk})
-    
+    #def get_delete_url(self):
+        #return reverse('experiment:userexperimentinstance_delete', kwargs={'pk': self.pk})
+
     
     
     
