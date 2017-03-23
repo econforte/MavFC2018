@@ -22,11 +22,9 @@
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript">
-console.log("within the script");
 
 function drawChart(){
   $("#curve_chart").each( function() {
-	  console.log("within the curve chart call");
 		//var jsonFormat_data_list = $("curve_chart").data("param1");
 		  
 		//CREATING NECESSARY DATA PARSING METHOD
@@ -96,7 +94,6 @@ function drawChart(){
 		        d[val] = +d[val];
 		      }
 		    }
-		    //console.log(d[val]);
 		  })
 		});
 		data.shift();
@@ -104,20 +101,10 @@ function drawChart(){
 	      return x["date"] - y["date"];
 	    }
 		data = data.sort(sortByDate);
-		
-		console.log("");
-		console.log(data);
-		console.log("");
-		console.log("");
-		console.log(colnum);
-		console.log(numActuators);
-
 
 		//CREATING THE GRAPH
 		var dimX = $("#curve_chart").innerWidth(); // moved outside of ready function
 		var dimY = $("#curve_chart").innerHeight(); // might not work
-		console.log(dimX);
-		console.log(dimY);
 		var margin = {top: (30+10*numActuators), right: (2+45*(colnum-numActuators-1)), bottom: 30, left: 50};
 		var width = dimX - margin.left - margin.right;
 		var height = dimY - margin.top - margin.bottom;
@@ -129,176 +116,118 @@ function drawChart(){
 
 
 		var acceptableColors = getColorList(1);
-
-		//initializing axes size
-		var x = d3.time.scale().range([40, width-15]);
-		var ys = Object();
-		var as = Object();
-		var aspot = 1;
-		for (i=0;i<columns.length;i++){
-		  if(isActuator[columns[i]] == 1){
-			console.log(-1*(10+10*aspot));
-		    as[columns[i]] = d3.scale.linear().range([height, -1*(10+10*aspot)]);
-		    console.log(as[columns[i]].range());
-		    aspot++;
-		  } else if (columns[i].localeCompare("date") == 0){
-		    continue;
-		  } else {
-		    ys[columns[i]] = d3.scale.linear().range([height, 0]);
-		  }
-		}
-
-
-
-		//initializing axes attributes
-		var xAxis = d3.svg.axis().scale(x)
-		  .orient("bottom").ticks(6);
-		var yAxes = Object();
-		var firstflag = true;
-		for (i=0;i<columns.length;i++){
-		  if(isActuator[columns[i]] == 1){
-		    continue;
-		  } else if (columns[i] == "date"){
-		    continue;
-		  } else {
-		    if (firstflag) {
-		      yAxes[columns[i]] = d3.svg.axis().scale(ys[columns[i]])
-		        .orient("left").ticks(8);
-		      firstflag = false;
-		    } else {
-		      yAxes[columns[i]] = d3.svg.axis().scale(ys[columns[i]])
-		        .orient("right").ticks(8);
-		    }
-		  }
-		}
-
-		//creating data series
-		var yines = Object();
-		var aines = Object();
-
-		columns.forEach(function(column){
-		  //console.log("");
-		  //console.log(column);
-		  //console.log(isActuator);
-		  if(isActuator[column] == 1){
-		    console.log("is actuator");
-		    console.log(data[column]);
-		    aines[column] = d3.svg.line()
-		      .defined(function(d) { return d[column]; })
-		      .x(function (d) { return x(d["date"]); })
-		      .y(function (d) { return as[column](d[column]); });
-		  } else if (column.localeCompare("date") == 0){
-		      console.log("is date");
-		  } else {
-	  	  yines[column] = d3.svg.line()
-	  	      .defined(function(d) { return d[column]; })
-		      .x(function (d) { return x(d["date"]); })
-		      .y(function (d) { return ys[column](d[column]); });
-		    console.log("is sensor");
-		  }
-		});
 		
-		//console.log("");
-		//console.log("aines");
-		//console.log(aines);
-		//console.log("");
-
-		//initializing graph size
+		function dataSubset(d, column){
+			var subset = new Array();
+			
+			for (var i=0; i<d.length; i++){
+				if (d[i][column] !== null){
+					var temp = new Object();
+					temp["date"] = d[i]["date"];
+					temp[column] = d[i][column];
+					subset.push(temp);
+				}
+			}
+			return subset;
+		}
+		
+		// initializing graph size
 		var svg = d3.select("#curve_chart")
-		  .append("svg")
-		  .attr("width", width + margin.left + margin.right)
-		  .attr("height", height + margin.top + margin.bottom)
-		  .append("g")
-		  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-		//aligning series to axes
+			.append("svg")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		
+		// constructing graph
+		var aspot = 1;
+		var x = d3.time.scale().range([40, width-15])
+			.domain(d3.extent(data, function (d) { return d["date"]; }));
+		var xAxis = d3.svg.axis().scale(x)
+			.orient("bottom").ticks(10);
+		var yspot = 1;
+		var yside = "left";
+		var color = acceptableColors.shift()
+		
 		columns.forEach(function(column){
-		  if(isActuator[column] == 1){
-		    as[column].domain([0, d3.max(data, function (d) {
-		      return d[column];
-		    })]);
-		  } else if (column.localeCompare("date") == 0){
-		    x.domain(d3.extent(data, function (d) {
-		      return d["date"];
-		    }));
-		  } else {
-		    ys[column].domain([(d3.min(data, function(d) { return d[column]; }))*0.85, d3.max(data, function (d) { return d[column]; }   )]);
-			//ys[column].domain([0, d3.max(data, function (d) { return d[column]; }   )]);
-		  }
-		});
+			if(isActuator[column] == 1){ 								// for all actuators
+				
+				var ds = dataSubset(data, column);
+				var a = d3.scale.linear().range([height, -1*(10+10*aspot)])
+					.domain([0, d3.max(ds, function (d) { return d[column]; })]);
+				var aline = d3.svg.line()
+					.defined(function(d) { return d[column]; } )
+					.x(function (d) { return x(d["date"]); } )
+					.y(function (d) { return a(d[column]); } );
+				
+				svg.append("path")
+					.style("stroke", color)
+					.style("stroke-width", 10)
+					.attr("d", aline(ds));
+				
+				svg.append("text")
+					.style("fill", color)
+					.attr("x", -45)
+					.attr("y", -6-(10*aspot))
+					.text(column);
 
-		//assigning colors
-		var colors = Object();
-		columns.forEach(function(column){
-		  colors[column] = acceptableColors.shift();
-		});
-
-		//adding data series (lines) to the graph
-		columns.forEach(function(column){
-		  if(isActuator[column] == 1){
-			console.log("path for actuator");
-			console.log(aines[column](data));
-		    svg.append("path")
-		      .style("stroke", colors[column])
-		      .style("stroke-width", 10)
-		      .attr("d", aines[column](data));
-		  } else if (column.localeCompare("date") == 0){
-		    console.log("ignoring date series")
-		  } else {
-			console.log("path for sensor");
-		    svg.append("path")
-		     .style("stroke", colors[column])
-		     .attr("d", yines[column](data));
-		  }
-		});
-
-		//adding the axes to the graph AND adding actuator text to the graph
-		console.log("adding to the chart");
-		firstflag = true;
-		var acount = 1;
-		var scount = 0;
-		columns.forEach(function(column){
-		  if(isActuator[column] == 1){
-		    svg.append("text") // actuator 2
-		      .style("fill", colors[column])
-		      .attr("x", -45)
-		      .attr("y", -6-(10*acount))
-		      .text(column);
-		    acount++;
-		  } else if (column.localeCompare("date") == 0){
-		    svg.append("g")
-		      .attr("class", "x axis")
-		      .attr("transform", "translate(0," + height + ")")
-		      .call(xAxis);
-		  } else {
-		    if (firstflag){
-		      svg.append("g") 
-		        .style("fill", colors[column])
-		        .attr("class", "y axis")
-		        .attr("transform", "translate(-15,0)")
-		        .call(yAxes[column])
-		       .append("text")
-		        .attr("transform", "rotate(-90)")
-		        .attr("y", 3)
-		        .attr("dy", ".71em")
-		        .style("text-anchor", "end")
-		        .text(column);
-		      firstflag = false;
-		    } else {
-		      svg.append("g") // y1 open
-		        .style("fill", colors[column])
-		        .attr("class", "y axis")
-		        .attr("transform", "translate(" + (width+2+(45*scount)) + " ,0)")
-		        .call(yAxes[column])
-		       .append("text")
-		        .attr("transform", "rotate(-90)")
-		        .attr("y", -14)
-		        .attr("dy", ".71em")
-		        .style("text-anchor", "end")
-		        .text(column);
-		      scount++;
-		    }
-		  }
+				aspot ++;
+				color = acceptableColors.shift()
+							
+			} else if (column.localeCompare("date") == 0){ 				// for just the date
+				
+			    svg.append("g")
+			      .attr("class", "x axis")
+			      .attr("transform", "translate(0," + height + ")")
+			      .call(xAxis);
+				
+			} else {														// for the sensors
+								
+				var ds = dataSubset(data, column);
+				var y = d3.scale.linear().range([height, 0])
+			    	.domain([ (d3.min(ds, function(d) { return d[column]; }))*0.85, d3.max(ds, function (d) { return d[column]; }) ]);
+			    var yAxis = d3.svg.axis().scale(y)
+			    	.orient(yside).ticks(8);
+			    var yline = d3.svg.line()
+			    	.x(function (d) { return x(d["date"]); } )
+			    	.y(function (d) { return y(d[column]); } )
+			    	.defined(function(d) { return d[column]; } );
+			    
+			    svg.append("path")
+			    	.style("stroke", color)
+			    	.attr("d", yline(ds));
+			    
+			    if (yspot == 1) {
+			    	svg.append("g")
+			    		.style("fill", color)
+			    		.attr("class", "y axis")
+			    		.attr("transform", "translate(-15,0)")
+			    		.call(yAxis)
+			    	  .append("text")
+			    		.attr("transform", "rotate(-90)")
+			    		.attr("y", 3)
+			    		.attr("dy", ".71em")
+			    		.style("text-anchor", "end")
+			    		.text(column);
+			    } else {
+			    	svg.append("g")
+		    		.style("fill", color)
+		    		.attr("class", "y axis")
+		    		.attr("transform", "translate(" + (width+2+(45*yspot)) + " ,0)")
+		    		.call(yAxis)
+		    	  .append("text")
+		    		.attr("transform", "rotate(-90)")
+		    		.attr("y", -14)
+		    		.attr("dy", ".71em")
+		    		.style("text-anchor", "end")
+		    		.text(column);
+			    }
+			    
+			    yspot++;
+			    yside = "right";
+			    color = acceptableColors.shift();
+				
+			}
 		});
 	}) // end div curve_chart function	
 }
@@ -323,7 +252,23 @@ document.addEventListener("resize", drawChart());
 	</div>
 	<div class="panel-body">
 		<div id="curve_chart" style="height: 700px"></div>
-		<pre id="data">{{ prestring }}</pre>
+		<pre id="data">date,pH Sensor,EC Sensor,Water Thermometer,Light Intensity,Photosynthetically Active Radiation Sensor,Air Thermometer,Humidity Sensor,CO2 Sensor,Window,Air Conditioner,Red Light,Blue Light,Green Light,Air Pump,MB Light,Heater,Water Pump
+0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1
+2017-03-23 13:34:14,6.917996718305074,1.1260285195496191,27.36459103118759,0.9934801996820802,239.8227488374238,27.465143635748365,15.488804526659674,6.44648057694466,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+2017-03-23 13:55:27,6.467664033026816,1.1748817040539141,NA,NA,169.65415931565784,28.290144102283776,15.199114594858099,6.005756988260782,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0
+2017-03-23 15:41:55,6.041990106927729,1.2277499417212658,27.332353988977843,1.0024964761459518,102.89583625732129,29.169195610094654,15.265173879505657,5.976840764690304,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,1.0
+2017-03-23 13:19:38,7.0670848469660505,1.1232994479126763,27.347890659388455,0.7026033957823645,291.20262031367093,27.163270267429354,15.399751290448073,6.905813606711099,0.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0
+2017-03-23 12:59:57,7.0971966478751725,1.1202700743153817,27.307154170525763,0.7151468885654398,298.51365138822723,27.060143963199177,15.54788265242921,6.893401110471577,1.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0
+2017-03-23 13:24:15,7.067420544135083,1.1328224057918925,27.366259422560336,0.6995000088810874,278.5605100526718,27.209601382352293,15.185606780147266,6.861535779352715,0.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0
+2017-03-23 12:54:11,7.125752748920028,1.1123225788967053,27.34460601780221,0.7198410425708974,299.3203860070014,27.038325949111034,15.553185204180387,6.861064449153672,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0
+2017-03-23 16:16:05,6.312462941171982,NA,27.055293973316378,0.4305612083166067,255.33139981847117,26.337579269275686,12.18387213763877,6.009005453300736,1.0,0.0,1.0,1.0,0.0,0.0,0.0,1.0,0.0
+2017-03-23 15:59:17,6.233890925483636,1.2243892616700824,27.145751450524845,0.42992467846936633,205.57046320158523,27.216287360239637,12.485742014266286,6.02080683593091,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0
+2017-03-23 15:25:54,5.995812831435092,1.2416248892025459,27.29342029880912,1.0013482398549662,87.35160469729092,29.084130401000248,15.21684601827075,6.041812344432658,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,1.0
+2017-03-23 15:51:30,6.166148716171511,1.2184404890138973,27.24821203028883,0.43664353542744894,162.42382689448078,NA,13.051154759103287,6.005767792751189,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0
+2017-03-23 15:03:44,6.044618947997198,1.2197314367599557,27.230241669483345,1.0033935770864486,101.91459811464534,29.017316600148103,14.946747877312848,5.946405149382741,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,1.0
+2017-03-23 15:12:28,6.024354835871795,1.1999609273856908,27.26242497317259,1.0018721964666708,82.36674475846019,29.07926006924686,15.002076093086899,5.994101229859479,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,1.0
+2017-03-23 15:18:32,6.015893040446411,1.1978173091247744,27.28311586214266,1.0009561993489522,95.58699161704227,29.08427346521149,15.454365093842073,5.933409288917688,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,1.0
+2017-03-23 13:31:12,7.020599871818799,1.1272665707670182,27.359625943540888,0.920804012101236,262.1889152372669,27.25230591528773,15.376490063525804,6.717523984523894,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0</pre>
 	</div>
 	<div class="panel-footer">
 		{# <a href="#" class="btn btn-success"></a>#}

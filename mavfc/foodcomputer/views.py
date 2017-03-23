@@ -63,8 +63,10 @@ class PiDetail(View):
         time2readings = collections.defaultdict(dict)
         for device in obj.devices.all():
             for value in device.data.all():
-                if not value.is_anomaly:
-                    time2readings[str(value.timestamp)][device.device_type.name] = value.data_value
+                dataValue = value.data_value
+                if float(dataValue) < 0:
+                    dataValue = 'NA'
+                time2readings[str(value.timestamp)][device.device_type.name] = str(dataValue)
         prestring = "date,"+','.join(namelist) + '\n' + ','.join(["0"] + [str(actuator[x]) for x in namelist]) + '\n'
         for t in time2readings:
             temp = [t.split('+')[0]]
@@ -144,8 +146,11 @@ class DeviceDetail(View):
             else:
                 prestring += "0,0\n"
             for value in data:
+                dataValue = str(value.data_value)
+                if dataValue < 0:
+                    dataValue = 'NA'
                 #prestring += value.timestamp.strftime("%Y-%m-%d %H:%M:%S") + ',' + str(value.data_value) + '\n'
-                prestring += str(value.timestamp).split('+')[0] + ',' + str(value.data_value) + '\n'
+                prestring += str(value.timestamp).split('+')[0] + ',' + str(dataValue) + '\n'
 
         return render(
             request,
