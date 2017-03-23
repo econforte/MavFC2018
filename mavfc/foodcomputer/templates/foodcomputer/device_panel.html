@@ -15,8 +15,8 @@
                 </div>
             </h3>
         {% else %}
-            <h4>
-                {{ device.device_type.name }} <small>{{ device.device_id }}</small>
+            <h4 title="{{ device.device_type.name }}">
+                {{ device.device_type.get_short_name }} <small>{{ device.device_id }}</small>
     {#            <a href="#" title="Go to current experiment Rule" class="btn btn-success pull-right"><span class="glyphicon glyphicon-leaf"></span></a>#}
     {#            <a href="#" class="btn btn-default pull-right">Toggle</a>#}
                 <div class="btn-group pull-right">
@@ -30,7 +30,7 @@
         {% endif %}
         <div class="clearfix"></div>
     </div>
-    <div class="panel-body">
+    <div class="panel-body" style="height: 140px;">
         <div class="row">
             <div class="col-sm-6">
                 <p><strong>Unit Type:</strong> {{ device.device_type.unit_type }}</p>
