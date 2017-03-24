@@ -22,7 +22,9 @@ from .serializers import *
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
+
 import collections
+import math
 
 import time
 import csv
@@ -67,12 +69,23 @@ class PiDetail(View):
                 if float(dataValue) < 0:
                     dataValue = 'NA'
                 time2readings[str(value.timestamp)][device.device_type.name] = str(dataValue)
+        
+        # taking even sample of numdp data points
+        numdp = 1000
+        times = sorted([x for x in time2readings])
+        ss = len(times)/numdp #static shift value
+        spots = [math.floor(ss*x) for x in range(numdp)]
+        time3readings = collections.defaultdict(dict)
+        for spot in set(spots):
+            time3readings[times[spot]] = time2readings[times[spot]]
+        
+                
         prestring = "date,"+','.join(namelist) + '\n' + ','.join(["0"] + [str(actuator[x]) for x in namelist]) + '\n'
-        for t in time2readings:
+        for t in time3readings:
             temp = [t.split('+')[0]]
             for name in namelist:
-                if name in time2readings[t]:
-                    temp.append(str(time2readings[t][name]))
+                if name in time3readings[t]:
+                    temp.append(str(time3readings[t][name]))
                 else:
                     temp.append('NA')
             prestring += ','.join(temp) + '\n'
