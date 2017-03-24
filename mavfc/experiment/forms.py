@@ -56,5 +56,5 @@ class  UserExperimentInstanceAddForm(forms.ModelForm):
 
     class Meta:
         model = UserExperimentInstance
-        #fields = ['user', 'is_user']
-        fields = forms.ModelChoiceField(queuryset = ..., empty_label= "(Nothing)" )
+        fields = ['user', 'is_user']
+        #fields = forms.ModelChoiceField(queuryset = ..., empty_label= "(Nothing)" )
