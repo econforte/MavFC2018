@@ -6,6 +6,7 @@ from django.conf import settings
 class Experiment(models.Model):
     name = models.CharField(max_length=200,)
     descr = models.TextField()
+    pi = models.ForeignKey('foodcomputer.Pi', on_delete=models.CASCADE, related_name="experiment",)
     collection_interval = models.IntegerField()
     
     def __str__(self):
@@ -100,9 +101,9 @@ class ExperimentRule(models.Model):
 
 class ExperimentInstance(models.Model):
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="instances",)
-    pi = models.ForeignKey('foodcomputer.Pi', on_delete=models.CASCADE, related_name="experiment_instances",)
     start = models.DateTimeField()
     end = models.DateTimeField()
+    current = models.BooleanField(default=False)
     
     def __str__(self):
         return self.pi.name + ': ' + self.experiment.name

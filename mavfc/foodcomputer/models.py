@@ -82,6 +82,7 @@ class Device(models.Model):
     device_type = models.ForeignKey('DeviceType', on_delete=models.CASCADE, related_name="devices",)
     device_id = models.CharField(max_length=50, verbose_name="Device ID",)
     residual_threshold = models.FloatField()
+    deactivated = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.pk)+ ": " + self.pi.name + ': ' + self.device_type.name + ': ' + self.device_id
@@ -149,7 +150,7 @@ class DeviceType(models.Model):
     unit_type = models.ForeignKey('UnitType', on_delete=models.CASCADE, related_name="device_types",)
     data_type = models.ForeignKey('DataType', on_delete=models.CASCADE, related_name="device_types",)
     is_controller = models.BooleanField()
-    bio_threshold = models.FloatField(verbose_name='Biological Threshold')
+    bio_threshold = models.FloatField(verbose_name='Biological Threshold', default=0.0)
 
     def __str__(self):
         return str(self.pk)+ " " + self.name + ": " + self.unit_type.name
@@ -208,3 +209,10 @@ class DataType(models.Model):
 
     def get_delete_url(self):
         return reverse('foodcomputer:pi_delete', kwargs={'pk': self.pk})
+
+
+class ControllerUpdate(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="Updates",)
+    turn_on = models.BooleanField()
+    timestamp = models.DateTimeField()
+    executed =models.BooleanField()
