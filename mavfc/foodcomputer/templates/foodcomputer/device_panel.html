@@ -5,7 +5,7 @@
             <h3>
 
                 {% if clps %}
-                    <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
+                    <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ device.pk }}">
                         {{ obj.name }}
                     </a>
                 {% else %}
@@ -25,6 +25,15 @@
             </h3>
         {% else %}
             <h4>
+
+                {% if clps %}
+                    <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ device.pk }}">
+                        {{ obj.name }}
+                    </a>
+                {% else %}
+                    {{ obj.name }}
+                {% endif %}
+
                 {{ device.device_type.name }} <small>{{ device.device_id }}</small>
     {#            <a href="#" title="Go to current experiment Rule" class="btn btn-success pull-right"><span class="glyphicon glyphicon-leaf"></span></a>#}
     {#            <a href="#" class="btn btn-default pull-right">Toggle</a>#}
@@ -41,7 +50,7 @@
     </div>
 
     {% if clps %}
-        <div id="{{ listID }}{{ obj.pk }}" class="panel-collapse collapse">
+        <div id="{{ listID }}{{ device.pk }}" class="panel-collapse collapse">
     {% endif %}
     <div class="panel-body">
         <div class="row">
