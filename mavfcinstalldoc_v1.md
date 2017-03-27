@@ -10,25 +10,24 @@ Python 3.5 to PATH_, and then click _Install Now_.
 
 ![pythoninstall](https://cloud.githubusercontent.com/assets/9102699/24379823/70dfaca8-130e-11e7-9b6b-254f7597a858.JPG)
 
-![Python install](img/pythoninstall2.jpg)
+![pythoninstall2](https://cloud.githubusercontent.com/assets/9102699/24379821/70df84f8-130e-11e7-84ef-4f62085af5d6.JPG)
 
 Note: Python 3.5+ cannot be used on Windows XP or earlier.
 
 To check that Python is installed and the version is correct, run `python` in the command prompt.
 Enter Ctrl-Z or type `exit()`, and hit Return to exit.
 
-![Python version](img/pythoninstalledcmdprompt.jpg)
+![pythoninstalledcmdprompt](https://cloud.githubusercontent.com/assets/9102699/24379822/70df8c82-130e-11e7-9218-5f7b99ffbcdb.JPG)
 
 Check that Python directories have been added to PATH environment variables. Open the _Control Panel_->_Advanced System
 Properties_ and click on _Environment Variables…_. Click on PATH and then _Edit…_. Ensure that the /Pythonxx/ folder
 and /Pythonxx/Scripts/ paths are included. Otherwise, add them.
 
-![system properties](img/pythonenvvariables.jpg)
+![pythonenvvariables](https://cloud.githubusercontent.com/assets/9102699/24379825/70eef08c-130e-11e7-908c-1debc756b562.JPG)
 
-![environment variables](img/pythonenvvariablespath.jpg)
+![pythonenvvariablespath](https://cloud.githubusercontent.com/assets/9102699/24379826/70efc020-130e-11e7-8f96-0fa750f16b2c.JPG)
 
-![path variable](img/pythonenvvariablespath2.jpg)
-
+![pythonenvvariablespath2](https://cloud.githubusercontent.com/assets/9102699/24379828/70f33886-130e-11e7-87d4-b5fc0d066f50.JPG)
 ### Install pip Python Package Manager
 >Pip is already installed with the Python 3.5x package; however, it needs to be upgraded. Open a command
 prompt as an administrator (right-click on Command Prompt icon and Run as administrator), navigate
@@ -47,8 +46,7 @@ navigate to the /Pythonxx directory, and run
 ```
 python get-pip.py
 ```
-![pip install](mavfc/img/pythoninstallpip.jpg)
-
+![pythoninstallpip](https://cloud.githubusercontent.com/assets/9102699/24379819/70df2a8a-130e-11e7-847c-f0602aed4b80.JPG)
 ### Install Git
 
 Download the relevant version of git from https://git-scm.com/downloads and follow the instructions to install
@@ -98,12 +96,12 @@ git clone https://github.com/SachinPawaskarUNO/mavfc.git
 ```
 If you are not logged in to Github, you will be prompted to input your username and password.
 
-![clone mavfc](mavfc/img/installvirtualenvmavfc2.jpg)
+![installvirtualenvmavfc2](https://cloud.githubusercontent.com/assets/9102699/24379824/70e15a08-130e-11e7-94da-f258608f5d25.JPG)
 
 ### View the source files
 The source files are now available in the specified directory. The structure of the mavfc Django project includes a base directory which holds a sub directory of the same name, the .gitignore file, and the README.md file.
 
-![mavfc file structure](mavfc/img/mavfcfilestructure.jpg)
+![mavfcfilestructure](https://cloud.githubusercontent.com/assets/9102699/24379827/70f0254c-130e-11e7-8cb0-76fffb233278.JPG)
 
 The subdirectory is the main Django app. Within this directory is the site directory. The structure of the
 project is as follows.
@@ -118,7 +116,7 @@ project/
         app/
             models.py
 ```
-![mavfc directory](mavfc/img/installvirtualenvmavfc3.jpg)
+![installvirtualenvmavfc3](https://cloud.githubusercontent.com/assets/9102699/24379820/70df83ea-130e-11e7-833f-6ea93280919c.JPG)
 
 The contents of the files can be viewed in the IDE of your choice.  One option, PyCharm, is available for
 download at https://www.jetbrains.com/pycharm/download. To use this option, follow the directions to install
