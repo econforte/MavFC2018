@@ -67,9 +67,12 @@ class Pi(models.Model):
     def get_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[])
 
-    def gen_breadcrumbs(self, bc=[]):
+    def get_update_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Update ")
+
+    def gen_breadcrumbs(self, bc=[], pre=""):
         if bc == []:
-            bc.append(('active', self.name))
+            bc.append(('active', pre+self.name))
         else:
             bc.append((self.get_absolute_url, self.name))
         bc.append((self.get_list_url, 'Food Computer List'))
