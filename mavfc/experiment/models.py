@@ -106,7 +106,7 @@ class ExperimentInstance(models.Model):
     current = models.BooleanField(default=False)
     
     def __str__(self):
-        return self.pi.name + ': ' + self.experiment.name
+        return self.experiment.name + ': ' + str(self.start) + ' - ' + str(self.end)
     
     def get_absolute_url(self):
         return reverse('experiment:experimentinstance_detail', kwargs={'pk': self.pk})

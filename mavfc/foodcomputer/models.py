@@ -1,6 +1,11 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.db.models import Q
+
+from experiment.models import ExperimentInstance
+
+from datetime import datetime
 
 
 class Address(models.Model):
@@ -60,6 +65,13 @@ class Pi(models.Model):
 
     def get_list_url(self):
         return reverse('foodcomputer:pi_list')
+
+    def get_current_instance(self):
+        instance = ExperimentInstance.objects.filter(Q(current=True, experiment__pi__pk=self.pk) | Q(start__lte=datetime.now(), end__gte=datetime.now(), experiment__pi__pk=self.pk))
+        if instance:
+            return instance
+        else:
+            return None
 
     def get_device_num(self):
         return len(self.devices.all())

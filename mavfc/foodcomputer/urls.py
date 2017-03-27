@@ -49,4 +49,6 @@ urlpatterns = [
     url(r'^api/v1/todo/(?P<pk>[0-9]+)/$', todoCheckJSON.as_view(), name='api_device_todo'),
     # ex: /food-computer/api/v1/getCommands/(foodComputerKey.pk)
     url(r'^api/v1/getcommands/(?P<pk>[0-9]+)/$', commandsJSON.as_view(), name='api_get_device_commands'),
+    # ex: /food-computer/api/v1/getCommands/(foodComputerKey.pk)
+    url(r'^api/v1/test/(?P<pk>[0-9]+)/$', testAPI.as_view(), name='api_test'),
 ]
