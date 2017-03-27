@@ -8,26 +8,26 @@ Follow the directions below to install Django.
 Download the executable specific to the operating system on the local machine. Run it, check the box next to _Add
 Python 3.5 to PATH_, and then click _Install Now_.
 
-![Python download](/mavfc/img/pythoninstall.jpg)
+![Python download](img/pythoninstall.jpg)
 
-![Python install](/mavfc/img/pythoninstall2.jpg)
+![Python install](img/pythoninstall2.jpg)
 
 Note: Python 3.5+ cannot be used on Windows XP or earlier.
 
 To check that Python is installed and the version is correct, run `python` in the command prompt.
 Enter Ctrl-Z or type `exit()`, and hit Return to exit.
 
-![Python version](/mavfc/img/pythoninstalledcmdprompt.jpg)
+![Python version](img/pythoninstalledcmdprompt.jpg)
 
 Check that Python directories have been added to PATH environment variables. Open the _Control Panel_->_Advanced System
 Properties_ and click on _Environment Variables…_. Click on PATH and then _Edit…_. Ensure that the /Pythonxx/ folder
 and /Pythonxx/Scripts/ paths are included. Otherwise, add them.
 
-![system properties](/mavfc/img/pythonenvvariables.jpg)
+![system properties](img/pythonenvvariables.jpg)
 
-![environment variables](/mavfc/img/pythonenvvariablespath.jpg)
+![environment variables](img/pythonenvvariablespath.jpg)
 
-![path variable](/mavfc/img/pythonenvvariablespath2.jpg)
+![path variable](img/pythonenvvariablespath2.jpg)
 
 ### Install pip Python Package Manager
 >Pip is already installed with the Python 3.5x package; however, it needs to be upgraded. Open a command
@@ -58,9 +58,7 @@ clone https://github.com/git/git from the command prompt.
 
 ### Create a Virtual Environment
 The following instructions pertain to Windows OS. For other OS, please consult the Python
-
 [virtualenv](https://pypi.python.org/pypi/virtualenv) and
-
 [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper-win) pages.
 
 Navigate to a directory to create your virtual environment. You may wish to create a directory for all virtual
@@ -121,6 +119,7 @@ project/
             models.py
 ```
 ![mavfc directory](mavfc/img/installvirtualenvmavfc3.jpg)
+
 The contents of the files can be viewed in the IDE of your choice.  One option, PyCharm, is available for
 download at https://www.jetbrains.com/pycharm/download. To use this option, follow the directions to install
 PyCharm, open the application, select _Open…_, then navigate to your mavfc project in your /virtualenvs
