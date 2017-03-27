@@ -8,7 +8,7 @@ Follow the directions below to install Django.
 Download the executable specific to the operating system on the local machine. Run it, check the box next to _Add
 Python 3.5 to PATH_, and then click _Install Now_.
 
-![Python download](img/pythoninstall.jpg)
+![pythoninstall](https://cloud.githubusercontent.com/assets/9102699/24379823/70dfaca8-130e-11e7-9b6b-254f7597a858.JPG)
 
 ![Python install](img/pythoninstall2.jpg)
 
