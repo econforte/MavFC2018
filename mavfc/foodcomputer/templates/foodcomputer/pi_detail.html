@@ -53,29 +53,29 @@
 		                                    {% with listID='deviceListID' %}
 		                                        <div class="panel-group" id="{{ listID }}">
 		                                            {% for device in obj.devices.all %}
-		                                                {% include "foodcomputer/device_panel.html" with obj=device clps='true' %}
+		                                                {% include "foodcomputer/device_panel.html" with clps='true' %}
 		                                            {% endfor %}
 		                                        </div>
 		                                    {% endwith %}
 		                                </div>
 		                            </div>
 		                        {% else %}
-		                            <p>There are no Food Computers.</p>
+		                            <p>There are no Devices.</p>
 		                        {% endif %}
 		                    </div>
-                        <!-- <div class="panel-body">
-                            <div class="row">
-                                {% if obj.devices.all %}
-                                    {% for device in obj.devices.all %}
-                                        <div class="col-md-6 col-lg-4">
-                                            {% include "foodcomputer/device_panel.html" %}
-                                        </div>
-                                    {% endfor %}
-                                {% else %}
-                                    <p>There are no devices available for this {{ model_name }}.</p>
-                                {% endif %}
-                            </div>
-                        </div> -->
+{#                        <!-- <div class="panel-body">#}
+{#                            <div class="row">#}
+{#                                {% if obj.devices.all %}#}
+{#                                    {% for device in obj.devices.all %}#}
+{#                                        <div class="col-md-6 col-lg-4">#}
+{#                                            {% include "foodcomputer/device_panel.html" %}#}
+{#                                        </div>#}
+{#                                    {% endfor %}#}
+{#                                {% else %}#}
+{#                                    <p>There are no devices available for this {{ model_name }}.</p>#}
+{#                                {% endif %}#}
+{#                            </div>#}
+{#                        </div> -->#}
                     </div>
                 </div>
             </div>
