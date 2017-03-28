@@ -55,11 +55,6 @@ class  UserExperimentInstanceAddForm(forms.ModelForm):
         for (field_name, field) in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
 
-class QuerySetManager(forms.ModelForm):
-    def get_query_set(self):
-        return self.model.QuerySet(self.fields.items)
-
-
     class Meta:
         model = UserExperimentInstance
         fields = ['user', 'is_user']
