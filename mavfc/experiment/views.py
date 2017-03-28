@@ -261,8 +261,8 @@ class UserExperimentInstanceAdd(View):
              'model_name': self.model_name,
              'parent_template': self.parent_template})
 
-<<<<<<< HEAD
-    class MyModelChoiceField(ModelChoiceField):
+ ##HEAD
+class MyModelChoiceField(ModelChoiceField):
 
         form_class = UserExperimentInstance
 
@@ -277,6 +277,8 @@ class UserExperimentInstanceAdd(View):
                  'model_name': self.model_name,
                  'parent_template': self.parent_template
                  })
+
+
 
         @method_decorator(login_required)
         def post(self, request, pk):
@@ -295,7 +297,7 @@ class UserExperimentInstanceAdd(View):
                  'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
                  'model_name': self.model_name,
                  'parent_template': self.parent_template})
-=======
+
     # class MyModelChoiceField(ModelChoiceField):
     #
     #     form_class = UserExperimentInstance
@@ -329,7 +331,7 @@ class UserExperimentInstanceAdd(View):
     #              'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
     #              'model_name': self.model_name,
     #              'parent_template': self.parent_template})
->>>>>>> origin/Dev
+ ###origin/Dev
 
 
 class JSONResponse(HttpResponse):
