@@ -185,9 +185,9 @@ class ExperimentInstanceAdd(View):
             request,
             self.template_name,
             {'form': self.form_class,
-            'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
-            'model_name': self.model_name,
-            'parent_template': self.parent_template
+             'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'parent_template': self.parent_template
              })
 
     @method_decorator(login_required)
@@ -204,9 +204,9 @@ class ExperimentInstanceAdd(View):
             request,
             self.template_name,
             {'form': bound_form,
-            'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
-            'model_name': self.model_name,
-            'parent_template': self.parent_template})
+             'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
 
 
 class ExperimentInstanceData(View):
@@ -260,76 +260,6 @@ class UserExperimentInstanceAdd(View):
              'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
              'model_name': self.model_name,
              'parent_template': self.parent_template})
-
- ##HEAD
-class MyModelChoiceField(ModelChoiceField):
-
-        form_class = UserExperimentInstance
-
-        @method_decorator(login_required)
-        def get(self, request, pk):
-            parent = get_object_or_404(self.parent_model, pk=pk)
-            return render(
-                request,
-                self.template_name,
-                {'form': self.form_class,
-                 'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
-                 'model_name': self.model_name,
-                 'parent_template': self.parent_template
-                 })
-
-        @method_decorator(login_required)
-        def post(self, request, pk):
-            parent = get_object_or_404(self.parent_model, pk=pk)
-            bound_form = self.form_class(request.POST)
-            if bound_form.is_valid():
-                new_obj = bound_form.save(commit=False)
-                new_obj.experiment_instance = parent
-                new_obj.save()
-                success(request, self.model_name + ' was successfully added.')
-                return redirect(parent)
-            return render(
-                request,
-                self.template_name,
-                {'form': bound_form,
-                 'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
-                 'model_name': self.model_name,
-                 'parent_template': self.parent_template})
-
-    # class MyModelChoiceField(ModelChoiceField):
-    #
-    #     form_class = UserExperimentInstance
-    #
-    #     @method_decorator(login_required)
-    #     def get(self, request, pk):
-    #         parent = get_object_or_404(self.parent_model, pk=pk)
-    #         return render(
-    #             request,
-    #             self.template_name,
-    #             {'form': self.form_class,
-    #              'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
-    #              'model_name': self.model_name,
-    #              'parent_template': self.parent_template
-    #              })
-    #
-    #     @method_decorator(login_required)
-    #     def post(self, request, pk):
-    #         parent = get_object_or_404(self.parent_model, pk=pk)
-    #         bound_form = self.form_class(request.POST)
-    #         if bound_form.is_valid():
-    #             new_obj = bound_form.save(commit=False)
-    #             new_obj.experiment_instance = parent
-    #             new_obj.save()
-    #             success(request, self.model_name + ' was successfully added.')
-    #             return redirect(parent)
-    #         return render(
-    #             request,
-    #             self.template_name,
-    #             {'form': bound_form,
-    #              'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
-    #              'model_name': self.model_name,
-    #              'parent_template': self.parent_template})
- ###origin/Dev
 
 
 class JSONResponse(HttpResponse):
