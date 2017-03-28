@@ -1,6 +1,11 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.db.models import Q
+
+from experiment.models import ExperimentInstance
+
+from datetime import datetime
 
 
 class Address(models.Model):
@@ -61,15 +66,25 @@ class Pi(models.Model):
     def get_list_url(self):
         return reverse('foodcomputer:pi_list')
 
+    def get_current_instance(self):
+        instance = ExperimentInstance.objects.filter(Q(current=True, experiment__pi__pk=self.pk) | Q(start__lte=datetime.now(), end__gte=datetime.now(), experiment__pi__pk=self.pk))
+        if instance:
+            return instance
+        else:
+            return None
+
     def get_device_num(self):
         return len(self.devices.all())
 
     def get_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[])
 
-    def gen_breadcrumbs(self, bc=[]):
+    def get_update_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Update ")
+
+    def gen_breadcrumbs(self, bc=[], pre=""):
         if bc == []:
-            bc.append(('active', self.name))
+            bc.append(('active', pre+self.name))
         else:
             bc.append((self.get_absolute_url, self.name))
         bc.append((self.get_list_url, 'Food Computer List'))
@@ -82,6 +97,7 @@ class Device(models.Model):
     device_type = models.ForeignKey('DeviceType', on_delete=models.CASCADE, related_name="devices",)
     device_id = models.CharField(max_length=50, verbose_name="Device ID",)
     residual_threshold = models.FloatField()
+    deactivated = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.pk)+ ": " + self.pi.name + ': ' + self.device_type.name + ': ' + self.device_id
@@ -149,7 +165,7 @@ class DeviceType(models.Model):
     unit_type = models.ForeignKey('UnitType', on_delete=models.CASCADE, related_name="device_types",)
     data_type = models.ForeignKey('DataType', on_delete=models.CASCADE, related_name="device_types",)
     is_controller = models.BooleanField()
-    bio_threshold = models.FloatField(verbose_name='Biological Threshold')
+    bio_threshold = models.FloatField(verbose_name='Biological Threshold', default=0.0)
 
     def __str__(self):
         return str(self.pk)+ " " + self.name + ": " + self.unit_type.name
@@ -208,3 +224,10 @@ class DataType(models.Model):
 
     def get_delete_url(self):
         return reverse('foodcomputer:pi_delete', kwargs={'pk': self.pk})
+
+
+class ControllerUpdate(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="Updates",)
+    turn_on = models.BooleanField()
+    timestamp = models.DateTimeField()
+    executed =models.BooleanField()

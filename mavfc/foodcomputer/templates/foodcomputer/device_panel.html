@@ -1,9 +1,12 @@
-<div ng-controller="myCtrldiv{{ device.pk }}">
+{% if not listID %}
+    <div ng-controller="myCtrldiv{{ device.pk }}">
+{% endif %}
 <div class="panel panel-default">
     <div class="panel-heading">
         {% if device_detail %}
             <h3>
-                {{ device.device_type.name }} <small>{{ device.device_id }}</small>
+                {{ device.device_type.name }}
+                <small>{{ device.device_id }}</small>
     {#            <a href="#" title="Go to current experiment Rule" class="btn btn-success pull-right"><span class="glyphicon glyphicon-leaf"></span></a>#}
     {#            <a href="#" class="btn btn-default pull-right">Toggle</a>#}
                 <div class="btn-group pull-right">
@@ -16,11 +19,21 @@
             </h3>
         {% else %}
             <h4>
-                {{ device.device_type.name }} <small>{{ device.device_id }}</small>
+                {% if clps %}
+                    <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ device.pk }}">
+                        {{ device.device_type.name }}
+                    </a>
+                {% else %}
+                    {{ device.device_type.name }}
+                {% endif %}
+                <small>{{ device.device_id }}</small>
     {#            <a href="#" title="Go to current experiment Rule" class="btn btn-success pull-right"><span class="glyphicon glyphicon-leaf"></span></a>#}
     {#            <a href="#" class="btn btn-default pull-right">Toggle</a>#}
                 <div class="btn-group pull-right">
                     <a href="{% url 'foodcomputer:device_get_csv' device.pk %}" title="Download CSV of Device Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
+                    {% if clps %}
+                        <a href="{{ device.get_absolute_url }}" title="Detail Page" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
+                    {% endif %}
                     {% if user.is_staff %}
                         <a href="{{ device.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ device.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
@@ -30,6 +43,10 @@
         {% endif %}
         <div class="clearfix"></div>
     </div>
+
+    {% if clps %}
+        <div id="{{ listID }}{{ device.pk }}" class="panel-collapse collapse">
+    {% endif %}
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-6">
@@ -53,14 +70,19 @@
             </div>
         </div>
     </div>
+
     <div class="panel-footer">
 {#        <a href="#" class="btn btn-success">Experiment Rule</a>#}
-        {% if not device_detail %}
+        {% if not device_detail and not clps %}
             <a href="{{ device.get_absolute_url }}" title="Detail Page" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-list-alt"></span></a>
         {% endif %}
         <div class="clearfix"></div>
     </div>
+    {% if clps %}
+        </div>
+    {% endif %}
 </div>
+{% if not listID %}
 </div>
 <script>
     var datasetG{{ device.pk }} = [
@@ -84,7 +106,7 @@
             var dataset = google.visualization.arrayToDataTable(datasetG{{ device.pk }});
             chart.draw(dataset, options);
             console.log('Updated meter {{ device.pk }}    \n'+datasetG{{ device.pk }});
-        }, 1000);
+        }, 10000);
     }
     {% endif %}
 
@@ -122,10 +144,11 @@
             $timeout(function() {
                 $scope.getData();
                 $scope.intervalFunction();
-            }, 5000)
+            }, 20000)
         };
 
         // Kick off the interval
         $scope.intervalFunction();
     });
 </script>
+{% endif %}

@@ -18,6 +18,8 @@ from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework import permissions
 
+from experiment.serializers import ExperimentInstanceSerializer
+from experiment.models import ExperimentInstance
 from .serializers import *
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
@@ -322,3 +324,22 @@ class commandsJSON(APIView):
     # Server Push
     def get(request, pk):
         return HttpResponse(status=200)
+
+class testAPI(APIView):
+    def get(self, request, pk):
+        pi = get_object_or_404(Pi, pk=pk)
+        try:
+            instance = pi.get_current_instance()
+            instanceSer = ExperimentInstanceSerializer(instance, many=True)
+        except ExperimentInstance.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            instance = pi.get_current_instance()
+            instanceSer = ExperimentInstanceSerializer(instance, many=True)
+        except ExperimentInstance.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        resp = {'instance': instanceSer.data}
+
+        return Response(resp, status=status.HTTP_200_OK)
