@@ -264,7 +264,7 @@ class UserExperimentInstanceAdd(View):
     class MyModelChoiceField(ModelChoiceField):
 
         form_class = UserExperimentInstance
-        
+
         @method_decorator(login_required)
         def get(self, request, pk):
             parent = get_object_or_404(self.parent_model, pk=pk)
