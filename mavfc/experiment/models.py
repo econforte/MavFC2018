@@ -128,10 +128,10 @@ class ExperimentInstance(models.Model):
 
     def gen_breadcrumbs(self, bc=[]):
         if bc == []:
-            bc.append(('active',  ' Instance'))
+            bc.append(('active', self.start.strftime("%m/%d/%y") + ' - ' + self.end.strftime("%m/%d/%y") + ' Instance'))
 
         else:
-            bc.append((self.get_absolute_url, ' Instance'))
+            bc.append((self.get_absolute_url, self.start.strftime("%m/%d/%y") + ' - ' + self.end.strftime("%m/%d/%y") + 'Instance'))
         return self.experiment.gen_breadcrumbs(bc)
 
 
