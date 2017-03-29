@@ -296,14 +296,17 @@ class anomalyEmail(APIView):
         serializer = emailSerializer(data=request.data)
         if serializer.is_valid():
             lvl = request.data.get('level')
-            #Level 1 = All admins and anyone associated to the Pi
+            #Level 1 = All Admins and anyone associated to the Pi
             if (lvl == 1):
+                #User.objects.filter(is_staff = True).email() + Pi.objects.filter(pi__pk = request.pi).user.email.all()
                 sendList = []
             #Level 2 = All Admins and Pi User
             if (lvl == 2):
+                #User.objects.filter(is_staff = True).email() + Pi.objects.filter(pi__pk = request.pi).user.objects.filter(is_active = True)
                 sendList = []
             #Level 3 = All Admins
             if (lvl == 3):
+                #User.objects.filter(is_staff = True).email()
                 sendList = []
             send_mail(
                 "Pi Email",
@@ -312,6 +315,8 @@ class anomalyEmail(APIView):
                 sendList,
                 fail_silently=False,
             )
+            return Response("Email(s) Sent")
+        else: return Response("No Email(s) Sent")
 
 
 #----------Server Push-------------
