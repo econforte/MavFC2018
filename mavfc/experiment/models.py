@@ -88,6 +88,12 @@ class ExperimentRule(models.Model):
     def get_threshold(self):
         return (self.device.residual_threshold + self.device.device_type.bio_threshold)
 
+    def get_list_url(self):
+        return reverse('experiment:experiment_list')
+
+    def get_pi(self):
+        return self.experiment_rules[:1].device.pi
+
     def get_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[])
 
@@ -123,6 +129,21 @@ class ExperimentInstance(models.Model):
     def get_csv_url(self):
         return reverse('experiment:experimentinstance_get_csv', kwargs={'pk': self.pk})
 
+    def get_list_url(self):
+        return reverse('experiment:experiment_list')
+
+    def get_pi(self):
+        return self.experiment_instances[:1].device.pi
+
+    def get_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[])
+
+    def gen_breadcrumbs(self, bc=[]):
+        if bc == []:
+            bc.append(('active', self.device.device_type.name + ' Instance'))
+        else:
+            bc.append((self.get_absolute_url, self.device.device_type.name + ' Instance'))
+        return self.experiment.gen_breadcrumbs(bc)
 
 class UserExperimentInstance(models.Model):
     experiment_instance = models.ForeignKey(ExperimentInstance, on_delete=models.CASCADE, related_name="instance_users",)
