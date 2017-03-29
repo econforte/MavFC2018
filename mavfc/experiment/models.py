@@ -134,6 +134,7 @@ class ExperimentInstance(models.Model):
             bc.append((self.get_absolute_url, ' Instance'))
         return self.experiment.gen_breadcrumbs(bc)
 
+
 class UserExperimentInstance(models.Model):
     experiment_instance = models.ForeignKey(ExperimentInstance, on_delete=models.CASCADE, related_name="instance_users",)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True, related_name="experiment_instances",)

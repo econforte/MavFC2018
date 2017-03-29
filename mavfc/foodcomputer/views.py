@@ -345,20 +345,16 @@ class testAPI(APIView):
             instanceSer = ExperimentInstanceSerializer(instance, many=True)
         except ExperimentInstance.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
         try:
             ctrlUpdate = ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False)
             ctrlUpdateSer = ControllerUpdateSerializer(ctrlUpdate, many=True)
         except ControllerUpdate.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
         try:
             piSer = PiSerializer(pi)
         except Pi.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
         resp = {'pi': piSer.data,
                 'controllerUpdates': ctrlUpdateSer.data,
                 'instance': instanceSer.data}
-
         return Response(resp, status=status.HTTP_200_OK)

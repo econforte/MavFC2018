@@ -120,6 +120,9 @@ class Device(models.Model):
     def get_list_url(self):
         return self.pi.get_absolute_url()
 
+    def get_threshold(self):
+        return (self.residual_threshold + self.device_type.bio_threshold)
+
     def get_current_value(self):
         return self.data.latest('timestamp')
 
