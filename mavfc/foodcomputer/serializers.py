@@ -51,3 +51,7 @@ class ControllerUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ControllerUpdate
         fields = '__all__'
+
+class emailSerializer(serializers.Serializer):
+    class Meta:
+        fields = ('pi', 'level', 'message')

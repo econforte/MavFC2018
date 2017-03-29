@@ -289,23 +289,29 @@ class anomalyEmail(APIView):
     def post(self, request):
         # Post JSON Structure
         #   {
-        #       "subject": "FC1 Crashed and Burned.",
-        #       "message": "It was Sean and his team of dolphins.",
-        #       "frm": "FC1",
-        #       "to": ["username@unomaha.edu","username2@unomaha.edu"]
+        #       "pi": 1,
+        #       "level": 1,
+        #       "message": "It was Sean and his team of dolphins."
         #   }
-        subject = request.data.get('subject')
-        message = request.data.get('message')
-        frm = request.data.get('frm')
-        to = request.data.get('to')
-        send_mail(
-            subject,
-            message,
-            frm,
-            to,
-            fail_silently=False,
-        )
-        return Response(status=status.HTTP_200_OK)
+        serializer = emailSerializer(data=request.data)
+        if serializer.is_valid():
+            lvl = request.data.get('level')
+            #Level 1 = All admins and anyone associated to the Pi
+            if (lvl == 1):
+                sendList = []
+            #Level 2 = All Admins and Pi User
+            if (lvl == 2):
+                sendList = []
+            #Level 3 = All Admins
+            if (lvl == 3):
+                sendList = []
+            send_mail(
+                "Pi Email",
+                request.data.get('message'),
+                "Default",
+                sendList,
+                fail_silently=False,
+            )
 
 
 #----------Server Push-------------
