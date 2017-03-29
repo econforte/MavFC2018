@@ -218,7 +218,7 @@ class ExperimentInstanceData(View):
         response['Content-Disposition'] = 'attachment; filename="experiment_instance_data.csv"'
         writer = csv.writer(response)
         writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
-        for device in expInst.pi.devices.all():
+        for device in expInst.experiment.pi.devices.all():
             for value in device.data.filter(timestamp__gte=expInst.start, timestamp__lte=expInst.end):
                 writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
         return response
