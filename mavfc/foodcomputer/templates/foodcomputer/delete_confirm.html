@@ -4,6 +4,14 @@
 	{{ block.super }} - Confirm Delete of a {{ model_name }}
 {% endblock %}
 
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="/home/">Home</a></li>
+        <li class="active">Food Computer List</li>
+		<li class="active">Delete PI</li>
+	</ul>
+{% endblock %}
+
 {% block app_nav %}
 	{{ block.super }}
 {% endblock %}
