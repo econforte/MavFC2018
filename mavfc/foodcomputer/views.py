@@ -298,16 +298,26 @@ class anomalyEmail(APIView):
             lvl = request.data.get('level')
             #Level 1 = All Admins and anyone associated to the Pi
             if (lvl == 1):
-                #User.objects.filter(is_staff = True).email() + Pi.objects.filter(pi__pk = request.pi).user.email.all()
+                admins = user.objects.filter(is_staff = True)
                 sendList = []
+                for admin in admins:
+                    sendList.append(admin.email())
+                users = Pi.objects.get(pk=pk).user()
+                for user in users:
+                    sendList.append(user.email())
             #Level 2 = All Admins and Pi User
             if (lvl == 2):
-                #User.objects.filter(is_staff = True).email() + Pi.objects.filter(pi__pk = request.pi).user.objects.filter(is_active = True)
+                admins = User.objects.filter(is_staff = True)
                 sendList = []
+                for admin in admins:
+                    sendList.append(admin.email())
+                #sendList.append(Pi.objects.get(pk=pk).user.objects.filter(is_active = True))
             #Level 3 = All Admins
             if (lvl == 3):
-                #User.objects.filter(is_staff = True).email()
+                admins = User.objects.filter(is_staff = True)
                 sendList = []
+                for admin in admins:
+                    sendList.append(admin.email())
             send_mail(
                 "Pi Email",
                 request.data.get('message'),
