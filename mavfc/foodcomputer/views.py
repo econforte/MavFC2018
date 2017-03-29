@@ -326,6 +326,7 @@ class commandsJSON(APIView):
         return HttpResponse(status=200)
 
 class testAPI(APIView):
+
     def get(self, request, pk):
         pi = get_object_or_404(Pi, pk=pk)
         try:
@@ -335,11 +336,18 @@ class testAPI(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            instance = pi.get_current_instance()
-            instanceSer = ExperimentInstanceSerializer(instance, many=True)
-        except ExperimentInstance.DoesNotExist:
+            ctrlUpdate = ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False)
+            ctrlUpdateSer = ControllerUpdateSerializer(ctrlUpdate, many=True)
+        except ControllerUpdate.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        resp = {'instance': instanceSer.data}
+        try:
+            piSer = PiSerializer(pi)
+        except Pi.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        resp = {'pi': piSer.data,
+                'controllerUpdates': ctrlUpdateSer.data,
+                'instance': instanceSer.data}
 
         return Response(resp, status=status.HTTP_200_OK)

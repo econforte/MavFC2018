@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Address, Pi, Device, Data, DeviceType, UnitType, DataType
+from .models import Address, Pi, Device, Data, DeviceType, UnitType, DataType, ControllerUpdate
 
 #Test Case
 class AddressSerializer(serializers.ModelSerializer):
@@ -46,3 +46,8 @@ class PiSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pi
         fields = ('name', 'pi_SN', 'manual_control')
+
+class ControllerUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ControllerUpdate
+        fields = '__all__'
