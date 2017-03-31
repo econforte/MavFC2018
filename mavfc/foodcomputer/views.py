@@ -349,22 +349,44 @@ class commandsJSON(APIView):
 class testAPI(APIView):
 
     def get(self, request, pk):
+        resp = {}
         pi = get_object_or_404(Pi, pk=pk)
+        endInstance = pi.get_end_instance()
+        activeInstance = pi.get_active_instance()
+        startInstance = pi.get_start_instance()
         try:
-            instance = pi.get_current_instance()
-            instanceSer = ExperimentInstanceSerializer(instance, many=True)
+            endInstanceSer = ExperimentInstanceSerializer(endInstance, many=True)
+            activeInstanceSer = ExperimentInstanceSerializer(activeInstance, many=True)
+            startInstanceSer = ExperimentInstanceSerializer(startInstance, many=True)
         except ExperimentInstance.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        try:
-            ctrlUpdate = ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False)
-            ctrlUpdateSer = ControllerUpdateSerializer(ctrlUpdate, many=True)
-        except ControllerUpdate.DoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if endInstance:
+            resp['endInstance'] = endInstanceSer.data
+        if activeInstance:
+            resp['activeInstance'] = activeInstanceSer.data
+        if startInstance:
+            resp['startInstance'] = startInstanceSer.data
+
+        # if pi.manual_control and startInstance:
+        #     pi.manual_control = False
+        #     pi.save()
+        # elif (not pi.manual_control) and (not startInstance) and endInstance:
+        #     pi.manual_control = True
+        #     pi.save()
+
         try:
             piSer = PiSerializer(pi)
         except Pi.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        resp = {'pi': piSer.data,
-                'controllerUpdates': ctrlUpdateSer.data,
-                'instance': instanceSer.data}
+        resp['pi'] = piSer.data
+
+        if pi.manual_control:
+            ctrlUpdate = ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False)
+            try:
+                ctrlUpdateSer = ControllerUpdateSerializer(ctrlUpdate, many=True)
+            except ControllerUpdate.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            if ctrlUpdate:
+                resp['controllerUpdates'] = ctrlUpdateSer.data
+
         return Response(resp, status=status.HTTP_200_OK)

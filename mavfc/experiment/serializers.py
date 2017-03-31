@@ -36,6 +36,6 @@ class ExperimentInstanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ExperimentInstance
-        fields = ('id', 'start', 'end', 'current', 'experiment')
+        fields = ('id', 'start', 'end', 'active', 'experiment')
         # fields = '__all__'
         # depth = 1

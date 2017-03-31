@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from .models import Address, Pi, Device, Data, DeviceType, UnitType, DataType, ControllerUpdate
+from experiment.models import ExperimentInstance
+
+from datetime import datetime
 
 #Test Case
 class AddressSerializer(serializers.ModelSerializer):
@@ -47,6 +50,11 @@ class PiSerializer(serializers.ModelSerializer):
         model = Pi
         fields = ('name', 'pi_SN', 'manual_control')
 
+class PiPKSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pi
+        fields = ('pk', 'pi_SN', 'manual_control')
+
 class ControllerUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ControllerUpdate
@@ -55,3 +63,29 @@ class ControllerUpdateSerializer(serializers.ModelSerializer):
 class emailSerializer(serializers.Serializer):
     class Meta:
         fields = ('pi', 'level', 'message')
+
+class PiStateSerializer(serializers.Serializer):
+    controllerUpdates = ControllerUpdateSerializer(many=True, required=False)
+    activeInstance = serializers.IntegerField()
+    pi = PiPKSerializer()
+
+    def updateDB(self):
+        ctrlUpdates = self.controllerUpdates.data
+        if ctrlUpdates:
+            last = ctrlUpdates[0].timestamp
+            for ctrl in ctrlUpdates:
+                if ctrl.timestamp > last:
+                    last = ctrl.timestamp
+            ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False, timestamp__lte=last).update(executed=True)
+
+        activeInstance = self.activeInstance.data
+        pi = self.pi.data
+        newActInst = ExperimentInstance.objects.get(pk=activeInstance)
+        if not newActInst.active:
+            actInst = pi.get_active_instance()[0]
+            actInst.active = False
+            actInst.save()
+            newActInst.active = True
+            newActInst.save()
+
+

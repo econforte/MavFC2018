@@ -66,8 +66,29 @@ class Pi(models.Model):
     def get_list_url(self):
         return reverse('foodcomputer:pi_list')
 
+    def get_active_instance(self):
+        instance = ExperimentInstance.objects.filter(active=True, experiment__pi__pk=self.pk)
+        if instance:
+            return instance
+        else:
+            return None
+
     def get_current_instance(self):
-        instance = ExperimentInstance.objects.filter(Q(current=True, experiment__pi__pk=self.pk) | Q(start__lte=datetime.now(), end__gte=datetime.now(), experiment__pi__pk=self.pk))
+        instance = ExperimentInstance.objects.filter(start__lte=datetime.now(), end__gt=datetime.now(), experiment__pi__pk=self.pk)
+        if instance:
+            return instance
+        else:
+            return None
+
+    def get_start_instance(self):
+        instance = ExperimentInstance.objects.filter(active=False, start__lte=datetime.now(), end__gt=datetime.now(), experiment__pi__pk=self.pk)
+        if instance:
+            return instance
+        else:
+            return None
+
+    def get_end_instance(self):
+        instance = ExperimentInstance.objects.filter(Q(active=True, experiment__pi__pk=self.pk) & (Q(start__gt=datetime.now()) | Q(end__lte=datetime.now())))
         if instance:
             return instance
         else:

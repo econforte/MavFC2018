@@ -103,7 +103,7 @@ class ExperimentInstance(models.Model):
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="instances",)
     start = models.DateTimeField()
     end = models.DateTimeField()
-    current = models.BooleanField(default=False)
+    active = models.BooleanField(default=False)
     
     def __str__(self):
         return self.experiment.name + ': ' + str(self.start) + ' - ' + str(self.end)
