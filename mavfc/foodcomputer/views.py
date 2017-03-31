@@ -331,62 +331,103 @@ class anomalyEmail(APIView):
 
 #----------Server Push-------------
 
-class todoCheckJSON(APIView):
+class ServerPushAPI(APIView):
     # Server Push
     # Long polling idea
-    def get(request, pk):
-        for i in range(60):
-            if something_happened():
-                return http.HttpResponse()
-            time.sleep(1)
-        return http.HttpResponse()
-
-class commandsJSON(APIView):
-    # Server Push
-    def get(request, pk):
-        return HttpResponse(status=200)
-
-class testAPI(APIView):
-
-    def get(self, request, pk):
-        resp = {}
-        pi = get_object_or_404(Pi, pk=pk)
-        endInstance = pi.get_end_instance()
-        activeInstance = pi.get_active_instance()
-        startInstance = pi.get_start_instance()
-        try:
-            endInstanceSer = ExperimentInstanceSerializer(endInstance, many=True)
-            activeInstanceSer = ExperimentInstanceSerializer(activeInstance, many=True)
-            startInstanceSer = ExperimentInstanceSerializer(startInstance, many=True)
-        except ExperimentInstance.DoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        if endInstance:
-            resp['endInstance'] = endInstanceSer.data
-        if activeInstance:
-            resp['activeInstance'] = activeInstanceSer.data
-        if startInstance:
-            resp['startInstance'] = startInstanceSer.data
-
-        # if pi.manual_control and startInstance:
-        #     pi.manual_control = False
-        #     pi.save()
-        # elif (not pi.manual_control) and (not startInstance) and endInstance:
-        #     pi.manual_control = True
-        #     pi.save()
-
-        try:
-            piSer = PiSerializer(pi)
-        except Pi.DoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        resp['pi'] = piSer.data
-
-        if pi.manual_control:
-            ctrlUpdate = ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False)
+    def post(self, request, pk):
+        serializer = PiStateSerializer(data=request.data, many=True)
+        if serializer.is_valid():
+            serializer.updateDB()
+            # Generate Push Response
+            resp = {}
+            pi = get_object_or_404(Pi, pk=pk)
+            endInstance = pi.get_end_instance()
+            activeInstance = pi.get_active_instance()
+            startInstance = pi.get_start_instance()
             try:
-                ctrlUpdateSer = ControllerUpdateSerializer(ctrlUpdate, many=True)
-            except ControllerUpdate.DoesNotExist:
+                endInstanceSer = ExperimentInstanceSerializer(endInstance, many=True)
+                activeInstanceSer = ExperimentInstanceSerializer(activeInstance, many=True)
+                startInstanceSer = ExperimentInstanceSerializer(startInstance, many=True)
+            except ExperimentInstance.DoesNotExist:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
-            if ctrlUpdate:
-                resp['controllerUpdates'] = ctrlUpdateSer.data
+            if endInstance:
+                resp['endInstance'] = endInstanceSer.data
+            if activeInstance:
+                resp['activeInstance'] = activeInstanceSer.data
+            if startInstance:
+                resp['startInstance'] = startInstanceSer.data
 
-        return Response(resp, status=status.HTTP_200_OK)
+            if pi.manual_control and startInstance:
+                pi.manual_control = False
+                pi.save()
+            elif (not pi.manual_control) and (not startInstance) and endInstance:
+                pi.manual_control = True
+                pi.save()
+
+            try:
+                piSer = PiSerializer(pi)
+            except Pi.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            resp['pi'] = piSer.data
+
+            if pi.manual_control:
+                ctrlUpdate = ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False)
+                try:
+                    ctrlUpdateSer = ControllerUpdateSerializer(ctrlUpdate, many=True)
+                except ControllerUpdate.DoesNotExist:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+                if ctrlUpdate:
+                    resp['controllerUpdates'] = ctrlUpdateSer.data
+            else:
+                ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False).update(executed=True)
+
+            return Response(resp, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class testAPI(APIView):
+#
+#     def get(self, request, pk):
+#         resp = {}
+#         pi = get_object_or_404(Pi, pk=pk)
+#         endInstance = pi.get_end_instance()
+#         activeInstance = pi.get_active_instance()
+#         startInstance = pi.get_start_instance()
+#         try:
+#             endInstanceSer = ExperimentInstanceSerializer(endInstance, many=True)
+#             activeInstanceSer = ExperimentInstanceSerializer(activeInstance, many=True)
+#             startInstanceSer = ExperimentInstanceSerializer(startInstance, many=True)
+#         except ExperimentInstance.DoesNotExist:
+#             return Response(status=status.HTTP_400_BAD_REQUEST)
+#         if endInstance:
+#             resp['endInstance'] = endInstanceSer.data
+#         if activeInstance:
+#             resp['activeInstance'] = activeInstanceSer.data
+#         if startInstance:
+#             resp['startInstance'] = startInstanceSer.data
+#
+#         if pi.manual_control and startInstance:
+#             pi.manual_control = False
+#             pi.save()
+#         elif (not pi.manual_control) and (not startInstance) and endInstance:
+#             pi.manual_control = True
+#             pi.save()
+#
+#         try:
+#             piSer = PiSerializer(pi)
+#         except Pi.DoesNotExist:
+#             return Response(status=status.HTTP_400_BAD_REQUEST)
+#         resp['pi'] = piSer.data
+#
+#         if pi.manual_control:
+#             ctrlUpdate = ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False)
+#             try:
+#                 ctrlUpdateSer = ControllerUpdateSerializer(ctrlUpdate, many=True)
+#             except ControllerUpdate.DoesNotExist:
+#                 return Response(status=status.HTTP_400_BAD_REQUEST)
+#             if ctrlUpdate:
+#                 resp['controllerUpdates'] = ctrlUpdateSer.data
+#         else:
+#             ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False).update(executed=True)
+#
+#         return Response(resp, status=status.HTTP_200_OK)
