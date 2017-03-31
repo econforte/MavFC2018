@@ -70,16 +70,16 @@ class PiStateSerializer(serializers.Serializer):
     pi = PiPKSerializer()
 
     def updateDB(self):
+        pi = self.pi.data
         ctrlUpdates = self.controllerUpdates.data
         if ctrlUpdates:
             last = ctrlUpdates[0].timestamp
             for ctrl in ctrlUpdates:
                 if ctrl.timestamp > last:
                     last = ctrl.timestamp
-            ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False, timestamp__lte=last).update(executed=True)
+            ControllerUpdate.objects.filter(device__pi__pk=pi.pk, executed=False, timestamp__lte=last).update(executed=True)
 
         activeInstance = self.activeInstance.data
-        pi = self.pi.data
         newActInst = ExperimentInstance.objects.get(pk=activeInstance)
         if not newActInst.active:
             actInst = pi.get_active_instance()[0]
