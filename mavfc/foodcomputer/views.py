@@ -161,9 +161,11 @@ class DeviceDetail(View):
             else:
                 prestring += "0,0\n"
             for value in data:
-                dataValue = str(value.data_value)
+                dataValue = value.data_value
                 if dataValue < 0:
                     dataValue = 'NA'
+                else:
+                    dataValue = str(dataValue)
                 #prestring += value.timestamp.strftime("%Y-%m-%d %H:%M:%S") + ',' + str(value.data_value) + '\n'
                 prestring += str(value.timestamp).split('+')[0] + ',' + str(dataValue) + '\n'
 
