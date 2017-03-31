@@ -24,7 +24,9 @@ from .serializers import *
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
+
 import collections
+import math
 
 import time
 import csv
@@ -65,14 +67,27 @@ class PiDetail(View):
         time2readings = collections.defaultdict(dict)
         for device in obj.devices.all():
             for value in device.data.all():
-                if not value.is_anomaly:
-                    time2readings[str(value.timestamp)][device.device_type.name] = value.data_value
+                dataValue = value.data_value
+                if float(dataValue) < 0:
+                    dataValue = 'NA'
+                time2readings[str(value.timestamp)][device.device_type.name] = str(dataValue)
+        
+        # taking even sample of numdp data points
+        numdp = 1000
+        times = sorted([x for x in time2readings])
+        ss = len(times)/numdp #static shift value
+        spots = [math.floor(ss*x) for x in range(numdp)]
+        time3readings = collections.defaultdict(dict)
+        for spot in set(spots):
+            time3readings[times[spot]] = time2readings[times[spot]]
+        
+                
         prestring = "date,"+','.join(namelist) + '\n' + ','.join(["0"] + [str(actuator[x]) for x in namelist]) + '\n'
-        for t in time2readings:
+        for t in time3readings:
             temp = [t.split('+')[0]]
             for name in namelist:
-                if name in time2readings[t]:
-                    temp.append(str(time2readings[t][name]))
+                if name in time3readings[t]:
+                    temp.append(str(time3readings[t][name]))
                 else:
                     temp.append('NA')
             prestring += ','.join(temp) + '\n'
@@ -146,8 +161,11 @@ class DeviceDetail(View):
             else:
                 prestring += "0,0\n"
             for value in data:
+                dataValue = str(value.data_value)
+                if dataValue < 0:
+                    dataValue = 'NA'
                 #prestring += value.timestamp.strftime("%Y-%m-%d %H:%M:%S") + ',' + str(value.data_value) + '\n'
-                prestring += str(value.timestamp).split('+')[0] + ',' + str(value.data_value) + '\n'
+                prestring += str(value.timestamp).split('+')[0] + ',' + str(dataValue) + '\n'
 
         return render(
             request,
