@@ -44,7 +44,7 @@
             {% if cancel_url %}
                 <a href="{{ cancel_url }}" class="btn btn-default">Cancel</a>
             {% elif obj.get_absolute_url %}
-                <a href="{{ obj.get_absolute_url }}" class="btn btn-default" title="Back"><span class="glyphicon glyphicon-step-backward"></span></a>
+                <a href="{{ obj.get_absolute_url }}" class="btn btn-default" title="Back"><span class="glyphicon glyphicon-triangle-left"></span></a>
             {% endif %}
             <button type="submit" class="btn btn-primary pull-right" title="Save"><span class="glyphicon glyphicon-floppy-disk"></span></button>
 
