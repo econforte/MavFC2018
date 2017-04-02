@@ -3,10 +3,10 @@
         <h3>
             {% if clps %}
                 <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
-                    {{ obj.pi.name }}: {{ obj.experiment.name }}
+                    {{ obj.experiment.pi.name }}: {{ obj.experiment.name }}
                 </a>
             {% else %}
-                {{ obj.pi.name }}: {{ obj.experiment.name }}
+                {{ obj.experiment.pi.name }}: {{ obj.experiment.name }}
             {% endif %}
 
             {% if user.is_staff %}
