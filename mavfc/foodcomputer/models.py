@@ -103,6 +103,9 @@ class Pi(models.Model):
     def get_update_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[], pre="Update ")
 
+    def get_delete_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Delete ")
+
     def gen_breadcrumbs(self, bc=[], pre=""):
         if bc == []:
             bc.append(('active', pre+self.name))
