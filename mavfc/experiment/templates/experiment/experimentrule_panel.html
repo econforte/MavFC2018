@@ -32,7 +32,11 @@
             <p><strong>Minute:</strong> {{ obj.minute }}</p>
             <p><strong>Baseline Target:</strong> {{ obj.baseline_target }}</p>
             <p><strong>Baseline Threshold:</strong> {{ obj.get_threshold }}</p>
-            <p><strong>Days:</strong> {{ days }}</p>
+            <p><strong>Days:</strong>
+                    {% for day in obj.days.all %}
+                        {{ day.name }}{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+            </p>
         </div>
         <div class="panel-footer">
             {% if not experimentrule_detail and not clps %}
