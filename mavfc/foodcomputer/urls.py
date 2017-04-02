@@ -48,5 +48,5 @@ urlpatterns = [
     # ex: /food-computer/api/v1/todo/(foodComputerKey.pk)
     url(r'^api/v1/push/(?P<pk>[0-9]+)/$', ServerPushAPI.as_view(), name='api_pi_push'),
     # ex: /food-computer/api/v1/getCommands/(foodComputerKey.pk)
-    # url(r'^api/v1/test/(?P<pk>[0-9]+)/$', testAPI.as_view(), name='api_test'),
+    url(r'^api/v1/test/(?P<pk>[0-9]+)/$', testAPI.as_view(), name='api_test'),
 ]

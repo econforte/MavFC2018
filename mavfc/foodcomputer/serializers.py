@@ -66,7 +66,7 @@ class emailSerializer(serializers.Serializer):
 
 class PiStateSerializer(serializers.Serializer):
     controllerUpdates = ControllerUpdateSerializer(many=True, required=False)
-    activeInstance = serializers.IntegerField()
+    activeInstance = serializers.IntegerField(required=False)
     pi = PiPKSerializer()
 
     def updateDB(self):
@@ -79,13 +79,14 @@ class PiStateSerializer(serializers.Serializer):
                     last = ctrl.timestamp
             ControllerUpdate.objects.filter(device__pi__pk=pi.pk, executed=False, timestamp__lte=last).update(executed=True)
 
-        activeInstance = self.activeInstance.data
-        newActInst = ExperimentInstance.objects.get(pk=activeInstance)
-        if not newActInst.active:
-            actInst = pi.get_active_instance()[0]
-            actInst.active = False
-            actInst.save()
-            newActInst.active = True
-            newActInst.save()
+        if self.activeInstance.data:
+            activeInstance = self.activeInstance.data
+            newActInst = ExperimentInstance.objects.get(pk=activeInstance)
+            if not newActInst.active:
+                actInst = pi.get_active_instance()[0]
+                actInst.active = False
+                actInst.save()
+                newActInst.active = True
+                newActInst.save()
 
 
