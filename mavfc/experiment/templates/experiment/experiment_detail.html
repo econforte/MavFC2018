@@ -32,7 +32,7 @@
                         <div class="panel-heading">
                             <h3 style="margin-top:10px">Rules List
                                 {% if user.is_staff %}
-                                    <a href="{% url 'experiment:experimentrule_create' %}" title="Create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+                                    <a href="{% url 'experiment:experimentrule_create' obj.pk %}" title="Create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
                                 {% endif %}
                             </h3>
                         </div>

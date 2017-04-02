@@ -108,12 +108,42 @@ class ExperimentRuleDetail(View):
              'parent_template': self.parent_template})
 
 
-class ExperimentRuleCreate(ObjectCreateMixin, View):
+class ExperimentRuleCreate(View):
     form_class = ExperimentRuleForm
+    parent_model = Experiment
     template_name = 'experiment/create_page.html'
-    form_url = reverse_lazy('experiment:experimentrule_create')
     parent_template = None
     model_name = 'Experiment Rule'
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        parent = get_object_or_404(self.parent_model, pk=pk)
+        return render(
+            request,
+            self.template_name,
+            {'form': self.form_class(pi_pk=parent.pi.pk, isupdate = False),
+             'form_url': reverse('experiment:experimentrule_create', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
+
+
+    @method_decorator(login_required)
+    def post(self, request, pk):
+        parent = get_object_or_404(self.parent_model, pk=pk)
+        bound_form = self.form_class(request.POST, pi_pk=parent.pi.pk, isupdate = False)
+        if bound_form.is_valid():
+            new_obj = bound_form.save(commit = False)
+            new_obj.experiment = parent
+            new_obj.save()
+            success(request, self.model_name + ' was successfully added.')
+            return redirect(new_obj)
+        return render(
+            request,
+            self.template_name,
+            {'form': bound_form,
+             'form_url': reverse('experiment:experimentrule_create', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
 
 
 class ExperimentRuleUpdate(ObjectUpdateMixin, View):
@@ -122,6 +152,34 @@ class ExperimentRuleUpdate(ObjectUpdateMixin, View):
     template_name = 'experiment/update_page.html'
     parent_template = None
     model_name = 'Experiment Rule'
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        return render(
+            request,
+            self.template_name,
+            {'form': self.form_class(instance=obj, pi_pk = obj.experiment.pi.pk, isupdate = True),
+             'obj': obj,
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
+
+    @method_decorator(login_required)
+    def post(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        bound_form = self.form_class(request.POST, instance=obj, pi_pk = obj.experiment.pi.pk, isupdate = True)
+        if bound_form.is_valid():
+            new_obj = bound_form.save()
+            success(request, self.model_name + ' was successfully updated.')
+            return redirect(new_obj)
+        return render(
+            request,
+            self.template_name,
+            {'form': bound_form,
+             'obj': obj,
+             'model_name': self.model.__name__,
+             'parent_template': self.parent_template})
+
 
 
 class ExperimentRuleDelete(ObjectDeleteMixin, View):

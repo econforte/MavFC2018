@@ -19,8 +19,8 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/delete/$', ExperimentDelete.as_view(), name='experiment_delete'),
     # ex: /experiment/(experiment.pk)/
     url(r'^rule/(?P<pk>[0-9]+)/$', ExperimentRuleDetail.as_view(), name='experimentrule_detail'),
-    # ex: /experiment/create/
-    url(r'^rule/create/$', ExperimentRuleCreate.as_view(), name='experimentrule_create'),
+    # ex: /experiment/rule/create/
+    url(r'^rule/create/(?P<pk>[0-9]+)/$', ExperimentRuleCreate.as_view(), name='experimentrule_create'),
     # ex: /experiment/(experiment.pk)/update/
     url(r'^rule/(?P<pk>[0-9]+)/update/$', ExperimentRuleUpdate.as_view(), name='experimentrule_update'),
     # ex: /experiment/(experiment.pk)/delete/
