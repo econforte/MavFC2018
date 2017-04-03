@@ -357,10 +357,35 @@ class ServerPushAPI(APIView):
     def post(self, request, pk):
         serializer = PiStateSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.updateDB()
+            # serializer.updateDB()
+            data = request.data
+            if str(data['pi']['pk']) == pk:
+                pi = get_object_or_404(Pi, pk=pk)
+            else:
+                return Response({'Error':"PK doesn't match"}, status=status.HTTP_400_BAD_REQUEST)
+            if data['pi']['pi_SN'] != pi.pi_SN:
+                return Response({'Error': "Serial number doesn't match"}, status=status.HTTP_400_BAD_REQUEST)
+            if 'controllerUpdates' in data:
+                last = data['controllerUpdates'][0]['timestamp']
+                for ctrl in data['controllerUpdates']:
+                    if ctrl['timestamp'] > last:
+                        last = ctrl['timestamp']
+                ControllerUpdate.objects.filter(device__pi__pk=pi.pk, executed=False, timestamp__lte=last).update(executed=True)
+
+            if 'activeInstance' in data:
+                activeInstance = data['activeInstance']
+                newActInst = ExperimentInstance.objects.get(pk=activeInstance)
+                if not newActInst.active:
+                    actInst = pi.get_active_instance()[0]
+                    actInst.active = False
+                    actInst.save()
+                    newActInst.active = True
+                    newActInst.save()
+
+
+
             # Generate Push Response
             resp = {}
-            pi = get_object_or_404(Pi, pk=pk)
             endInstance = pi.get_end_instance()
             activeInstance = pi.get_active_instance()
             startInstance = pi.get_start_instance()

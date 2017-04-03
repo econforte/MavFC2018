@@ -69,24 +69,30 @@ class PiStateSerializer(serializers.Serializer):
     activeInstance = serializers.IntegerField(required=False)
     pi = PiPKSerializer()
 
-    def updateDB(self):
-        pi = self.pi.data
-        ctrlUpdates = self.controllerUpdates.data
-        if ctrlUpdates:
-            last = ctrlUpdates[0].timestamp
-            for ctrl in ctrlUpdates:
-                if ctrl.timestamp > last:
-                    last = ctrl.timestamp
-            ControllerUpdate.objects.filter(device__pi__pk=pi.pk, executed=False, timestamp__lte=last).update(executed=True)
-
-        if self.activeInstance.data:
-            activeInstance = self.activeInstance.data
-            newActInst = ExperimentInstance.objects.get(pk=activeInstance)
-            if not newActInst.active:
-                actInst = pi.get_active_instance()[0]
-                actInst.active = False
-                actInst.save()
-                newActInst.active = True
-                newActInst.save()
+    # def update(self, instance, validated_data):
+    #     instance.pi = validated_data.get('pi', instance.pi)
+    #     instance.controllerUpdates = validated_data.get('controllerUpdates', instance.controllerUpdates)
+    #     instance.activeInstance = validated_data.get('activeInstance', instance.activeInstance)
+    #
+    #
+    # def updateDB(self):
+    #     pi = self.data.pi
+    #     ctrlUpdates = self.controllerUpdates.data
+    #     if ctrlUpdates:
+    #         last = ctrlUpdates[0].timestamp
+    #         for ctrl in ctrlUpdates:
+    #             if ctrl.timestamp > last:
+    #                 last = ctrl.timestamp
+    #         ControllerUpdate.objects.filter(device__pi__pk=pi.pk, executed=False, timestamp__lte=last).update(executed=True)
+    #
+    #     if self.activeInstance.data:
+    #         activeInstance = self.activeInstance.data
+    #         newActInst = ExperimentInstance.objects.get(pk=activeInstance)
+    #         if not newActInst.active:
+    #             actInst = pi.get_active_instance()[0]
+    #             actInst.active = False
+    #             actInst.save()
+    #             newActInst.active = True
+    #             newActInst.save()
 
 
