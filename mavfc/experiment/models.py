@@ -33,6 +33,9 @@ class Experiment(models.Model):
     def get_update_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[], pre="Update ")
 
+    def get_delete_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Delete ")
+
     def get_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[])
 

@@ -4,6 +4,14 @@
 	{{ block.super }} - Add New {{ model_name }}
 {% endblock %}
 
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="/home/">Home</a></li>
+        <li><a href="/experiment/list/">Experiment List</a></li>
+		<li class="active">Add New Experiment</li>
+	</ul>
+{% endblock %}
+
 {% block app_nav %}
 	{{ block.super }}
 {% endblock %}
