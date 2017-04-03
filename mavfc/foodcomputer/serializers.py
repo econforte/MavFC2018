@@ -48,7 +48,7 @@ class DeviceCurrentValueSerializer(serializers.ModelSerializer):
 class PiSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pi
-        fields = ('name', 'pi_SN', 'manual_control')
+        fields = '__all__'
 
 class PiPKSerializer(serializers.ModelSerializer):
     class Meta:
