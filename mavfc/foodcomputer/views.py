@@ -83,8 +83,7 @@ class PiChart(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-        form_class = AdvancedOptionsForm()
-        
+        form_class = AdvancedOptionsForm(request=request, pk=pk)
         
         cdp = ChartDataPreparation()
         namelist = cdp.getNameList(obj)
@@ -105,7 +104,7 @@ class PiChart(View):
     
     def post(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-        form_class = AdvancedOptionsForm(request.POST)
+        form_class = AdvancedOptionsForm(request=request.POST, pk=pk)
         
         cdp = ChartDataPreparation()
         namelist = cdp.getNameList(obj)
@@ -160,8 +159,7 @@ class PiData(View):
             for value in device.data.all():
                 writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
         return response
-
-
+    
 
 class DeviceDetail(View):
     model = Device

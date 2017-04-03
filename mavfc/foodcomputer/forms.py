@@ -2,6 +2,10 @@ from django import forms
 # from django.core.exceptions import ValidationError
 
 from .models import Pi, Device
+from django.forms.widgets import CheckboxSelectMultiple, DateInput,\
+    SelectDateWidget, TimeInput
+import datetime
+from django.contrib.admin.widgets import AdminDateWidget
 
 
 class PiForm(forms.ModelForm):
@@ -25,11 +29,35 @@ class DeviceForm(forms.ModelForm):
         model = Device
         fields = '__all__'
         
-class AdvancedOptionsForm(forms.Form):
-    start_date = forms.DateField(input_formats="%Y-%m-%d %H:%M:%S", widget=forms.SelectDateWidget())
-    end_date = forms.DateField(input_formats="%Y-%m-%d %H:%M:%S", widget=forms.SelectDateWidget())
-    show_anomalies = forms.BooleanField()
-    devices = forms.MultipleChoiceField()
+class AdvancedOptionsForm(forms.Form):    
+    start_date = forms.DateField(required=False,\
+                                 label="Start Date",\
+                                 widget=SelectDateWidget(years=range(2015, datetime.date.today().year)))
+    start_time = forms.TimeField(required=False,\
+                                 label="Start Time",\
+                                 widget=forms.TimeInput(format='%H:%M:%S'))
+    
+    end_date = forms.SplitDateTimeField(required=False,\
+                                        label="End Date",\
+                                        widget=SelectDateWidget(years=range(2015, datetime.date.today().year)))
+    end_time = forms.TimeField(required=False,\
+                               label="End Time",\
+                               widget=forms.TimeInput(format='%H:%M:%S'))
+    
+    show_anomalies = forms.BooleanField(label='Show Anomalies')
+    devices = forms.ModelMultipleChoiceField(required=False,\
+                                        label='Available Sensors and Actuators',\
+                                        queryset=Device.objects.all(),\
+                                        widget=CheckboxSelectMultiple())
+        
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request')
+        self.pk = kwargs.pop('pk')
+        self.user = request.user
+        super(AdvancedOptionsForm, self).__init__(*args, **kwargs)
+        
+        
+
     
     #def __init__(self, *args, **kwargs):
         #self.pi_pk = kwargs.pop('pi_pk')

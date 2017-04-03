@@ -1,4 +1,15 @@
 <form method="post">
-	{{ advanced_options_form }}
-	<input type="submit" value="Submit" />
+	{% for field in advanced_options_form %}
+		<div class="fieldWrapper">
+				<p><strong><font size="4">{{ field.label }}</font>&emsp;&emsp;{{ field }}</strong>
+				{% if "Time" in field.label %}
+					<strong><font size="3">&emsp;(00:00:00)</font></strong>
+				{% endif %}
+				</p>
+				<p></p>
+		</div>
+	{% endfor %}
+	<div>
+		<button type="submit" class="submit-with-icon"><strong>Submit&ensp;</strong><span class="glyphicon glyphicon-ok"></span></button>
+	</div>
 </form>
