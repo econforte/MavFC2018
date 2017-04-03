@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.views.generic import View
+from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse_lazy
 # from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.decorators import login_required
@@ -22,6 +23,7 @@ from experiment.serializers import ExperimentInstanceSerializer
 from experiment.models import ExperimentInstance
 from .serializers import *
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
+from .utils import ChartDataPreparation
 from .models import *
 from .forms import *
 
@@ -55,42 +57,13 @@ class PiDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-
-        #creating new obj variable that is just a string to print to the page
-        namelist = [device.device_type.name for device in obj.devices.all()]
-        actuator = {} # is the device an actuator   [name] = 0 or 1
-        for device in obj.devices.all():
-            if device.device_type.is_controller:
-                actuator[device.device_type.name] = 1
-            else:
-                actuator[device.device_type.name] = 0
-        time2readings = collections.defaultdict(dict)
-        for device in obj.devices.all():
-            for value in device.data.all():
-                dataValue = value.data_value
-                if float(dataValue) < 0:
-                    dataValue = 'NA'
-                time2readings[str(value.timestamp)][device.device_type.name] = str(dataValue)
         
-        # taking even sample of numdp data points
-        numdp = 100
-        times = sorted([x for x in time2readings])
-        ss = len(times)/numdp #static shift value
-        spots = [math.floor(ss*x) for x in range(numdp)]
-        time3readings = collections.defaultdict(dict)
-        for spot in set(spots):
-            time3readings[times[spot]] = time2readings[times[spot]]
-        
-                
-        prestring = "date,"+','.join(namelist) + '\n' + ','.join(["0"] + [str(actuator[x]) for x in namelist]) + '\n'
-        for t in time3readings:
-            temp = [t.split('+')[0]]
-            for name in namelist:
-                if name in time3readings[t]:
-                    temp.append(str(time3readings[t][name]))
-                else:
-                    temp.append('NA')
-            prestring += ','.join(temp) + '\n'
+        cdp = ChartDataPreparation()
+        namelist = cdp.getNameList(obj)
+        isActuator = cdp.getActuatorDictionary(obj)
+        time2sensor = cdp.initializeDataValues(obj)
+        time2sensor = cdp.subsetDataValues(time2sensor, 200)
+        prestring = cdp.constructTable(time2sensor, namelist, isActuator)
 
         return render(
             request,
@@ -101,6 +74,57 @@ class PiDetail(View):
              'parent_template': self.parent_template})
 
 
+class PiChart(View):
+    model = Pi
+    model_name = 'Food Computer Chart'
+    template_name = 'foodcomputer/pi_data_page.html'
+    parent_template = None
+    
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        form_class = AdvancedOptionsForm()
+        
+        
+        cdp = ChartDataPreparation()
+        namelist = cdp.getNameList(obj)
+        isActuator = cdp.getActuatorDictionary(obj)
+        time2sensor = cdp.initializeDataValues(obj)
+        time2sensor = cdp.subsetDataValues(time2sensor, 200)
+        prestring = cdp.constructTable(time2sensor, namelist, isActuator)
+        
+        return render(\
+                      request,\
+                      self.template_name,\
+                      {'obj':                   obj,\
+                       'prestring':             prestring,\
+                       'form_url':              reverse_lazy(obj),\
+                       'advanced_options_form': form_class,\
+                       'model_name':            self.model_name,\
+                       'parent_template':       self.parent_template})
+    
+    def post(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        form_class = AdvancedOptionsForm(request.POST)
+        
+        cdp = ChartDataPreparation()
+        namelist = cdp.getNameList(obj)
+        isActuator = cdp.getActuatorDictionary(obj)
+        time2sensor = cdp.initializeDataValues(obj)
+        time2sensor = cdp.subsetDataValues(time2sensor, 200)
+        prestring = cdp.constructTable(time2sensor, namelist, isActuator)
+        
+        return render(\
+                      request,\
+                      self.template_name,\
+                      {'obj':                   obj,\
+                       'prestring':             prestring,\
+                       'form_url':              reverse_lazy(obj),\
+                       'advanced_options_form': form_class,\
+                       'model_name':            self.model_name,\
+                       'parent_template':       self.parent_template})
+        
+        
 class PiCreate(ObjectCreateMixin, View):
     form_class = PiForm
     template_name = 'foodcomputer/create_page.html'

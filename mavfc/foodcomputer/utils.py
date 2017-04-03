@@ -4,6 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.messages import success, error
 
+import collections
+import math
+from datetime import datetime
+
 
 class ObjectCreateMixin:
     form_class = None
@@ -96,6 +100,67 @@ class ObjectDeleteMixin:
         success(request, self.model_name+' was successfully deleted.')
         return HttpResponseRedirect(self.success_url)
         
+class ChartDataPreparation:
+    def __init__(self, start_date=None, end_date=None, experiment=None, show_anomalies=False, sensors=None):
+        self.start_date = start_date
+        self.end_date = end_date
+        self.experiment = experiment
+        self.show_anomalies = show_anomalies
+        self.sensors = sensors
+        return
+    
+    def getActuatorDictionary(self, obj):
+        isActuator = {}
+        for device in obj.devices.all():
+            if device.device_type.is_controller:
+                isActuator[device.device_type.name] = 1
+            else:
+                isActuator[device.device_type.name] = 0
+        return isActuator
+    
+    def initializeDataValues(self, obj):
+        time2sensor = collections.defaultdict(dict)
+        for device in obj.devices.all():
+            for value in device.data.all():
+                if self.start_date:
+                    if value.timestamp < self.start_date:
+                        continue
+                if self.end_date:
+                    if value.timestamp > self.end_date:
+                        continue
+                dataValue = value.data_value
+                if float(dataValue) < 0:
+                    if self.show_anomalies:
+                        dataValue = 'NAN'
+                    else:
+                        dataValue = 'NA'
+                time2sensor[str(value.timestamp)][device.device_type.name] = str(dataValue)
+        return time2sensor
+        
+    def subsetDataValues(self, time2sensor, numdp=200):
+        times = sorted([x for x in time2sensor])
+        ss = len(times)/numdp # static shift
+        spots = [math.floor(ss*x) for x in range(numdp)]
+        time3sensor = collections.defaultdict(dict)
+        if len(set(spots)) == 1: return time3sensor
+        for spot in set(spots):
+            time3sensor[times[spot]] = time2sensor[times[spot]]
+        return time3sensor
+    
+    def constructTable(self, time2sensor, namelist, isActuator):
+        prestring = "date," + ','.join(namelist) + '\n' + ','.join(["0"]+[str(isActuator[x]) for x in namelist]) + '\n'
+        for t in time2sensor:
+            temp = [t.split('+')[0]]
+            for name in namelist:
+                if name in time2sensor[t]:
+                    temp.append(str(time2sensor[t][name]))
+                else:
+                    temp.append('NA')
+            prestring += ','.join(temp) + '\n'
+        return prestring
+    
+    def getNameList(self, obj):
+        return [device.device_type.name for device in obj.devices.all() if not self.sensors or device.device_type.name in self.sensors]
         
         
         
