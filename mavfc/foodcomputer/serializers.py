@@ -27,7 +27,7 @@ class CommandsSerializer(serializers.ModelSerializer):
 class dataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Data
-        fields = ('device', 'timestamp', 'data_value', 'is_anomaly')
+        fields = '__all__'
 
 class deviceTypesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,7 +38,7 @@ class deviceTypesSerializer(serializers.ModelSerializer):
 class deviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
-        fields = ('pi', 'device_type', 'device_id', 'residual_threshold')
+        fields = '__all__'
 
 class DeviceCurrentValueSerializer(serializers.ModelSerializer):
     class Meta:
