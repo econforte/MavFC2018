@@ -89,6 +89,7 @@ class ExperimentDelete(ObjectDeleteMixin, View):
     success_url = reverse_lazy('experiment:experiment_list')
     template_name = 'experiment/delete_confirm.html'
     parent_template = None
+    model_name = 'Experiment'
 
 
 class ExperimentRuleDetail(View):
@@ -187,6 +188,7 @@ class ExperimentRuleDelete(ObjectDeleteMixin, View):
     success_url = reverse_lazy('experiment:experiment_list')
     template_name = 'experiment/delete_confirm.html'
     parent_template = None
+    model_name = 'Experiment Rule'
 
 
 class ExperimentInstanceDetail(View):
@@ -227,6 +229,7 @@ class ExperimentInstanceDelete(ObjectDeleteMixin, View):
     success_url = reverse_lazy('experiment:experiment_list')
     template_name = 'experiment/delete_confirm.html'
     parent_template = None
+    model_name = 'Experiment Instance'
 
 
 class ExperimentInstanceAdd(View):
