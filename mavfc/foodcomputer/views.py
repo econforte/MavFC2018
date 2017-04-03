@@ -137,13 +137,15 @@ class PiUpdate(ObjectUpdateMixin, View):
     model = Pi
     template_name = 'foodcomputer/update_page.html'
     parent_template=None
+    model_name = 'Food Computer'
 
 
 class PiDelete(ObjectDeleteMixin, View):
     model = Pi
-    success_url = reverse_lazy('foodcomputer:piList')
+    success_url = reverse_lazy('foodcomputer:pi_list')
     template_name = 'foodcomputer/delete_confirm.html'
     parent_template=None
+    model_name = 'Food Computer'
 
 
 class PiData(View):
@@ -213,13 +215,15 @@ class DeviceUpdate(ObjectUpdateMixin, View):
     model = Device
     template_name = 'foodcomputer/update_page.html'
     parent_template = None
+    model_name = 'Device'
 
 
 class DeviceDelete(ObjectDeleteMixin, View):
     model = Device
-    success_url = reverse_lazy('foodcomputer:piList')
+    success_url = reverse_lazy('foodcomputer:pi_list')
     template_name = 'foodcomputer/delete_confirm.html'
     parent_template = None
+    model_name = 'Device'
 
 
 class DeviceData(View):
@@ -259,6 +263,7 @@ class JSONResponse(HttpResponse):
 #----------Pi Send-------------
 
 class initPi(APIView):
+
     def post(self, request):
         # Post JSON Structure
         #       {
