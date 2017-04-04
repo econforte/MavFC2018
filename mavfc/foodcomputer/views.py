@@ -29,6 +29,7 @@ from .forms import *
 
 import collections
 import math
+import datetime
 
 import time
 import csv
@@ -97,31 +98,39 @@ class PiChart(View):
                       self.template_name,\
                       {'obj':                   obj,\
                        'prestring':             prestring,\
-                       'form_url':              reverse_lazy(obj),\
+                       'form_url':              reverse("foodcomputer:pi_chart", kwargs={'pk':pk}),\
                        'advanced_options_form': form_class,\
                        'model_name':            self.model_name,\
                        'parent_template':       self.parent_template})
     
     def post(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-        form_class = AdvancedOptionsForm(request=request.POST, pk=pk)
-        
+        form_class = AdvancedOptionsForm(request.POST, request=request, pk=pk)
         cdp = ChartDataPreparation()
+        
+        if form_class.is_valid():
+            cdp = ChartDataPreparation(start_date=datetime.datetime.strptime(form_class.cleaned_data['start_date'], '%Y-%m-%dT%H:%M'),\
+                                       end_date=datetime.datetime.strptime(form_class.cleaned_data['end_date'], '%Y-%m-%dT%H:%M'),\
+                                       show_anomalies=form_class.cleaned_data['show_anomalies'],
+                                       sensors=form_class.cleaned_data['devices'])
+                                       
         namelist = cdp.getNameList(obj)
         isActuator = cdp.getActuatorDictionary(obj)
         time2sensor = cdp.initializeDataValues(obj)
         time2sensor = cdp.subsetDataValues(time2sensor, 200)
         prestring = cdp.constructTable(time2sensor, namelist, isActuator)
-        
+            
         return render(\
                       request,\
                       self.template_name,\
                       {'obj':                   obj,\
                        'prestring':             prestring,\
-                       'form_url':              reverse_lazy(obj),\
+                       'form_url':              reverse("foodcomputer:pi_chart", kwargs={'pk':pk}),\
                        'advanced_options_form': form_class,\
                        'model_name':            self.model_name,\
                        'parent_template':       self.parent_template})
+            
+            
         
         
 class PiCreate(ObjectCreateMixin, View):

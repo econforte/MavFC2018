@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.messages import success, error
 
+from .models import Data, Device
 import collections
 import math
 from datetime import datetime
@@ -101,12 +102,17 @@ class ObjectDeleteMixin:
         return HttpResponseRedirect(self.success_url)
         
 class ChartDataPreparation:
-    def __init__(self, start_date=None, end_date=None, experiment=None, show_anomalies=False, sensors=None):
+    def __init__(self, start_date=datetime.min, end_date=datetime.now(), experiment=None, show_anomalies=False, sensors=None):
         self.start_date = start_date
         self.end_date = end_date
         self.experiment = experiment
         self.show_anomalies = show_anomalies
         self.sensors = sensors
+        return
+    
+    def getDates(self, experiment):
+        self.start_date=None
+        self.end_date=None  
         return
     
     def getActuatorDictionary(self, obj):
@@ -120,21 +126,27 @@ class ChartDataPreparation:
     
     def initializeDataValues(self, obj):
         time2sensor = collections.defaultdict(dict)
-        for device in obj.devices.all():
-            for value in device.data.all():
-                if self.start_date:
-                    if value.timestamp < self.start_date:
-                        continue
-                if self.end_date:
-                    if value.timestamp > self.end_date:
-                        continue
-                dataValue = value.data_value
-                if float(dataValue) < 0:
-                    if self.show_anomalies:
-                        dataValue = 'NAN'
-                    else:
-                        dataValue = 'NA'
-                time2sensor[str(value.timestamp)][device.device_type.name] = str(dataValue)
+        if self.sensors:            
+            for device in self.sensors:
+                for value in Data.objects.filter(device=device, timestamp__gte=self.start_date, timestamp__lte=self.end_date):
+                    dataValue = value.data_value
+                    if float(dataValue) < 0:
+                        if self.show_anomalies:
+                            dataValue = 'NAN'
+                        else:
+                            dataValue = 'NA'
+                    time2sensor[str(value.timestamp)][device.device_type.name] = str(dataValue)
+        else:
+            for device in obj.devices.all():
+                for value in Data.objects.filter(device=device, timestamp__gte=self.start_date, timestamp__lte=self.end_date):
+                    dataValue = value.data_value
+                    if float(dataValue) < 0:
+                        if self.show_anomalies:
+                            dataValue = 'NAN'
+                        else:
+                            dataValue = 'NA'
+                    time2sensor[str(value.timestamp)][device.device_type.name] = str(dataValue)
+            
         return time2sensor
         
     def subsetDataValues(self, time2sensor, numdp=200):
@@ -160,7 +172,10 @@ class ChartDataPreparation:
         return prestring
     
     def getNameList(self, obj):
-        return [device.device_type.name for device in obj.devices.all() if not self.sensors or device.device_type.name in self.sensors]
+        device_names = obj.devices.all()
+        if self.sensors:
+            device_names = self.sensors
+        return [device.device_type.name for device in device_names]
         
         
         

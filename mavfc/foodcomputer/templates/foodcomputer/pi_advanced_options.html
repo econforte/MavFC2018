@@ -1,12 +1,12 @@
-<form method="post">
+
+<form active="{{ form_url }}" method="post">
+	{{ fm.non_field_errors }}
+	{% csrf_token %}
 	{% for field in advanced_options_form %}
 		<div class="fieldWrapper">
+		{{ field.errors }}
 				<p><strong><font size="4">{{ field.label }}</font>&emsp;&emsp;{{ field }}</strong>
-				{% if "Time" in field.label %}
-					<strong><font size="3">&emsp;(00:00:00)</font></strong>
-				{% endif %}
 				</p>
-				<p></p>
 		</div>
 	{% endfor %}
 	<div>
