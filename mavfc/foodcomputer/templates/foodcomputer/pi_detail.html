@@ -44,7 +44,7 @@
 		                                    <div class="row" style="margin-top:5px">
 		                                        {% for device in obj.devices.all %}
 		                                            <div class="col-md-6">
-		                                                {% include "foodcomputer/device_panel.html" %}
+		                                                {% include "foodcomputer/device_panel.html" with dp_pi_key=obj.pk %}
 		                                            </div>
 		                                        {% endfor %}
 		                                    </div>
