@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'foodcomputer',
     'user',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
