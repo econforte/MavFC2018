@@ -17,7 +17,8 @@ from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from rest_framework.authtoken.models import Token
 
@@ -280,15 +281,9 @@ class JSONResponse(HttpResponse):
 #----------Pi Send-------------
 
 
-# class InitAuth(APIView):
-#
-#     def post(self):
-#
-#         user = User(username=)
-#         Token.objects.get_or_create(user=user)
-
-
 class initPi(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         # Post JSON Structure
@@ -308,6 +303,9 @@ class initPi(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class initDevices(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         # Post JSON Structure
         #       [
@@ -331,6 +329,9 @@ class initDevices(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class deviceData(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         # Post JSON Structure
         #       [
@@ -354,6 +355,9 @@ class deviceData(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class getDeviceTypes(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request):
         try:
             devicetypes = DeviceType.objects.all()
@@ -363,6 +367,9 @@ class getDeviceTypes(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class anomalyEmail(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         # Post JSON Structure
         #   {
@@ -409,6 +416,9 @@ class anomalyEmail(APIView):
 #----------Server Push-------------
 
 class ServerPushAPI(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    
     # Server Push
     # Long polling idea
     def post(self, request, pk):
