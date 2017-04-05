@@ -23,7 +23,7 @@ from experiment.serializers import ExperimentInstanceSerializer
 from experiment.models import ExperimentInstance
 from .serializers import *
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
-from .utils import ChartDataPreparation, DownloadDataPreparation
+from .utils import ChartDataPreparation, DownloadDataPreparation, DeviceDataPreparation
 from .models import *
 from .forms import *
 
@@ -71,6 +71,7 @@ class PiDetail(View):
             self.template_name,
             {'obj': obj,
              'prestring': prestring,
+             'height': '700px',
              'model_name': self.model_name,
              'parent_template': self.parent_template})
 
@@ -98,6 +99,7 @@ class PiChart(View):
                       self.template_name,\
                       {'obj':                   obj,\
                        'prestring':             prestring,\
+                       'height':                '700px',\
                        'form_url':              reverse("foodcomputer:pi_chart", kwargs={'pk':pk}),\
                        'advanced_options_form': form_class,\
                        'model_name':            self.model_name,\
@@ -107,6 +109,7 @@ class PiChart(View):
         obj = get_object_or_404(self.model, pk=pk)
         form_class = AdvancedOptionsForm(request.POST, request=request, pk=pk)
         cdp = ChartDataPreparation()
+        height = '700px'
         
         if form_class.is_valid():
             cdp = ChartDataPreparation(start_date=datetime.datetime.strptime(form_class.cleaned_data['start_date'], '%Y-%m-%dT%H:%M'),\
@@ -116,6 +119,7 @@ class PiChart(View):
                                        
         namelist = cdp.getNameList(obj)
         isActuator = cdp.getActuatorDictionary(obj)
+        if not 0 in [isActuator[x] for x in isActuator]: height = "200px"
         time2sensor = cdp.initializeDataValues(obj)
         time2sensor = cdp.subsetDataValues(time2sensor, 200)
         prestring = cdp.constructTable(time2sensor, namelist, isActuator)
@@ -125,6 +129,7 @@ class PiChart(View):
                       self.template_name,\
                       {'obj':                   obj,\
                        'prestring':             prestring,\
+                       'height':                height,\
                        'form_url':              reverse("foodcomputer:pi_chart", kwargs={'pk':pk}),\
                        'advanced_options_form': form_class,\
                        'model_name':            self.model_name,\
@@ -185,32 +190,22 @@ class DeviceDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        height = "700px"
 
-        #creating new obj variable that is just a string to print to the page
-        data = obj.data.all()
-        prestring = ""
-        if len(data) > 0:
-            dname = data[0].device.device_type.name
-            isact = data[0].device.device_type.is_controller
-            prestring = "date," + dname + '\n'
-            if isact:
-                prestring += "0,1\n"
-            else:
-                prestring += "0,0\n"
-            for value in data:
-                dataValue = value.data_value
-                if dataValue < 0:
-                    dataValue = 'NA'
-                else:
-                    dataValue = str(dataValue)
-                #prestring += value.timestamp.strftime("%Y-%m-%d %H:%M:%S") + ',' + str(value.data_value) + '\n'
-                prestring += str(value.timestamp).split('+')[0] + ',' + str(dataValue) + '\n'
+        ddp = DeviceDataPreparation(obj)
+        time2sensor = ddp.initializeDeviceDataValues(obj)
+        time2sensor = ddp.subsetDataValues(time2sensor)
+        prestring = ddp.constructTable(time2sensor, numdp=200)
+        
+        if obj.device_type.is_controller:
+            height = "200xp"
 
         return render(
             request,
             self.template_name,
             {'device': obj,
              'prestring': prestring,
+             'height': height,
              'model_name': self.model_name,
              'parent_template': self.parent_template})
 
@@ -247,7 +242,7 @@ class DeviceData(View):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="food_computer_device_'+device.device_type.name+'_data.csv"'
         writer = csv.writer(response)
-        writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
+        writer.writerow(['Device Name', 'Date', 'Value', 'Is Anomily'])
         for value in device.data.all():
             writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
         return response

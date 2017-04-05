@@ -208,7 +208,7 @@ function drawChart(){
 								
 				var ds = dataSubset(data, column);
 				var y = d3.scale.linear().range([height, 0])
-			    	.domain([ (d3.min(ds, function(d) { return d[column]; }))*0.85, d3.max(ds, function (d) { return d[column]; }) ]);
+			    	.domain([ (d3.min(ds, function(d) { return d[column]; }))*0.95, (d3.max(ds, function (d) { return d[column]; }))*1.05 ]);
 			    var yAxis = d3.svg.axis().scale(y)
 			    	.orient(yside).ticks(8);
 			    var yline = d3.svg.line()

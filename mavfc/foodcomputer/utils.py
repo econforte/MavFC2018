@@ -101,8 +101,54 @@ class ObjectDeleteMixin:
         success(request, self.model_name+' was successfully deleted.')
         return HttpResponseRedirect(self.success_url)
         
+
+class DeviceDataPreparation():
+    def __init__(self, obj):
+        self.device_name = self.deviceName(obj)
+        self.is_actuator = self.isController(obj)
+    
+    def deviceName(self, obj):
+        return obj.device_type.name
+    
+    def isController(self, obj):
+        return obj.device_type.is_controller
+    
+    def initializeDeviceDataValues(self, obj):
+        time2sensor = {}
+        for value in obj.data.all():
+            dataValue = value.data_value
+            if dataValue < 0:
+                dataValue = 'NA'
+            else:
+                dataValue = str(dataValue)
+            time2sensor[str(value.timestamp)] = dataValue
+        return time2sensor
+    
+    def subsetDataValues(self, time2sensor, numdp=200):
+        times = sorted([x for x in time2sensor])
+        ss = len(times)/numdp # static shift
+        spots = [math.floor(ss*x) for x in range(numdp)]
+        time3sensor = collections.defaultdict(dict)
+        if len(set(spots)) == 1: return time3sensor
+        for spot in set(spots):
+            time3sensor[times[spot]] = time2sensor[times[spot]]
+        return time3sensor            
+    
+    def constructTable(self, time2sensor, numdp = 200):
+        prestring = "date," + self.device_name + '\n'
+        if self.is_actuator:
+            prestring += "0,1\n"
+        else:
+            prestring += "0,0\n"
+            
+        for time in sorted([x for x in time2sensor]):
+            prestring += str(time).split('+')[0] + ',' + str(time2sensor[time]) + '\n'
+        return prestring
+    
+    
+
         
-class ChartDataPreparation:
+class ChartDataPreparation():
     def __init__(self, start_date=datetime.min, end_date=datetime.now(), experiment=None, show_anomalies=False, sensors=None):
         self.start_date = start_date
         self.end_date = end_date
@@ -203,6 +249,8 @@ class DownloadDataPreparation():
                 else:
                     temp.append('NA')
             yield temp
+            
+        
     
         
         
