@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'foodcomputer',
     'user',
     'rest_framework',
+    'homepage',
 ]
 
 MIDDLEWARE = [
@@ -145,7 +146,7 @@ SITE_ID = 1
 
 from django.core.urlresolvers import reverse_lazy
 
-LOGIN_REDIRECT_URL = '/home/'
+LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = reverse_lazy('dj-auth:login')
 LOGOUT_URL = reverse_lazy('dj-auth:logout')
 
