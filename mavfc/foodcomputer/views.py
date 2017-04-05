@@ -91,6 +91,7 @@ class PiChart(View):
         namelist = cdp.getNameList(obj)
         isActuator = cdp.getActuatorDictionary(obj)
         time2sensor = cdp.initializeDataValues(obj)
+        downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator).split('\n') #####
         time2sensor = cdp.subsetDataValues(time2sensor, 200)
         prestring = cdp.constructTable(time2sensor, namelist, isActuator)
         
@@ -122,6 +123,7 @@ class PiChart(View):
         isActuator = cdp.getActuatorDictionary(obj)
         if not 0 in [isActuator[x] for x in isActuator]: height = "200px"
         time2sensor = cdp.initializeDataValues(obj)
+        downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator).split('\n') #####
         time2sensor = cdp.subsetDataValues(time2sensor, 200)
         prestring = cdp.constructTable(time2sensor, namelist, isActuator)
             
