@@ -23,7 +23,7 @@ from experiment.serializers import ExperimentInstanceSerializer
 from experiment.models import ExperimentInstance
 from .serializers import *
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
-from .utils import ChartDataPreparation
+from .utils import ChartDataPreparation, DownloadDataPreparation
 from .models import *
 from .forms import *
 
@@ -164,11 +164,15 @@ class PiData(View):
         pi = get_object_or_404(Pi, pk=pk)
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="food_computer_data.csv"'
-        writer = csv.writer(response)
-        writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
-        for device in pi.devices.all():
-            for value in device.data.all():
-                writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
+        writer = csv.writer(response, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        #writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
+        
+        ddp = DownloadDataPreparation(pi)
+        writer.writerow(ddp.firstline(pi))
+        writer.writerow(ddp.secondline(pi))
+        time2sensor = ddp.initializeDataValues(pi)
+        for linelist in ddp.downloadFileGenerator(time2sensor):
+            writer.writerow(linelist)
         return response
     
 

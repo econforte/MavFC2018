@@ -101,6 +101,7 @@ class ObjectDeleteMixin:
         success(request, self.model_name+' was successfully deleted.')
         return HttpResponseRedirect(self.success_url)
         
+        
 class ChartDataPreparation:
     def __init__(self, start_date=datetime.min, end_date=datetime.now(), experiment=None, show_anomalies=False, sensors=None):
         self.start_date = start_date
@@ -178,6 +179,31 @@ class ChartDataPreparation:
         return [device.device_type.name for device in device_names]
         
         
+class DownloadDataPreparation():
+    def __init__(self, pi):
+        self.cdp = ChartDataPreparation()
+        self.namelist = self.cdp.getNameList(pi) 
+        
+    def firstline(self, pi):
+        return ['date'] + self.namelist
+    
+    def secondline(self, pi):
+        isActuator = self.cdp.getActuatorDictionary(pi)
+        return ['0'] + [isActuator[x] for x in self.namelist]
+    
+    def initializeDataValues(self, pi):
+        return self.cdp.initializeDataValues(pi)
+    
+    def downloadFileGenerator(self, time2sensor):
+        for time in sorted([x for x in time2sensor]):
+            temp = [time.split('+')[0]]
+            for name in self.namelist:
+                if name in time2sensor[time]:
+                    temp.append(time2sensor[time][name])
+                else:
+                    temp.append('NA')
+            yield temp
+    
         
         
         
