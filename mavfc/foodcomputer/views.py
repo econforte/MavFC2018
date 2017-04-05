@@ -115,7 +115,8 @@ class PiChart(View):
             cdp = ChartDataPreparation(start_date=datetime.datetime.strptime(form_class.cleaned_data['start_date'], '%Y-%m-%dT%H:%M'),\
                                        end_date=datetime.datetime.strptime(form_class.cleaned_data['end_date'], '%Y-%m-%dT%H:%M'),\
                                        show_anomalies=form_class.cleaned_data['show_anomalies'],
-                                       sensors=form_class.cleaned_data['devices'])
+                                       sensors=form_class.cleaned_data['devices'],
+                                       experiment=form_class.cleaned_data['experiments'])
                                        
         namelist = cdp.getNameList(obj)
         isActuator = cdp.getActuatorDictionary(obj)

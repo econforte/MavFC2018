@@ -150,11 +150,23 @@ class DeviceDataPreparation():
         
 class ChartDataPreparation():
     def __init__(self, start_date=datetime.min, end_date=datetime.now(), experiment=None, show_anomalies=False, sensors=None):
-        self.start_date = start_date
-        self.end_date = end_date
+        self.start_date = start_date.replace(tzinfo=None)
+        self.end_date = end_date.replace(tzinfo=None)
         self.experiment = experiment
         self.show_anomalies = show_anomalies
         self.sensors = sensors
+        self.ifExperiment()
+        return
+    
+    def ifExperiment(self):
+        if self.experiment:
+            e_start = self.experiment.start.replace(tzinfo=None)
+            e_end = self.experiment.end.replace(tzinfo=None)
+            
+            if self.start_date < e_start:
+                self.start_date = e_start
+            if self.end_date > e_end:
+                self.end_date = e_end
         return
     
     def getDates(self, experiment):
