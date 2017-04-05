@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.messages import success
 from django.http import HttpResponse
 from django.core.mail import send_mail
+from django.contrib.auth.models import User
 
 # Imports used to serve JSON
 from django.views.decorators.csrf import csrf_exempt
@@ -18,6 +19,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework import permissions
+from rest_framework.authtoken.models import Token
 
 from experiment.serializers import ExperimentInstanceSerializer
 from experiment.models import ExperimentInstance
@@ -277,6 +279,15 @@ class JSONResponse(HttpResponse):
 
 #----------Pi Send-------------
 
+
+# class InitAuth(APIView):
+#
+#     def post(self):
+#
+#         user = User(username=)
+#         Token.objects.get_or_create(user=user)
+
+
 class initPi(APIView):
 
     def post(self, request):
@@ -288,8 +299,12 @@ class initPi(APIView):
         #       }
         serializer = PiSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            pi = serializer.save()
+            user = User.objects.create_user('FC'+pi.pi_SN, password='tempPW'+pi.pi_SN)
+            token = Token.objects.get_or_create(user=user)
+            user.set_password(token[0].key)
+            user.save()
+            return Response({"pi":serializer.data, "token":token[0].key}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class initDevices(APIView):
@@ -420,9 +435,6 @@ class ServerPushAPI(APIView):
                     actInst.save()
                     newActInst.active = True
                     newActInst.save()
-
-
-
             # Generate Push Response
             resp = {}
             endInstance = pi.get_end_instance()
