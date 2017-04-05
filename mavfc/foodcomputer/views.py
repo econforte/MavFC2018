@@ -365,11 +365,8 @@ class ServerPushAPI(APIView):
                 return Response({'Error':"PK doesn't match"}, status=status.HTTP_400_BAD_REQUEST)
             if data['pi']['pi_SN'] != pi.pi_SN:
                 return Response({'Error': "Serial number doesn't match"}, status=status.HTTP_400_BAD_REQUEST)
-            if 'controllerUpdates' in data:
-                last = data['controllerUpdates'][0]['timestamp']
-                for ctrl in data['controllerUpdates']:
-                    if ctrl['timestamp'] > last:
-                        last = ctrl['timestamp']
+            if 'lastControllerUpdateTime' in data:
+                last = data['lastControllerUpdateTime']
                 ControllerUpdate.objects.filter(device__pi__pk=pi.pk, executed=False, timestamp__lte=last).update(executed=True)
 
             if 'activeInstance' in data:

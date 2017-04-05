@@ -65,7 +65,7 @@ class emailSerializer(serializers.Serializer):
         fields = ('pi', 'level', 'message')
 
 class PiStateSerializer(serializers.Serializer):
-    controllerUpdates = ControllerUpdateSerializer(many=True, required=False)
+    lastControllerUpdateTime = serializers.DateTimeField(required=False)
     activeInstance = serializers.IntegerField(required=False)
     pi = PiPKSerializer()
 
