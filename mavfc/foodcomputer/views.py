@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.views.generic import View
+from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse_lazy
 # from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.decorators import login_required
@@ -22,11 +23,13 @@ from experiment.serializers import ExperimentInstanceSerializer
 from experiment.models import ExperimentInstance
 from .serializers import *
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
+from .utils import ChartDataPreparation, DownloadDataPreparation, DeviceDataPreparation
 from .models import *
 from .forms import *
 
 import collections
 import math
+import datetime
 
 import time
 import csv
@@ -55,52 +58,93 @@ class PiDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-
-        #creating new obj variable that is just a string to print to the page
-        namelist = [device.device_type.name for device in obj.devices.all()]
-        actuator = {} # is the device an actuator   [name] = 0 or 1
-        for device in obj.devices.all():
-            if device.device_type.is_controller:
-                actuator[device.device_type.name] = 1
-            else:
-                actuator[device.device_type.name] = 0
-        time2readings = collections.defaultdict(dict)
-        for device in obj.devices.all():
-            for value in device.data.all():
-                dataValue = value.data_value
-                if float(dataValue) < 0:
-                    dataValue = 'NA'
-                time2readings[str(value.timestamp)][device.device_type.name] = str(dataValue)
         
-        # taking even sample of numdp data points
-        numdp = 100
-        times = sorted([x for x in time2readings])
-        ss = len(times)/numdp #static shift value
-        spots = [math.floor(ss*x) for x in range(numdp)]
-        time3readings = collections.defaultdict(dict)
-        for spot in set(spots):
-            time3readings[times[spot]] = time2readings[times[spot]]
-        
-                
-        prestring = "date,"+','.join(namelist) + '\n' + ','.join(["0"] + [str(actuator[x]) for x in namelist]) + '\n'
-        for t in time3readings:
-            temp = [t.split('+')[0]]
-            for name in namelist:
-                if name in time3readings[t]:
-                    temp.append(str(time3readings[t][name]))
-                else:
-                    temp.append('NA')
-            prestring += ','.join(temp) + '\n'
+        cdp = ChartDataPreparation()
+        namelist = cdp.getNameList(obj)
+        isActuator = cdp.getActuatorDictionary(obj)
+        time2sensor = cdp.initializeDataValues(obj)
+        time2sensor = cdp.subsetDataValues(time2sensor, 200)
+        prestring = cdp.constructTable(time2sensor, namelist, isActuator)
 
         return render(
             request,
             self.template_name,
             {'obj': obj,
              'prestring': prestring,
+             'height': '700px',
              'model_name': self.model_name,
              'parent_template': self.parent_template})
 
 
+class PiChart(View):
+    model = Pi
+    model_name = 'Food Computer Chart'
+    template_name = 'foodcomputer/pi_data_page.html'
+    parent_template = None
+    
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        form_class = AdvancedOptionsForm(request=request, pk=pk)
+        
+        cdp = ChartDataPreparation()
+        namelist = cdp.getNameList(obj)
+        isActuator = cdp.getActuatorDictionary(obj)
+        time2sensor = cdp.initializeDataValues(obj)
+        downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator).split('\n') #####
+        time2sensor = cdp.subsetDataValues(time2sensor, 500)
+        prestring = cdp.constructTable(time2sensor, namelist, isActuator)
+        
+        return render(\
+                      request,\
+                      self.template_name,\
+                      {'obj':                   obj,\
+                       'prestring':             prestring,\
+                       'height':                '700px',\
+                       'form_url':              reverse("foodcomputer:pi_chart", kwargs={'pk':pk}),\
+                       'advanced_options_form': form_class,\
+                       'model_name':            self.model_name,\
+                       'parent_template':       self.parent_template})
+    
+    def post(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        form_class = AdvancedOptionsForm(request.POST, request=request, pk=pk)
+        cdp = ChartDataPreparation()
+        height = '900px'
+        
+        if form_class.is_valid():
+            cdp = ChartDataPreparation(start_date=datetime.datetime.strptime(form_class.cleaned_data['start_date'], '%Y-%m-%dT%H:%M'),\
+                                       end_date=datetime.datetime.strptime(form_class.cleaned_data['end_date'], '%Y-%m-%dT%H:%M'),\
+                                       show_anomalies=form_class.cleaned_data['show_anomalies'],
+                                       sensors=form_class.cleaned_data['devices'],
+                                       experiment=form_class.cleaned_data['experiments'])
+                                       
+        namelist = cdp.getNameList(obj)
+        isActuator = cdp.getActuatorDictionary(obj)
+        if not 0 in [isActuator[x] for x in isActuator if x in namelist]: 
+            height = str(60+len(namelist)*12)+"px"
+        print('\n\n\n\n')
+        print(isActuator)
+        print('\n\n\n\n')
+        time2sensor = cdp.initializeDataValues(obj)
+        downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator).split('\n') #####
+        time2sensor = cdp.subsetDataValues(time2sensor, 500)
+        prestring = cdp.constructTable(time2sensor, namelist, isActuator)
+            
+        return render(\
+                      request,\
+                      self.template_name,\
+                      {'obj':                   obj,\
+                       'prestring':             prestring,\
+                       'height':                height,\
+                       'form_url':              reverse("foodcomputer:pi_chart", kwargs={'pk':pk}),\
+                       'advanced_options_form': form_class,\
+                       'model_name':            self.model_name,\
+                       'parent_template':       self.parent_template})
+            
+            
+        
+        
 class PiCreate(ObjectCreateMixin, View):
     form_class = PiForm
     template_name = 'foodcomputer/create_page.html'
@@ -114,13 +158,15 @@ class PiUpdate(ObjectUpdateMixin, View):
     model = Pi
     template_name = 'foodcomputer/update_page.html'
     parent_template=None
+    model_name = 'Food Computer'
 
 
 class PiDelete(ObjectDeleteMixin, View):
     model = Pi
-    success_url = reverse_lazy('foodcomputer:piList')
+    success_url = reverse_lazy('foodcomputer:pi_list')
     template_name = 'foodcomputer/delete_confirm.html'
     parent_template=None
+    model_name = 'Food Computer'
 
 
 class PiData(View):
@@ -130,14 +176,17 @@ class PiData(View):
         pi = get_object_or_404(Pi, pk=pk)
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="food_computer_data.csv"'
-        writer = csv.writer(response)
-        writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
-        for device in pi.devices.all():
-            for value in device.data.all():
-                writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
+        writer = csv.writer(response, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        #writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
+        
+        ddp = DownloadDataPreparation(pi)
+        writer.writerow(ddp.firstline(pi))
+        writer.writerow(ddp.secondline(pi))
+        time2sensor = ddp.initializeDataValues(pi)
+        for linelist in ddp.downloadFileGenerator(time2sensor):
+            writer.writerow(linelist)
         return response
-
-
+    
 
 class DeviceDetail(View):
     model = Device
@@ -148,32 +197,22 @@ class DeviceDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        height = "700px"
 
-        #creating new obj variable that is just a string to print to the page
-        data = obj.data.all()
-        prestring = ""
-        if len(data) > 0:
-            dname = data[0].device.device_type.name
-            isact = data[0].device.device_type.is_controller
-            prestring = "date," + dname + '\n'
-            if isact:
-                prestring += "0,1\n"
-            else:
-                prestring += "0,0\n"
-            for value in data:
-                dataValue = value.data_value
-                if dataValue < 0:
-                    dataValue = 'NA'
-                else:
-                    dataValue = str(dataValue)
-                #prestring += value.timestamp.strftime("%Y-%m-%d %H:%M:%S") + ',' + str(value.data_value) + '\n'
-                prestring += str(value.timestamp).split('+')[0] + ',' + str(dataValue) + '\n'
+        ddp = DeviceDataPreparation(obj)
+        time2sensor = ddp.initializeDeviceDataValues(obj)
+        time2sensor = ddp.subsetDataValues(time2sensor)
+        prestring = ddp.constructTable(time2sensor, numdp=200)
+        
+        if obj.device_type.is_controller:
+            height = "200xp"
 
         return render(
             request,
             self.template_name,
             {'device': obj,
              'prestring': prestring,
+             'height': height,
              'model_name': self.model_name,
              'parent_template': self.parent_template})
 
@@ -191,13 +230,15 @@ class DeviceUpdate(ObjectUpdateMixin, View):
     model = Device
     template_name = 'foodcomputer/update_page.html'
     parent_template = None
+    model_name = 'Device'
 
 
 class DeviceDelete(ObjectDeleteMixin, View):
     model = Device
-    success_url = reverse_lazy('foodcomputer:piList')
+    success_url = reverse_lazy('foodcomputer:pi_list')
     template_name = 'foodcomputer/delete_confirm.html'
     parent_template = None
+    model_name = 'Device'
 
 
 class DeviceData(View):
@@ -208,7 +249,7 @@ class DeviceData(View):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="food_computer_device_'+device.device_type.name+'_data.csv"'
         writer = csv.writer(response)
-        writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
+        writer.writerow(['Device Name', 'Date', 'Value', 'Is Anomily'])
         for value in device.data.all():
             writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
         return response
@@ -237,6 +278,7 @@ class JSONResponse(HttpResponse):
 #----------Pi Send-------------
 
 class initPi(APIView):
+
     def post(self, request):
         # Post JSON Structure
         #       {

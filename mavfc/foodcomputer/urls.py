@@ -5,10 +5,12 @@ from .views import *
 app_name = 'foodcomputer'
 
 urlpatterns = [
-#    ex: /food-computer/pi/list/
+    # ex: /food-computer/pi/list/
     url(r'^pi/list/$', PiList.as_view(), name='pi_list'),
     # ex: /food-computer/pi/(pi.pk)/
     url(r'^pi/(?P<pk>[0-9]+)/$', PiDetail.as_view(), name='pi_detail'),
+    # ex:/food-computer/pi/(pi.pk)/chart/
+    url(r'^pi/(?P<pk>[0-9]+)/chart/$', PiChart.as_view(), name='pi_chart'),
     # ex: /food-computer/pi/create/
     url(r'^pi/create/$', PiCreate.as_view(), name='pi_create'),
     # ex: /food-computer/pi/(pi.pk)/update/

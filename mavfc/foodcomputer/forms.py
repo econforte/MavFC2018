@@ -2,6 +2,10 @@ from django import forms
 # from django.core.exceptions import ValidationError
 
 from .models import Pi, Device
+from experiment.models import ExperimentInstance
+from django.forms.widgets import CheckboxSelectMultiple, DateInput,\
+    SelectDateWidget, TimeInput
+import datetime
 
 
 class PiForm(forms.ModelForm):
@@ -24,3 +28,33 @@ class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = '__all__'
+        
+class AdvancedOptionsForm(forms.Form):    
+    start_date = forms.CharField(required=False,\
+                                 label="Start Date",\
+                                 widget=forms.DateTimeInput(attrs={'type':'datetime-local'}),\
+                                 initial=datetime.datetime.strftime(datetime.datetime.min, '%Y-%m-%dT%H:%M'))
+    
+    end_date = forms.CharField(required=False,\
+                                 label="End Date",\
+                                 widget=forms.DateTimeInput(attrs={'type':'datetime-local'}),\
+                                 initial=datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%dT%H:%M'))
+    
+    show_anomalies = forms.BooleanField(required=False,\
+                                        label='Show Anomalies')
+    
+    devices = forms.ModelMultipleChoiceField(required=False,\
+                                             label='Available Sensors and Actuators',\
+                                             queryset=Device.objects.all(),\
+                                             widget=CheckboxSelectMultiple())
+    
+    experiments = forms.ModelChoiceField(required=False,\
+                                         label="Experiments",\
+                                         queryset=ExperimentInstance.objects.all())
+        
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request')
+        self.pk = kwargs.pop('pk')
+        self.user = request.user
+        super(AdvancedOptionsForm, self).__init__(*args, **kwargs)
+        self.fields['experiments'].queryset = ExperimentInstance.objects.filter(experiment__pi__pk=self.pk)

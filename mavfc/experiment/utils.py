@@ -77,6 +77,7 @@ class ObjectDeleteMixin:
     success_url = ''
     template_name = ''
     parent_template=None
+    model_name = ''
     
     @method_decorator(login_required)
     def get(self, request, pk):
