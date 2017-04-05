@@ -85,7 +85,7 @@ class ExperimentUpdate(ObjectUpdateMixin, View):
     model_name = 'Experiment'
 
 class ExperimentDelete(ObjectDeleteMixin, View):
-    model = ExperimentRule
+    model = Experiment
     success_url = reverse_lazy('experiment:experiment_list')
     template_name = 'experiment/delete_confirm.html'
     parent_template = None
