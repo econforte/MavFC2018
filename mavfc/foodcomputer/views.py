@@ -92,7 +92,7 @@ class PiChart(View):
         isActuator = cdp.getActuatorDictionary(obj)
         time2sensor = cdp.initializeDataValues(obj)
         downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator).split('\n') #####
-        time2sensor = cdp.subsetDataValues(time2sensor, 200)
+        time2sensor = cdp.subsetDataValues(time2sensor, 500)
         prestring = cdp.constructTable(time2sensor, namelist, isActuator)
         
         return render(\
@@ -110,7 +110,7 @@ class PiChart(View):
         obj = get_object_or_404(self.model, pk=pk)
         form_class = AdvancedOptionsForm(request.POST, request=request, pk=pk)
         cdp = ChartDataPreparation()
-        height = '700px'
+        height = '900px'
         
         if form_class.is_valid():
             cdp = ChartDataPreparation(start_date=datetime.datetime.strptime(form_class.cleaned_data['start_date'], '%Y-%m-%dT%H:%M'),\
@@ -121,10 +121,14 @@ class PiChart(View):
                                        
         namelist = cdp.getNameList(obj)
         isActuator = cdp.getActuatorDictionary(obj)
-        if not 0 in [isActuator[x] for x in isActuator]: height = "200px"
+        if not 0 in [isActuator[x] for x in isActuator if x in namelist]: 
+            height = str(60+len(namelist)*12)+"px"
+        print('\n\n\n\n')
+        print(isActuator)
+        print('\n\n\n\n')
         time2sensor = cdp.initializeDataValues(obj)
         downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator).split('\n') #####
-        time2sensor = cdp.subsetDataValues(time2sensor, 200)
+        time2sensor = cdp.subsetDataValues(time2sensor, 500)
         prestring = cdp.constructTable(time2sensor, namelist, isActuator)
             
         return render(\
