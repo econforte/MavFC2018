@@ -6,6 +6,7 @@ from django.conf import settings
 class Experiment(models.Model):
     name = models.CharField(max_length=200,)
     descr = models.TextField()
+    pi = models.ForeignKey('foodcomputer.Pi', on_delete=models.CASCADE, related_name="experiment",)
     collection_interval = models.IntegerField()
     
     def __str__(self):
@@ -29,12 +30,18 @@ class Experiment(models.Model):
     def get_pi(self):
         return self.experiment_rules[:1].device.pi
 
+    def get_update_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Update ")
+
+    def get_delete_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Delete ")
+
     def get_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[])
 
-    def gen_breadcrumbs(self, bc=[]):
+    def gen_breadcrumbs(self, bc=[], pre =""):
         if bc == []:
-            bc.append(('active', self.name))
+            bc.append(('active', pre+self.name))
         else:
             bc.append((self.get_absolute_url, self.name))
         bc.append((self.get_list_url, 'Experiment List'))
@@ -100,12 +107,12 @@ class ExperimentRule(models.Model):
 
 class ExperimentInstance(models.Model):
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="instances",)
-    pi = models.ForeignKey('foodcomputer.Pi', on_delete=models.CASCADE, related_name="experiment_instances",)
     start = models.DateTimeField()
     end = models.DateTimeField()
+    active = models.BooleanField(default=False)
     
     def __str__(self):
-        return self.pi.name + ': ' + self.experiment.name
+        return self.experiment.name + ': ' + str(self.start) + ' - ' + str(self.end)
     
     def get_absolute_url(self):
         return reverse('experiment:experimentinstance_detail', kwargs={'pk': self.pk})
@@ -122,6 +129,17 @@ class ExperimentInstance(models.Model):
     def get_csv_url(self):
         return reverse('experiment:experimentinstance_get_csv', kwargs={'pk': self.pk})
 
+    def get_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[])
+
+    def gen_breadcrumbs(self, bc=[]):
+        if bc == []:
+            bc.append(('active', self.start.strftime("%m/%d/%y") + ' - ' + self.end.strftime("%m/%d/%y") + ' Instance'))
+
+        else:
+            bc.append((self.get_absolute_url, self.start.strftime("%m/%d/%y") + ' - ' + self.end.strftime("%m/%d/%y") + 'Instance'))
+        return self.experiment.gen_breadcrumbs(bc)
+
 
 class UserExperimentInstance(models.Model):
     experiment_instance = models.ForeignKey(ExperimentInstance, on_delete=models.CASCADE, related_name="instance_users",)
@@ -131,18 +149,18 @@ class UserExperimentInstance(models.Model):
     def __str__(self):
         return self.experiment_instance.pi.name + ": " + self.user.get_username
     
-    def get_absolute_url(self):
-        return reverse('experiment:userexperimentinstance_detail', kwargs={'pk': self.pk})
+   #def get_absolute_url(self):
+        #return reverse('experiment:userexperimentinstance_detail', kwargs={'pk': self.pk})
     
-    def get_create_url(self):
-        return reverse('experiment:userexperimentinstance_create')
+   # def get_create_url(self):
+        #return reverse('experiment:userexperimentinstance_create')
     
-    def get_update_url(self):
-        return reverse('experiment:userexperimentinstance_update', kwargs={'pk': self.pk})
+    #def get_update_url(self):
+       # return reverse('experiment:userexperimentinstance_update', kwargs={'pk': self.pk})
     
-    def get_delete_url(self):
-        return reverse('experiment:userexperimentinstance_delete', kwargs={'pk': self.pk})
-    
+    #def get_delete_url(self):
+        #return reverse('experiment:userexperimentinstance_delete', kwargs={'pk': self.pk})
+
     
     
     

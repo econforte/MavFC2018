@@ -1,7 +1,7 @@
 {% extends parent_template|default:"experiment/base_experiment.html" %}
 
 {% block title %}
-   {{ block.super }} - {{ model_name }} Information
+    {{ block.super }} - {{ model_name }} Information
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -13,7 +13,7 @@
                 <li><a href="{{ bc_url }}">{{ bc_name }}</a></li>
             {% endif %}
         {% endfor %}
-   </ul>
+    </ul>
 {% endblock %}
 
 {% block content %}

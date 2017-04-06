@@ -3,10 +3,10 @@
         <h3>
             {% if clps %}
                 <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
-                    {{ obj.pi.name }}: {{ obj.experiment.name }}
+                    {{ obj.experiment.pi.name }}: {{ obj.experiment.name }}
                 </a>
             {% else %}
-                {{ obj.pi.name }}: {{ obj.experiment.name }}
+                {{ obj.experiment.pi.name }}: {{ obj.experiment.name }}
             {% endif %}
 
             {% if user.is_staff %}
@@ -33,8 +33,9 @@
         <div class="panel-body">
             <p><strong>Start:</strong> {{ obj.start }}</p>
             <p><strong>End:</strong> {{ obj.end }}</p>
-            <P><strong>Experiment:</strong> {{ obj.experiment }}</P>
-            <P><strong>Pi:</strong> {{ obj.pi.name }} - {{ obj.pi.pi_SN }}</P>
+            <p><strong>Experiment:</strong> {{ obj.experiment }}</p>
+            <p><strong>Active Instance:</strong> {{ obj.active }}</p>
+            <p><strong>Pi:</strong> {{ obj.experiment.pi.name }} - {{ obj.experiment.pi.pi_SN }}</p>
         </div>
         <div class="panel-footer">
             {% if not experimentinstance_detail and not clps %}

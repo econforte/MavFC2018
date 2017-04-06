@@ -5,10 +5,12 @@ from .views import *
 app_name = 'foodcomputer'
 
 urlpatterns = [
-#    ex: /food-computer/pi/list/
+    # ex: /food-computer/pi/list/
     url(r'^pi/list/$', PiList.as_view(), name='pi_list'),
     # ex: /food-computer/pi/(pi.pk)/
     url(r'^pi/(?P<pk>[0-9]+)/$', PiDetail.as_view(), name='pi_detail'),
+    # ex:/food-computer/pi/(pi.pk)/chart/
+    url(r'^pi/(?P<pk>[0-9]+)/chart/$', PiChart.as_view(), name='pi_chart'),
     # ex: /food-computer/pi/create/
     url(r'^pi/create/$', PiCreate.as_view(), name='pi_create'),
     # ex: /food-computer/pi/(pi.pk)/update/
@@ -37,8 +39,6 @@ urlpatterns = [
     url(r'^api/v1/initpi/$', initPi.as_view(), name='api_init_pi'),
     # ex: /food-computer/api/v1/initdevices/(piSerial.pk)
     url(r'^api/v1/initdevices/$', initDevices.as_view(), name='api_init_devices'),
-    # ex: /food-computer/api/v1/updatedevicedata/(data.pk)
-    url(r'^api/v1/updatedevicedata/(?P<pk>[0-9]+)/$', updateDeviceData.as_view(), name='api_update_device_data'),
     # ex: /food-computer/api/v1/devicedata/([data])
     url(r'^api/v1/devicedata/$', deviceData.as_view(), name='api_device_data'),
     # ex: /food-computer/api/v1/getdevicetype/(devicetype.pk)
@@ -48,7 +48,7 @@ urlpatterns = [
 
     #----------Server Push-------------
     # ex: /food-computer/api/v1/todo/(foodComputerKey.pk)
-    url(r'^api/v1/todo/(?P<pk>[0-9]+)/$', todoCheckJSON.as_view(), name='api_device_todo'),
+    url(r'^api/v1/push/(?P<pk>[0-9]+)/$', ServerPushAPI.as_view(), name='api_pi_push'),
     # ex: /food-computer/api/v1/getCommands/(foodComputerKey.pk)
-    url(r'^api/v1/getcommands/(?P<pk>[0-9]+)/$', commandsJSON.as_view(), name='api_get_device_commands'),
+    url(r'^api/v1/test/(?P<pk>[0-9]+)/$', testAPI.as_view(), name='api_test'),
 ]

@@ -4,6 +4,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.messages import success, error
+from django.forms import ModelChoiceField
+
 
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
@@ -18,6 +20,7 @@ from rest_framework.parsers import JSONParser
 from .serializers import ExperimentsSerializer
 
 import csv
+
 
 class ExperimentSearch(View):
     @method_decorator(login_required)
@@ -82,10 +85,11 @@ class ExperimentUpdate(ObjectUpdateMixin, View):
     model_name = 'Experiment'
 
 class ExperimentDelete(ObjectDeleteMixin, View):
-    model = ExperimentRule
+    model = Experiment
     success_url = reverse_lazy('experiment:experiment_list')
     template_name = 'experiment/delete_confirm.html'
     parent_template = None
+    model_name = 'Experiment'
 
 
 class ExperimentRuleDetail(View):
@@ -105,12 +109,42 @@ class ExperimentRuleDetail(View):
              'parent_template': self.parent_template})
 
 
-class ExperimentRuleCreate(ObjectCreateMixin, View):
+class ExperimentRuleCreate(View):
     form_class = ExperimentRuleForm
+    parent_model = Experiment
     template_name = 'experiment/create_page.html'
-    form_url = reverse_lazy('experiment:experimentrule_create')
     parent_template = None
     model_name = 'Experiment Rule'
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        parent = get_object_or_404(self.parent_model, pk=pk)
+        return render(
+            request,
+            self.template_name,
+            {'form': self.form_class(pi_pk=parent.pi.pk, isupdate = False),
+             'form_url': reverse('experiment:experimentrule_create', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
+
+
+    @method_decorator(login_required)
+    def post(self, request, pk):
+        parent = get_object_or_404(self.parent_model, pk=pk)
+        bound_form = self.form_class(request.POST, pi_pk=parent.pi.pk, isupdate = False)
+        if bound_form.is_valid():
+            new_obj = bound_form.save(commit = False)
+            new_obj.experiment = parent
+            new_obj.save()
+            success(request, self.model_name + ' was successfully added.')
+            return redirect(new_obj)
+        return render(
+            request,
+            self.template_name,
+            {'form': bound_form,
+             'form_url': reverse('experiment:experimentrule_create', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
 
 
 class ExperimentRuleUpdate(ObjectUpdateMixin, View):
@@ -120,12 +154,41 @@ class ExperimentRuleUpdate(ObjectUpdateMixin, View):
     parent_template = None
     model_name = 'Experiment Rule'
 
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        return render(
+            request,
+            self.template_name,
+            {'form': self.form_class(instance=obj, pi_pk = obj.experiment.pi.pk, isupdate = True),
+             'obj': obj,
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
+
+    @method_decorator(login_required)
+    def post(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        bound_form = self.form_class(request.POST, instance=obj, pi_pk = obj.experiment.pi.pk, isupdate = True)
+        if bound_form.is_valid():
+            new_obj = bound_form.save()
+            success(request, self.model_name + ' was successfully updated.')
+            return redirect(new_obj)
+        return render(
+            request,
+            self.template_name,
+            {'form': bound_form,
+             'obj': obj,
+             'model_name': self.model.__name__,
+             'parent_template': self.parent_template})
+
+
 
 class ExperimentRuleDelete(ObjectDeleteMixin, View):
     model = ExperimentRule
     success_url = reverse_lazy('experiment:experiment_list')
     template_name = 'experiment/delete_confirm.html'
     parent_template = None
+    model_name = 'Experiment Rule'
 
 
 class ExperimentInstanceDetail(View):
@@ -166,6 +229,7 @@ class ExperimentInstanceDelete(ObjectDeleteMixin, View):
     success_url = reverse_lazy('experiment:experiment_list')
     template_name = 'experiment/delete_confirm.html'
     parent_template = None
+    model_name = 'Experiment Instance'
 
 
 class ExperimentInstanceAdd(View):
@@ -182,9 +246,9 @@ class ExperimentInstanceAdd(View):
             request,
             self.template_name,
             {'form': self.form_class,
-            'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
-            'model_name': self.model_name,
-            'parent_template': self.parent_template
+             'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'parent_template': self.parent_template
              })
 
     @method_decorator(login_required)
@@ -201,9 +265,9 @@ class ExperimentInstanceAdd(View):
             request,
             self.template_name,
             {'form': bound_form,
-            'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
-            'model_name': self.model_name,
-            'parent_template': self.parent_template})
+             'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
 
 
 class ExperimentInstanceData(View):
@@ -215,10 +279,48 @@ class ExperimentInstanceData(View):
         response['Content-Disposition'] = 'attachment; filename="experiment_instance_data.csv"'
         writer = csv.writer(response)
         writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
-        for device in expInst.pi.devices.all():
+        for device in expInst.experiment.pi.devices.all():
             for value in device.data.filter(timestamp__gte=expInst.start, timestamp__lte=expInst.end):
                 writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
         return response
+
+
+class UserExperimentInstanceAdd(View):
+    form_class = UserExperimentInstanceAddForm
+    parent_model = ExperimentInstance
+    template_name = 'experiment/create_page.html'
+    parent_template = None
+    model_name = 'User Experiment Instance'
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        parent = get_object_or_404(self.parent_model, pk=pk)
+        return render(
+            request,
+            self.template_name,
+            {'form': self.form_class,
+             'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'parent_template': self.parent_template
+             })
+
+    @method_decorator(login_required)
+    def post(self, request, pk):
+        parent = get_object_or_404(self.parent_model, pk=pk)
+        bound_form = self.form_class(request.POST)
+        if bound_form.is_valid():
+            new_obj = bound_form.save(commit=False)
+            new_obj.experiment_instance = parent
+            new_obj.save()
+            success(request, self.model_name + ' was successfully added.')
+            return redirect(parent)
+        return render(
+            request,
+            self.template_name,
+            {'form': bound_form,
+             'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'parent_template': self.parent_template})
 
 
 class JSONResponse(HttpResponse):
@@ -234,8 +336,7 @@ class experimentJSON(View):
             experiment = Experiment.objects.get(pk=pk)
         except Experiment.DoesNotExist:
             return HttpResponse(status=404)
-            
+
         if request.method == 'GET':
             serializer = ExperimentsSerializer(experiment)
             return JSONResponse(serializer.data)
-

@@ -1,7 +1,15 @@
-{% extends parent_template|default:"experiment/base_experiment.html" %}
+{% extends parent_template|default:"foodcomputer/base_foodcomputer.html" %}
 
 {% block title %}
 	{{ block.super }} - Add New {{ model_name }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="/home/">Home</a></li>
+        <li><a href="/food-computer/pi/list/">Food Computer List</a></li>
+		<li class="active">Add New Food Computer</li>
+	</ul>
 {% endblock %}
 
 {% block app_nav %}

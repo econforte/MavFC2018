@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.views.generic import View
+from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse_lazy
 # from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.decorators import login_required
@@ -7,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.messages import success
 from django.http import HttpResponse
 from django.core.mail import send_mail
+from django.contrib.auth.models import User
 
 # Imports used to serve JSON
 from django.views.decorators.csrf import csrf_exempt
@@ -15,14 +17,22 @@ from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
+from rest_framework.authtoken.models import Token
 
+from experiment.serializers import ExperimentInstanceSerializer
+from experiment.models import ExperimentInstance
 from .serializers import *
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
+from .utils import ChartDataPreparation, DownloadDataPreparation, DeviceDataPreparation
 from .models import *
 from .forms import *
+
 import collections
+import math
+import datetime
 
 import time
 import csv
@@ -51,39 +61,93 @@ class PiDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-
-        #creating new obj variable that is just a string to print to the page
-        namelist = [device.device_type.name for device in obj.devices.all()]
-        actuator = {} # is the device an actuator   [name] = 0 or 1
-        for device in obj.devices.all():
-            if device.device_type.is_controller:
-                actuator[device.device_type.name] = 1
-            else:
-                actuator[device.device_type.name] = 0
-        time2readings = collections.defaultdict(dict)
-        for device in obj.devices.all():
-            for value in device.data.all():
-                if not value.is_anomaly:
-                    time2readings[str(value.timestamp)][device.device_type.name] = value.data_value
-        prestring = "date,"+','.join(namelist) + '\n' + ','.join(["0"] + [str(actuator[x]) for x in namelist]) + '\n'
-        for t in time2readings:
-            temp = [t.split('+')[0]]
-            for name in namelist:
-                if name in time2readings[t]:
-                    temp.append(str(time2readings[t][name]))
-                else:
-                    temp.append('NA')
-            prestring += ','.join(temp) + '\n'
+        
+        cdp = ChartDataPreparation()
+        namelist = cdp.getNameList(obj)
+        isActuator = cdp.getActuatorDictionary(obj)
+        time2sensor = cdp.initializeDataValues(obj)
+        time2sensor = cdp.subsetDataValues(time2sensor, 200)
+        prestring = cdp.constructTable(time2sensor, namelist, isActuator)
 
         return render(
             request,
             self.template_name,
             {'obj': obj,
              'prestring': prestring,
+             'height': '700px',
              'model_name': self.model_name,
              'parent_template': self.parent_template})
 
 
+class PiChart(View):
+    model = Pi
+    model_name = 'Food Computer Chart'
+    template_name = 'foodcomputer/pi_data_page.html'
+    parent_template = None
+    
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        form_class = AdvancedOptionsForm(request=request, pk=pk)
+        
+        cdp = ChartDataPreparation()
+        namelist = cdp.getNameList(obj)
+        isActuator = cdp.getActuatorDictionary(obj)
+        time2sensor = cdp.initializeDataValues(obj)
+        downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator).split('\n') #####
+        time2sensor = cdp.subsetDataValues(time2sensor, 500)
+        prestring = cdp.constructTable(time2sensor, namelist, isActuator)
+        
+        return render(\
+                      request,\
+                      self.template_name,\
+                      {'obj':                   obj,\
+                       'prestring':             prestring,\
+                       'height':                '700px',\
+                       'form_url':              reverse("foodcomputer:pi_chart", kwargs={'pk':pk}),\
+                       'advanced_options_form': form_class,\
+                       'model_name':            self.model_name,\
+                       'parent_template':       self.parent_template})
+    
+    def post(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        form_class = AdvancedOptionsForm(request.POST, request=request, pk=pk)
+        cdp = ChartDataPreparation()
+        height = '900px'
+        
+        if form_class.is_valid():
+            cdp = ChartDataPreparation(start_date=datetime.datetime.strptime(form_class.cleaned_data['start_date'], '%Y-%m-%dT%H:%M'),\
+                                       end_date=datetime.datetime.strptime(form_class.cleaned_data['end_date'], '%Y-%m-%dT%H:%M'),\
+                                       show_anomalies=form_class.cleaned_data['show_anomalies'],
+                                       sensors=form_class.cleaned_data['devices'],
+                                       experiment=form_class.cleaned_data['experiments'])
+                                       
+        namelist = cdp.getNameList(obj)
+        isActuator = cdp.getActuatorDictionary(obj)
+        if not 0 in [isActuator[x] for x in isActuator if x in namelist]: 
+            height = str(60+len(namelist)*12)+"px"
+        print('\n\n\n\n')
+        print(isActuator)
+        print('\n\n\n\n')
+        time2sensor = cdp.initializeDataValues(obj)
+        downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator).split('\n') #####
+        time2sensor = cdp.subsetDataValues(time2sensor, 500)
+        prestring = cdp.constructTable(time2sensor, namelist, isActuator)
+            
+        return render(\
+                      request,\
+                      self.template_name,\
+                      {'obj':                   obj,\
+                       'prestring':             prestring,\
+                       'height':                height,\
+                       'form_url':              reverse("foodcomputer:pi_chart", kwargs={'pk':pk}),\
+                       'advanced_options_form': form_class,\
+                       'model_name':            self.model_name,\
+                       'parent_template':       self.parent_template})
+            
+            
+        
+        
 class PiCreate(ObjectCreateMixin, View):
     form_class = PiForm
     template_name = 'foodcomputer/create_page.html'
@@ -97,13 +161,15 @@ class PiUpdate(ObjectUpdateMixin, View):
     model = Pi
     template_name = 'foodcomputer/update_page.html'
     parent_template=None
+    model_name = 'Food Computer'
 
 
 class PiDelete(ObjectDeleteMixin, View):
     model = Pi
-    success_url = reverse_lazy('foodcomputer:piList')
+    success_url = reverse_lazy('foodcomputer:pi_list')
     template_name = 'foodcomputer/delete_confirm.html'
     parent_template=None
+    model_name = 'Food Computer'
 
 
 class PiData(View):
@@ -113,14 +179,17 @@ class PiData(View):
         pi = get_object_or_404(Pi, pk=pk)
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="food_computer_data.csv"'
-        writer = csv.writer(response)
-        writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
-        for device in pi.devices.all():
-            for value in device.data.all():
-                writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
+        writer = csv.writer(response, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        #writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
+        
+        ddp = DownloadDataPreparation(pi)
+        writer.writerow(ddp.firstline(pi))
+        writer.writerow(ddp.secondline(pi))
+        time2sensor = ddp.initializeDataValues(pi)
+        for linelist in ddp.downloadFileGenerator(time2sensor):
+            writer.writerow(linelist)
         return response
-
-
+    
 
 class DeviceDetail(View):
     model = Device
@@ -131,27 +200,22 @@ class DeviceDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        height = "700px"
 
-        #creating new obj variable that is just a string to print to the page
-        data = obj.data.all()
-        prestring = ""
-        if len(data) > 0:
-            dname = data[0].device.device_type.name
-            isact = data[0].device.device_type.is_controller
-            prestring = "date," + dname + '\n'
-            if isact:
-                prestring += "0,1\n"
-            else:
-                prestring += "0,0\n"
-            for value in data:
-                #prestring += value.timestamp.strftime("%Y-%m-%d %H:%M:%S") + ',' + str(value.data_value) + '\n'
-                prestring += str(value.timestamp).split('+')[0] + ',' + str(value.data_value) + '\n'
+        ddp = DeviceDataPreparation(obj)
+        time2sensor = ddp.initializeDeviceDataValues(obj)
+        time2sensor = ddp.subsetDataValues(time2sensor)
+        prestring = ddp.constructTable(time2sensor, numdp=200)
+        
+        if obj.device_type.is_controller:
+            height = "200xp"
 
         return render(
             request,
             self.template_name,
             {'device': obj,
              'prestring': prestring,
+             'height': height,
              'model_name': self.model_name,
              'parent_template': self.parent_template})
 
@@ -169,13 +233,15 @@ class DeviceUpdate(ObjectUpdateMixin, View):
     model = Device
     template_name = 'foodcomputer/update_page.html'
     parent_template = None
+    model_name = 'Device'
 
 
 class DeviceDelete(ObjectDeleteMixin, View):
     model = Device
-    success_url = reverse_lazy('foodcomputer:piList')
+    success_url = reverse_lazy('foodcomputer:pi_list')
     template_name = 'foodcomputer/delete_confirm.html'
     parent_template = None
+    model_name = 'Device'
 
 
 class DeviceData(View):
@@ -186,7 +252,7 @@ class DeviceData(View):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="food_computer_device_'+device.device_type.name+'_data.csv"'
         writer = csv.writer(response)
-        writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
+        writer.writerow(['Device Name', 'Date', 'Value', 'Is Anomily'])
         for value in device.data.all():
             writer.writerow([value.device.device_type.name, value.timestamp, value.data_value, value.is_anomaly])
         return response
@@ -214,23 +280,32 @@ class JSONResponse(HttpResponse):
 
 #----------Pi Send-------------
 
+
 class initPi(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         # Post JSON Structure
         #       {
         #           "name": "FoodComputer1",
-        #           "address": 34,
-        #           "user": 23,
         #           "pi_SN": "1234567890",
         #           "manual_control": true
         #       }
         serializer = PiSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            pi = serializer.save()
+            user = User.objects.create_user('FC'+pi.pi_SN, password='tempPW'+pi.pi_SN)
+            token = Token.objects.get_or_create(user=user)
+            user.set_password(token[0].key)
+            user.save()
+            return Response({"pi":serializer.data, "token":token[0].key}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class initDevices(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         # Post JSON Structure
         #       [
@@ -253,31 +328,10 @@ class initDevices(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class updateDeviceData(APIView):
-    def put(self, request, pk):
-        # Put JSON Structure
-        #   {
-        #       "device": 1,
-        #       "timestamp": "2017-02-06T15:00:00Z",
-        #       "data_value": 1.0,
-        #       "is_anomaly": false
-        #   }
-        test = get_object_or_404(Data, pk=pk)
-        serializer = dataSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def get(self, request, pk):
-        try:
-            sensorVals = Data.objects.get(pk=pk)
-        except Data.DoesNotExist:
-            return HttpResponse(status=404)
-        serializer = dataSerializer(sensorVals)
-        return Response(serializer.data)
-
 class deviceData(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         # Post JSON Structure
         #       [
@@ -301,6 +355,9 @@ class deviceData(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class getDeviceTypes(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request):
         try:
             devicetypes = DeviceType.objects.all()
@@ -310,31 +367,173 @@ class getDeviceTypes(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class anomalyEmail(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
-        # send email
-        send_mail(
-            'Anomaly Detected!',
-            request.data,
-            'from@...',
-            ['to@...'],
-            fail_silently=True,
-        )
-        return Response(status=status.HTTP_200_OK)
+        # Post JSON Structure
+        #   {
+        #       "pi": 1,
+        #       "level": 1,
+        #       "message": "It was Sean and his team of dolphins."
+        #   }
+        serializer = emailSerializer(data=request.data)
+        if serializer.is_valid():
+            lvl = request.data.get('level')
+            #Level 1 = All Admins and anyone associated to the Pi
+            if (lvl == 1):
+                admins = user.objects.filter(is_staff = True)
+                sendList = []
+                for admin in admins:
+                    sendList.append(admin.email())
+                users = Pi.objects.get(pk=pk).user()
+                for user in users:
+                    sendList.append(user.email())
+            #Level 2 = All Admins and Pi User
+            if (lvl == 2):
+                admins = User.objects.filter(is_staff = True)
+                sendList = []
+                for admin in admins:
+                    sendList.append(admin.email())
+                #sendList.append(Pi.objects.get(pk=pk).user.objects.filter(is_active = True))
+            #Level 3 = All Admins
+            if (lvl == 3):
+                admins = User.objects.filter(is_staff = True)
+                sendList = []
+                for admin in admins:
+                    sendList.append(admin.email())
+            send_mail(
+                "Pi Email",
+                request.data.get('message'),
+                "Default",
+                sendList,
+                fail_silently=False,
+            )
+            return Response("Email(s) Sent")
+        else: return Response("No Email(s) Sent")
 
 
 #----------Server Push-------------
 
-class todoCheckJSON(APIView):
+class ServerPushAPI(APIView):
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    
     # Server Push
     # Long polling idea
-    def get(request, pk):
-        for i in range(60):
-            if something_happened():
-                return http.HttpResponse()
-            time.sleep(1)
-        return http.HttpResponse()
+    def post(self, request, pk):
+        serializer = PiStateSerializer(data=request.data)
+        if serializer.is_valid():
+            # serializer.updateDB()
+            data = request.data
+            if str(data['pi']['pk']) == pk:
+                pi = get_object_or_404(Pi, pk=pk)
+            else:
+                return Response({'Error':"PK doesn't match"}, status=status.HTTP_400_BAD_REQUEST)
+            if data['pi']['pi_SN'] != pi.pi_SN:
+                return Response({'Error': "Serial number doesn't match"}, status=status.HTTP_400_BAD_REQUEST)
+            if 'lastControllerUpdateTime' in data:
+                last = data['lastControllerUpdateTime']
+                ControllerUpdate.objects.filter(device__pi__pk=pi.pk, executed=False, timestamp__lte=last).update(executed=True)
 
-class commandsJSON(APIView):
-    # Server Push
-    def get(request, pk):
-        return HttpResponse(status=200)
+            if 'activeInstance' in data:
+                activeInstance = data['activeInstance']
+                newActInst = ExperimentInstance.objects.get(pk=activeInstance)
+                if not newActInst.active:
+                    actInst = pi.get_active_instance()[0]
+                    actInst.active = False
+                    actInst.save()
+                    newActInst.active = True
+                    newActInst.save()
+            # Generate Push Response
+            resp = {}
+            endInstance = pi.get_end_instance()
+            activeInstance = pi.get_active_instance()
+            startInstance = pi.get_start_instance()
+            try:
+                endInstanceSer = ExperimentInstanceSerializer(endInstance, many=True)
+                activeInstanceSer = ExperimentInstanceSerializer(activeInstance, many=True)
+                startInstanceSer = ExperimentInstanceSerializer(startInstance, many=True)
+            except ExperimentInstance.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            if endInstance:
+                resp['endInstance'] = endInstanceSer.data
+            if activeInstance:
+                resp['activeInstance'] = activeInstanceSer.data
+            if startInstance:
+                resp['startInstance'] = startInstanceSer.data
+
+            if pi.manual_control and startInstance:
+                pi.manual_control = False
+                pi.save()
+            elif (not pi.manual_control) and (not startInstance) and endInstance:
+                pi.manual_control = True
+                pi.save()
+
+            try:
+                piSer = PiSerializer(pi)
+            except Pi.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            resp['pi'] = piSer.data
+
+            if pi.manual_control:
+                ctrlUpdate = ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False)
+                try:
+                    ctrlUpdateSer = ControllerUpdateSerializer(ctrlUpdate, many=True)
+                except ControllerUpdate.DoesNotExist:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+                if ctrlUpdate:
+                    resp['controllerUpdates'] = ctrlUpdateSer.data
+            else:
+                ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False).update(executed=True)
+
+            return Response(resp, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class testAPI(APIView):
+
+    def get(self, request, pk):
+        resp = {}
+        pi = get_object_or_404(Pi, pk=pk)
+        endInstance = pi.get_end_instance()
+        activeInstance = pi.get_active_instance()
+        startInstance = pi.get_start_instance()
+        try:
+            endInstanceSer = ExperimentInstanceSerializer(endInstance, many=True)
+            activeInstanceSer = ExperimentInstanceSerializer(activeInstance, many=True)
+            startInstanceSer = ExperimentInstanceSerializer(startInstance, many=True)
+        except ExperimentInstance.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if endInstance:
+            resp['endInstance'] = endInstanceSer.data
+        if activeInstance:
+            resp['activeInstance'] = activeInstanceSer.data
+        if startInstance:
+            resp['startInstance'] = startInstanceSer.data
+
+        if pi.manual_control and startInstance:
+            pi.manual_control = False
+            pi.save()
+        elif (not pi.manual_control) and (not startInstance) and endInstance:
+            pi.manual_control = True
+            pi.save()
+
+        try:
+            piSer = PiSerializer(pi)
+        except Pi.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        resp['pi'] = piSer.data
+
+        if pi.manual_control:
+            ctrlUpdate = ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False)
+            try:
+                ctrlUpdateSer = ControllerUpdateSerializer(ctrlUpdate, many=True)
+            except ControllerUpdate.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            if ctrlUpdate:
+                resp['controllerUpdates'] = ctrlUpdateSer.data
+        else:
+            ControllerUpdate.objects.filter(device__pi__pk=pk, executed=False).update(executed=True)
+
+        return Response(resp, status=status.HTTP_200_OK)

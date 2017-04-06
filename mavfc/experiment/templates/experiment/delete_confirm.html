@@ -4,24 +4,54 @@
 	{{ block.super }} - Confirm Delete of a {{ model_name }}
 {% endblock %}
 
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        {% for bc_url, bc_name in obj.get_delete_breadcrumbs reversed %}
+            {% if bc_url == 'active' %}
+                <li class="active">{{ bc_name }}</li>
+            {% else %}
+                <li><a href="{{ bc_url }}">{{ bc_name }}</a></li>
+            {% endif %}
+        {% endfor %}
+	</ul>
+{% endblock %}
+
 {% block app_nav %}
 	{{ block.super }}
 {% endblock %}
 
 {% block content %}
-  	<div class="container" style="margin-top:50px">
-	    <div class="form-group">
-	      	<form action="{{ obj.get_delete_url }}" method="post">
-		        {% csrf_token %}
-		        <div class="form-group">
-		        	<div class="col-sm-offset-2 col-sm-8">
-		        		<p>Are you sure you want to delete the {{ model_name|lower }}, {{ obj }}?</p>
-		        		<br>
-				        <a href="{{ obj.get_absolute_url }}" class="btn btn-default">Cancel</a>
-				        <button type="submit" title="Delete" class="btn btn-danger pull-right">Delete {{ model_name }}</button>
-			        </div>
+    <div class="container-fluid" style="margin-top:25px">
+		<div class="row">
+			<div class="col-md-offset-3">
+            <div class="col-md-10">
+				<div class="col-md-10">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+                        <h1>
+                            Delete Experiment Rule
+                        </h1>
+                        <div class="clearfix"></div>
+                    </div>
+					<div class="panel-body">
+						<div class="form-group">
+							<form action="{{ obj.get_delete_url }}" method="post">
+								{% csrf_token %}
+								<div class="form-group">
+									<div class="col-sm-offset-0 col-sm-11">
+										<p>Are you sure you want to delete the {{ model_name | lower}}, {{ obj }}?</p>
+										<br>
+										<a href="{{ obj.get_absolute_url }}" class="btn btn-default">Cancel</a>
+										<button type="submit" title="Delete" class="btn btn-danger pull-right">Delete {{ model_name }}</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
 				</div>
-	      	</form>
-	    </div>
+				</div>
+			</div>
+			</div>
+		</div>
   	</div>
 {% endblock %}

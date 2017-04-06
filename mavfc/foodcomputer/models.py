@@ -1,6 +1,11 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.db.models import Q
+
+from experiment.models import ExperimentInstance
+
+from datetime import datetime
 
 
 class Address(models.Model):
@@ -12,7 +17,7 @@ class Address(models.Model):
     zip = models.CharField(max_length=10,)
 
     def __str__(self):
-        return "{n}: {c}, {s}".format(n=self.name, c=self.city, s=self.state)
+        return "{p} {n}: {c}, {s}".format(p=self.pk, n=self.name, c=self.city, s=self.state)
 
     def get_absolute_url(self):
         return reverse('foodcomputer:address_detail', kwargs={'pk': self.pk})
@@ -61,15 +66,49 @@ class Pi(models.Model):
     def get_list_url(self):
         return reverse('foodcomputer:pi_list')
 
+    def get_active_instance(self):
+        instance = ExperimentInstance.objects.filter(active=True, experiment__pi__pk=self.pk)
+        if instance:
+            return instance
+        else:
+            return None
+
+    def get_current_instance(self):
+        instance = ExperimentInstance.objects.filter(start__lte=datetime.now(), end__gt=datetime.now(), experiment__pi__pk=self.pk)
+        if instance:
+            return instance
+        else:
+            return None
+
+    def get_start_instance(self):
+        instance = ExperimentInstance.objects.filter(active=False, start__lte=datetime.now(), end__gt=datetime.now(), experiment__pi__pk=self.pk)
+        if instance:
+            return instance
+        else:
+            return None
+
+    def get_end_instance(self):
+        instance = ExperimentInstance.objects.filter(Q(active=True, experiment__pi__pk=self.pk) & (Q(start__gt=datetime.now()) | Q(end__lte=datetime.now())))
+        if instance:
+            return instance
+        else:
+            return None
+
     def get_device_num(self):
         return len(self.devices.all())
 
     def get_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[])
 
-    def gen_breadcrumbs(self, bc=[]):
+    def get_update_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Update ")
+
+    def get_delete_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Delete ")
+
+    def gen_breadcrumbs(self, bc=[], pre=""):
         if bc == []:
-            bc.append(('active', self.name))
+            bc.append(('active', pre+self.name))
         else:
             bc.append((self.get_absolute_url, self.name))
         bc.append((self.get_list_url, 'Food Computer List'))
@@ -82,9 +121,10 @@ class Device(models.Model):
     device_type = models.ForeignKey('DeviceType', on_delete=models.CASCADE, related_name="devices",)
     device_id = models.CharField(max_length=50, verbose_name="Device ID",)
     residual_threshold = models.FloatField()
+    deactivated = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.pi.name + ': ' + self.device_type.name + ': ' + self.device_id
+        return str(self.pk)+ ": " + self.pi.name + ': ' + self.device_type.name + ': ' + self.device_id
 
     def get_device_name(self):
         return self.device_type.name + ': ' + self.device_id
@@ -103,6 +143,9 @@ class Device(models.Model):
 
     def get_list_url(self):
         return self.pi.get_absolute_url()
+
+    def get_threshold(self):
+        return (self.residual_threshold + self.device_type.bio_threshold)
 
     def get_current_value(self):
         return self.data.latest('timestamp')
@@ -125,7 +168,7 @@ class Data(models.Model):
     is_anomaly = models.BooleanField()
 
     def __str__(self):
-        return '[' + str(self.timestamp) + ']: ' + str(self.data_value)
+        return str(self.pk) + ' [' + str(self.timestamp) + ']: ' + str(self.data_value)
 
     def get_absolute_url(self):
         return reverse('foodcomputer:data_detail', kwargs={'pk': self.pk})
@@ -149,10 +192,10 @@ class DeviceType(models.Model):
     unit_type = models.ForeignKey('UnitType', on_delete=models.CASCADE, related_name="device_types",)
     data_type = models.ForeignKey('DataType', on_delete=models.CASCADE, related_name="device_types",)
     is_controller = models.BooleanField()
-    bio_threshold = models.FloatField(verbose_name='Biological Threshold')
+    bio_threshold = models.FloatField(verbose_name='Biological Threshold', default=0.0)
 
     def __str__(self):
-        return self.name + ": " + self.unit_type.name
+        return str(self.pk)+ " " + self.name + ": " + self.unit_type.name
 
     def get_short_name(self):
         if len(self.name) > 20:
@@ -179,7 +222,7 @@ class UnitType(models.Model):
     descr = models.TextField()
 
     def __str__(self):
-        return self.name
+        return str(self.pk) + str(": ") + self.name
 
     def get_absolute_url(self):
         return reverse('foodcomputer:unittype_detail', kwargs={'pk': self.pk})
@@ -201,7 +244,7 @@ class DataType(models.Model):
     max_limit = models.FloatField(blank=True, null=True,)
 
     def __str__(self):
-        return self.name
+        return str(self.pk) + str(": ") + self.name
 
     def get_absolute_url(self):
         return reverse('foodcomputer:pi_detail', kwargs={'pk': self.pk})
@@ -214,3 +257,10 @@ class DataType(models.Model):
 
     def get_delete_url(self):
         return reverse('foodcomputer:pi_delete', kwargs={'pk': self.pk})
+
+
+class ControllerUpdate(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="Updates",)
+    turn_on = models.BooleanField()
+    timestamp = models.DateTimeField()
+    executed =models.BooleanField()

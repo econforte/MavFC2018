@@ -22,7 +22,8 @@ password_urls = [
 
 urlpatterns = [
     url(r'^$', RedirectView.as_view(pattern_name='dj-auth:pw_reset_start', permanent=False)),
-    url(r'^login/$', auth_views.login, {'template_name': 'user/login.html'}, name="login"),
+    #url(r'^login/$', auth_views.login, {'template_name': 'user/login.html'}, name="login"),
+	url(r'^login/$', auth_views.login, name="login", kwargs={'redirect_authenticated_user': True, 'template_name': 'user/login.html'}),
     url(r'^logout/$', auth_views.logout, {'template_name': 'user/logged_out.html', 'extra_context':{'form': AuthenticationForm}}, name="logout"),
     url(r'^password/', include(password_urls)),
     url(r'^create/$', CreateAccount.as_view(), name='create'),
