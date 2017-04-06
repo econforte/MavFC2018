@@ -28,7 +28,9 @@ SECRET_KEY = 'yifvznb8)7&d-85x#*yv1js46&_%17gs26of-cc27+3ecg6o5@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+##### EHL: Added Heroku app as allowed host
+ALLOWED_HOSTS = ['mavistfc.herokuapp.com']
+#####
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
