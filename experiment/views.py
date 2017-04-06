@@ -21,7 +21,6 @@ from .serializers import ExperimentsSerializer
 
 import csv
 
-
 class ExperimentSearch(View):
     @method_decorator(login_required)
     def post(self, request, parent_template=None):
