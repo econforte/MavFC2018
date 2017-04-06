@@ -197,6 +197,12 @@ class DeviceType(models.Model):
     def __str__(self):
         return str(self.pk)+ " " + self.name + ": " + self.unit_type.name
 
+    def get_short_name(self):
+        if len(self.name) > 20:
+            return self.name[:20]+"..."
+        else:
+            return self.name
+
     def get_absolute_url(self):
         return reverse('foodcomputer:devicetype_detail', kwargs={'pk': self.pk})
 
