@@ -1,0 +1,84 @@
+{% extends parent_template|default:"foodcomputer/base_foodcomputer.html" %}
+
+{% block title %}
+	{{ block.super }} - {{ model_name }} Information
+{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        {% for bc_url, bc_name in obj.get_breadcrumbs reversed %}
+            {% if bc_url == 'active' %}
+                <li class="active">{{ bc_name }}</li>
+            {% else %}
+                <li><a href="{{ bc_url }}">{{ bc_name }}</a></li>
+            {% endif %}
+        {% endfor %}
+	</ul>
+{% endblock %}
+
+{% block content %}
+    <script>
+        google.charts.load('current', {packages: ['corechart', 'line', 'gauge']});
+        var app = angular.module("DeviceValueUpdate", []);
+    </script>
+    <div ng-app="DeviceValueUpdate">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    {% include "foodcomputer/pi_panel.html" with pi_detail="true" %}
+                    {% include "foodcomputer/data_panel.html" %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 style="margin-top:10px">Device List {#% if user.is_staff %}<a href="#{% url 'foodcomputer:device_add' obj.pk %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Device</a>{% endif %#}</h3>
+                        </div>
+												<div class="panel-body">
+		                        {% if obj.devices.all %}
+		                            <ul class="nav nav-pills pull-right">
+		                                <li class="active"><a data-toggle="pill" href="#tile"><span class="glyphicon glyphicon-th"></span></a></li>
+		                                <li><a data-toggle="pill" href="#list"><span class="glyphicon glyphicon-th-list"></span></a></li>
+		                            </ul>
+		                            <div class="clearfix" style="margin-bottom: 15px"></div>
+		                            <div class="tab-content">
+		                                <div id="tile" class="tab-pane fade in active">
+		                                    <div class="row" style="margin-top:5px">
+		                                        {% for device in obj.devices.all %}
+		                                            <div class="col-md-6">
+		                                                {% include "foodcomputer/device_panel.html" %}
+		                                            </div>
+		                                        {% endfor %}
+		                                    </div>
+		                                </div>
+		                                <div id="list" class="tab-pane fade">
+		                                    {% with listID='deviceListID' %}
+		                                        <div class="panel-group" id="{{ listID }}">
+		                                            {% for device in obj.devices.all %}
+		                                                {% include "foodcomputer/device_panel.html" with clps='true' %}
+		                                            {% endfor %}
+		                                        </div>
+		                                    {% endwith %}
+		                                </div>
+		                            </div>
+		                        {% else %}
+		                            <p>There are no Devices.</p>
+		                        {% endif %}
+		                    </div>
+{#                        <!-- <div class="panel-body">#}
+{#                            <div class="row">#}
+{#                                {% if obj.devices.all %}#}
+{#                                    {% for device in obj.devices.all %}#}
+{#                                        <div class="col-md-6 col-lg-4">#}
+{#                                            {% include "foodcomputer/device_panel.html" %}#}
+{#                                        </div>#}
+{#                                    {% endfor %}#}
+{#                                {% else %}#}
+{#                                    <p>There are no devices available for this {{ model_name }}.</p>#}
+{#                                {% endif %}#}
+{#                            </div>#}
+{#                        </div> -->#}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

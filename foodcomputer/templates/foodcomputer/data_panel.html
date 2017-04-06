@@ -1,0 +1,21 @@
+{% include "foodcomputer/chart.html" %}
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3>
+			Data {# <a href="#" class="btn btn-default pull-right"></a>#}
+		</h3>
+	</div>
+	<div class="panel-body">
+		<div id="curve_chart" style="height: 700px"></div>
+		<pre id="data">{{ prestring }}</pre>
+	</div>
+	<div class="panel-footer">
+		<a href="{% url 'foodcomputer:pi_chart' obj.pk %}" class="btn btn-primary pull-left" title="Advanced Options">
+			<span class="glyphicon glyphicon-equalizer"></span>
+		</a>
+		{# <a href="#" class="btn btn-success"></a>#}
+        {# <a href="#" class="btn btn-primary pull-right"></a>#}
+		<div class="clearfix"></div>
+	</div>
+</div>

@@ -1,0 +1,54 @@
+{#Form Vars:#}
+{##}
+{#form_url:           (REQ) Form action url.#}
+{#action_str:         (REQ) Name of action form is performing on model_name. NOTE: requires one of the following strings: 'create', 'update', 'add new'#}
+{#cancel_url:         (OPT) url to cancel and go back to another page.#}
+{##}
+{#form_list:          (OPT) List of form object variables. NOTE: If exists, form variable is ignored.#}
+{#form:               (COND) Form object variable.#}
+{#form_is_multipart:  (OPT) If exists will add enctype="multipart/form-data" to the form. NOTE: Use form.is_multipart to find.#}
+{##}
+{#model_name:         (REQ) Name of model being used in the form.#}
+{#obj:                (OPT) record object.#}
+
+
+{% if form_is_multipart %}
+<form class="form-horizontal" enctype="multipart/form-data" action="{{ form_url }}" method="post">
+{% else %}
+<form class="form-horizontal" action="{{ form_url }}" method="post">
+{% endif %}
+    <div class="panel panel-default" style="margin-top:50px">
+        <div class="panel-heading">
+            <h3>
+                {{ action_str|title }} {{ model_name }}
+                {% if obj.get_delete_url and user.is_staff %}
+                    <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
+                {% endif %}
+            </h3>
+        </div>
+        <div class="panel-body">
+            {% csrf_token %}
+            {% if form_list %}
+                {% for fm in form_list %}
+                    {{ fm.non_field_errors }}
+                {% endfor %}
+                {% for fm in form_list %}
+                    {% include 'foodcomputer/form.html' with form=fm %}
+                {% endfor %}
+            {% else %}
+                {{ form.non_field_errors }}
+                {% include 'foodcomputer/form.html' %}
+            {% endif %}
+        </div>
+        <div class="panel-footer">
+            {% if cancel_url %}
+                <a href="{{ cancel_url }}" class="btn btn-default">Cancel</a>
+            {% elif obj.get_absolute_url %}
+                <a href="{{ obj.get_absolute_url }}" class="btn btn-default" title="Back"><span class="glyphicon glyphicon-triangle-left"></span></a>
+            {% endif %}
+            <button type="submit" class="btn btn-primary pull-right" title="Save"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</form>

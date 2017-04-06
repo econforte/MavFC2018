@@ -1,0 +1,73 @@
+from rest_framework import serializers
+from .models import Address, Pi, Device, Data, DeviceType, UnitType, DataType, ControllerUpdate
+from experiment.models import ExperimentInstance
+
+from datetime import datetime
+
+
+#Implementation
+class ToDoCheckSerializer(serializers.ModelSerializer):
+    # Not sure this class is needed due to boolean return
+    class Meta:
+        fields = ()
+
+
+class KeySerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('address', 'user', 'pi_SN',)
+
+
+class dataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Data
+        fields = '__all__'
+
+
+class deviceTypesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeviceType
+        fields = ('pk', 'name', 'model_id', 'unit_type', 'data_type', 'is_controller', 'bio_threshold',)
+        depth = 1
+
+
+class deviceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Device
+        fields = '__all__'
+
+
+class DeviceCurrentValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Data
+        fields = ('data_value', )
+
+
+class PiSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pi
+        fields = '__all__'
+
+
+class PiPKSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pi
+        fields = ('pk', 'pi_SN', 'manual_control',)
+
+
+class ControllerUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ControllerUpdate
+        fields = '__all__'
+
+
+class emailSerializer(serializers.Serializer):
+    class Meta:
+        fields = ('pi', 'level', 'message',)
+
+
+class PiStateSerializer(serializers.Serializer):
+    controllerUpdates = ControllerUpdateSerializer(many=True, required=False)
+    activeInstance = serializers.IntegerField(required=False)
+    pi = PiPKSerializer()
+
+
