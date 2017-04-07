@@ -174,7 +174,7 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 
 
-SITE_ID = 1
+SITE_ID = 2
 
 
 
