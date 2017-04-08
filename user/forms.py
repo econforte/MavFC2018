@@ -3,6 +3,8 @@ import logging
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
+from django.contrib.auth.models import User
+
 
 from .utils import ActivationMailFormMixin
 
@@ -27,9 +29,21 @@ class ResendActivationEmailForm(ActivationMailFormMixin, forms.Form):
 class UserCreationForm(ActivationMailFormMixin, BaseUserCreationForm):
     mail_validation_error = ('User created. Could not send activation email. Please try again later. (Sorry!)')
 
+    def __init__(self, *args, **kwargs):
+        super(UserCreationForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.pop("autofocus", None)
+
     class Meta(BaseUserCreationForm.Meta):
         model = get_user_model()
-        fields = ('first_name', 'last_name', 'username', 'email',)
+        fields = ('first_name', 'last_name', 'email', 'username',)
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        user = User.objects.filter(email=email)
+        if user:
+            err = 'An account with the email, '+email+' already exists.'
+            raise forms.ValidationError(err)
+        return email
 
     def save(self, **kwargs):
         user = super().save(commit=False)

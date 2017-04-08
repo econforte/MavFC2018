@@ -1,17 +1,27 @@
 {% extends parent_template|default:"user/base_user.html" %}
 
 {% block title %}
-	{{ block.super }} - Logged Out
+    {{ block.super }} - Logged Out
+{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li class="active">Logout</li>
+    </ul>
 {% endblock %}
 
 {% block content %}
-{#  <div class="row">#}
-{#    <div class="offset-by-two eight columns">#}
-{#      <p>You've successfully logged out.</p>#}
-{#      {% include "user/login_form.html" with login_button='Log Back In' %}#}
-{#    </div>#}
-{#  </div>#}
-  	<div class="alert alert-success">
-  		<p><strong>Success!</strong> You've successfully logged out.</p>
-	</div>
+    <div class="container" style="margin-top:25px">
+        <div class="alert alert-success">
+            <strong>Success!</strong> You've successfully logged out.
+        </div>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                {% include "user/login_form.html" with login_button='Log Back In' %}
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
 {% endblock %}
