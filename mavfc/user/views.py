@@ -110,8 +110,13 @@ class ResendActivationEmail(MailContextViewMixin, View):
                     error(request, err)
                 if errs:
                     bound_form.errors.pop('__all__')
-                return TemplateResponse(request, self.template_name,
-                    {'form': bound_form})
+                return TemplateResponse(request, self.template_name, {'form': bound_form})
+            elif user is None:
+                error(request, 'We are unable to find an account with this email address.')
+                return redirect(self.success_url)
+        else:
+            error(request, 'There was a problem')
+            return redirect(self.success_url)
         success(request, 'Activation Email Sent!')
         return redirect(self.success_url)
     

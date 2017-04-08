@@ -141,13 +141,13 @@ STATICFILES_DIRS = [
 
 
 
-SITE_ID = 1
+SITE_ID = 2
 
 
 
 from django.core.urlresolvers import reverse_lazy
 
-LOGIN_REDIRECT_URL = '/home/'
+LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = reverse_lazy('dj-auth:login')
 LOGOUT_URL = reverse_lazy('dj-auth:logout')
 
@@ -171,34 +171,34 @@ verbose = (
     "[%(asctime)s] %(levelname)s "
     "[%(name)s:%(lineno)s] %(message)s")
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'remove_migration_sql': {
-            '()': ManagementFilter,
-        },
-    },
-    'handlers': {
-        'console': {
-            'filters': ['remove_migration_sql'],
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'formatters': {
-        'verbose': {
-            'format': verbose,
-            'datefmt': "%Y-%b-%d %H:%M:%S"
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'formatter': 'verbose'
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'filters': {
+#         'remove_migration_sql': {
+#             '()': ManagementFilter,
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'filters': ['remove_migration_sql'],
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'formatters': {
+#         'verbose': {
+#             'format': verbose,
+#             'datefmt': "%Y-%b-%d %H:%M:%S"
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'formatter': 'verbose'
+#         },
+#     },
+# }
 
 
 

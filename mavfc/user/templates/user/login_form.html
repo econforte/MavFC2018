@@ -1,33 +1,73 @@
 <script>
-	$(document).ready(function(){
-		$("input").addClass("form-control");
-	});
+    $(document).ready(function () {
+        $("#loginPagePanel input").addClass("form-control");
+        $("#id_username").attr("placeholder", "Username");
+        $("#id_username").after("<span class='input-group-addon'><i class='glyphicon glyphicon-user'></i></span>");
+        $("#id_password").attr("placeholder", "Password");
+        $("#id_password").after("<span class='input-group-addon'><i class='glyphicon glyphicon-lock'></i></span>");
+        $("#loginPagePanel ul").addClass("list-group");
+        $("#loginPagePanel li").addClass("list-group-item");
+        $("#loginPagePanel li").addClass("list-group-item-danger");
+        console.log("apply changes");
+    });
 </script>
-<div class="panel panel-default">
-	<div class="panel-heading">
-		<h3>Login</h3>
-	</div>
-	<form action="{% url 'dj-auth:login' %}" method="post" class="form-horizontal">
-		<div class="panel-body">
-		  	{% csrf_token %}
-			{{ form.non_field_errors }}
-			{% for field in form %}
-				<div class="form-group">
-					{{ field.errors }}
-					<label class="control-label col-sm-2" for="{{ field.id_for_label }}">{{ field.label }}:</label>
-					<div class="col-sm-10">
-						{{ field }}
-					</div>
-				</div>
-			{% endfor %}
-		  	{% if next %}
-		    	<input type="hidden" name="next" value="{{ next }}">
-		  	{% endif %}
-		</div>
-		<div class="panel-footer">
-			<a href="/home/" class="btn btn-default">Cancel</a>
-		  	<button type="submit" class="btn btn-primary pull-right">{{ login_button|default:'Log in' }}</button>
-			<a href="{% url 'dj-auth:pw_reset_start' %}" class="btn btn-info pull-right" style="margin-right:10px">Forgot Password</a>
-		</div>
-	</form>
+<style>
+    #loginPagePanel .panel-heading {
+        padding: 15px 25px;
+        border-bottom: 1px solid #eee;
+        background-image: none;
+        background-color: #323232;
+        color: #D8D7D5;
+    !important;
+    }
+
+    #loginPagePanel .panel-heading h3 {
+        color: #D8D7D5;
+    !important;
+    }
+
+    #loginPagePanel .panel-body {
+        padding: 25px 60px 15px;
+    }
+
+    #loginPagePanel .panel-footer {
+        background-color: #f9f9f9;
+    }
+
+    #loginPagePanel ul {
+        background-color: #f9f9f9;
+    }
+</style>
+<div id="loginPagePanel" class="panel panel-default">
+    <div class="panel-heading">
+        <h3><span class="glyphicon glyphicon-lock"></span> Login</h3>
+    </div>
+    <form action="{% url 'dj-auth:login' %}" method="post" class="form-horizontal">
+        <div class="panel-body">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.errors }}
+                    <div class="input-group">
+                        {{ field }}
+                    </div>
+                </div>
+            {% endfor %}
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
+        </div>
+        <div class="panel-footer">
+            <a class="btn btn-danger pull-left" href="/">
+                <span class="glyphicon glyphicon-remove"></span> Cancel
+            </a>
+            <button type="submit" class="btn btn-primary pull-right">
+                {{ login_button|default:'Login' }} <span class="glyphicon glyphicon-log-in"></span>
+            </button>
+            <a href="{% url 'dj-auth:pw_reset_start' %}" class="btn btn-info pull-right" style="margin-right:10px">Forgot
+                Password</a>
+            <div class="clearfix"></div>
+        </div>
+    </form>
 </div>
