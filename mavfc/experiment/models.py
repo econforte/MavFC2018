@@ -45,7 +45,7 @@ class Experiment(models.Model):
         else:
             bc.append((self.get_absolute_url, self.name))
         bc.append((self.get_list_url, 'Experiment List'))
-        bc.append(('/home/', 'Home'))
+        bc.append(('/', 'Home'))
         return bc
 
 
