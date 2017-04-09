@@ -97,6 +97,8 @@
         var options = {
             width: 400, height: 120,
             minorTicks: 5
+            {% if device.device_type.data_type.min_limit %}, min:{{ device.device_type.data_type.min_limit }}{% endif %}
+            {% if device.device_type.data_type.max_limit %}, max:{{ device.device_type.data_type.max_limit }}{% endif %}
         };
         var chart = new google.visualization.Gauge(document.getElementById('chart_div{{ device.pk }}'));
         chart.draw(data, options);
