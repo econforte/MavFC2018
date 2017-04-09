@@ -1,6 +1,12 @@
 from rest_framework import serializers
 from .models import Address, Pi, Device, Data, DeviceType, UnitType, DataType, ControllerUpdate
 from experiment.models import ExperimentInstance
+from django.core.mail import send_mail
+from django.core.exceptions import ValidationError
+from django.core.mail import BadHeaderError
+from django.contrib.auth.models import User
+#from django.contrib.auth.models import Pi
+
 
 from datetime import datetime
 
@@ -61,36 +67,40 @@ class ControllerUpdateSerializer(serializers.ModelSerializer):
 
 
 class emailSerializer(serializers.Serializer):
-    #fields = ('pi', 'level', 'message',)
+    #fields = ('pi', 'level', 'message')
 
-    pi = serializers.CharField(source='data.pi', allow_blank=False, max_length=1000)
+    pi = serializers.IntegerField(source='data.pi', min_value=0, max_value=1000)
     level = serializers.IntegerField(source='data.level', min_value=1, max_value=3)
     message = serializers.CharField(source='data.message', allow_blank=False, max_length=1000)
 
     def send_mail(self):
-        lvl = self.cleaned_data.get('level')
+        lvl = self.data['level']
+        pk = self.data['pi']
         #Level 1 = All Admins and anyone associated to the Pi
         if (lvl == 1):
-            admins = user.objects.filter(is_staff = True)
+            admins = User.objects.filter(is_staff = True)
             sendList = []
             for admin in admins:
-                sendList.append(admin.email())
-            users = Pi.objects.get(pk=pk).user()
+                sendList.append(admin.email)
+            pk = self.data['pi']
+            pi = Pi.objects.get(pk=pk)
+            users = User.objects.filter(is_staff=True, pis__contains=pi, experiment_instances__experiment_instance__experiment__pi__pk=pi.pk)
             for user in users:
-                sendList.append(user.email())
+                sendList.append(admin.email)
         #Level 2 = All Admins and Pi User
         if (lvl == 2):
-            admins = User.objects.filter(is_staff = True, pis__contains=pi)
+            pi = Pi.objects.get(pk=pk)
+            admins = User.objects.filter(is_staff=True, pis__contains=pi)
             sendList = []
             for admin in admins:
-                sendList.append(admin.email())
+                sendList.append(admin.email)
             #sendList.append(Pi.objects.get(pk=pk).user.objects.filter(is_active = True))
         #Level 3 = All Admins
         if (lvl == 3):
             admins = User.objects.filter(is_staff = True)
             sendList = []
             for admin in admins:
-                sendList.append(admin.email())
+                sendList.append(admin.email)
         try:
             send_mail(
                 "Pi Email",

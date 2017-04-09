@@ -29,12 +29,7 @@ from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .utils import ChartDataPreparation, DownloadDataPreparation, DeviceDataPreparation
 from .models import *
 from .forms import *
-
-import collections
-import math
 import datetime
-
-import time
 import csv
 
 class PiList(View):
