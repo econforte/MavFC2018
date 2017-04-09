@@ -378,9 +378,10 @@ class anomalyEmail(APIView):
         #       "message": "It was Sean and his team of dolphins."
         #   }
         serializer = emailSerializer(data=request.data)
-        if serializer.is_valid(): 
-            serializer.send_mail();
-            return Response("Email(s) Sent")
+        if serializer.is_valid():
+            sent = serializer.send_mail();
+            if sent:
+                return Response("Email(s) Sent")
         else: return Response("No Email(s) Sent")
 
 
