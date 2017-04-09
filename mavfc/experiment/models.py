@@ -173,7 +173,7 @@ class UserExperimentInstance(models.Model):
     is_user = models.BooleanField()
 
     def __str__(self):
-        return self.experiment_instance.pi.name + ": " + self.user.get_username
+        return self.experiment_instance.experiment.name + ": " + self.user.username
 
     def get_absolute_url(self):
         return reverse('experiment:user_experimentinstance_detail', kwargs={'pk': self.pk})

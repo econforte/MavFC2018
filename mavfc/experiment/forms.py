@@ -102,7 +102,7 @@ class ExperimentInstanceAddForm(forms.ModelForm):
         return end
 
 
-class  UserExperimentInstanceAddForm(forms.ModelForm):
+class UserExperimentInstanceAddForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         super(UserExperimentInstanceAddForm, self).__init__(*args, **kwargs)
