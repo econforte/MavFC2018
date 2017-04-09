@@ -17,7 +17,7 @@ from experiment.models import *
 
 class Homepage(View):
 
-    @method_decorator(login_required)
+    #@method_decorator(login_required)
     def get(self, request, parent_template=None):
         if request.user.is_authenticated():
             return render(request, 'homepage/dashboard.html', {'parent_template': parent_template})
