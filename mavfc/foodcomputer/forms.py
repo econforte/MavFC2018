@@ -16,7 +16,7 @@ class PiForm(forms.ModelForm):
 
     class Meta:
         model = Pi
-        exclude = ('pi_SN', 'address',)
+        exclude = ('pi_SN', 'address','manual_control',)
 
 
 
