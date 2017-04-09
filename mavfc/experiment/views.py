@@ -303,7 +303,7 @@ class UserExperimentInstanceAdd(View):
             {'form': self.form_class,
              'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
              'model_name': self.model_name,
-             'breadcrumb_list': parent.get_add_inst_breadcrumbs(),
+             'breadcrumb_list': parent.get_add_breadcrumbs(),
              'parent_template': self.parent_template
              })
 
@@ -323,7 +323,7 @@ class UserExperimentInstanceAdd(View):
             {'form': bound_form,
              'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
              'model_name': self.model_name,
-             'breadcrumb_list': parent.get_add_inst_breadcrumbs(),
+             'breadcrumb_list': parent.get_add_breadcrumbs(),
              'parent_template': self.parent_template})
 
 
