@@ -4,17 +4,53 @@
 	{{ block.super }} - Resend Activation E-Mail
 {% endblock %}
 
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href="{% url 'dj-auth:create' %}">Create Account</a></li>
+        <li class="active">Resend Activation E-Mail</li>
+    </ul>
+{% endblock %}
+
 {% block content %}
 	<script>
 		$(document).ready(function(){
 			$("input").addClass("form-control");
+            $("#id_email").attr("placeholder", "Account Email Address");
+            $("#id_email").after("<span class='input-group-addon'><i class='glyphicon glyphicon-envelope'></i></span>");
+            $("#passwordResetPagePanel ul").addClass("list-group");
+            $("#passwordResetPagePanel li").addClass("list-group-item");
+            $("#passwordResetPagePanel li").addClass("list-group-item-danger");
 		});
 	</script>
-	<div class="container" style="margin-top:50px">
+    <style>
+        #resendActivationEmailPanel .panel-heading {
+            padding: 15px 25px;
+            border-bottom:1px solid #eee;
+            background-image: none;
+            background-color: #323232;
+            color: #D8D7D5;
+        !important;
+        }
+
+        #resendActivationEmailPanel .panel-heading h3 {
+            color: #D8D7D5;
+        !important;
+        }
+
+        #resendActivationEmailPanel .panel-body {
+            padding: 25px 60px 15px;
+        }
+
+        #resendActivationEmailPanel .panel-footer {
+            background-color: #f9f9f9;
+        }
+    </style>
+	<div class="container" style="margin-top:25px">
 		<div class="row">
 			<div class="col-md-3"></div>
 			<div class="col-md-6">
-				<div class="panel panel-default">
+				<div class="panel panel-default" id="resendActivationEmailPanel">
 					<div class="panel-heading">
 						<h3>Resend Activation E-Mail</h3>
 					</div>
@@ -28,8 +64,7 @@
 							{% for field in form %}
 								<div class="form-group">
 									{{ field.errors }}
-									<label class="control-label col-sm-2" for="{{ field.id_for_label }}">{{ field.label }}:</label>
-									<div class="col-sm-10">
+									<div class="input-group">
 										{{ field }}
 									</div>
 								</div>

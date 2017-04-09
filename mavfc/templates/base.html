@@ -1,194 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-		
-		<title>
-			{% block title %}
-				Maverick Food Computer
-			{% endblock %}
-		</title>
-		
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-		<!-- Bootstrap theme -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-		<!-- Include all compiled plugins (below), or include individual files as needed (Bootstrap JavaScript) -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-		<!--[if lt IE 9]>
+    <title>
+        {% block title %}
+            Maverick Food Computer
+        {% endblock %}
+    </title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Bootstrap theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed (Bootstrap JavaScript) -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
 		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 
-        <style>
-            .panel-default {
-                box-shadow: 3px 6px 9px RGBA(0, 0, 0, 0.5);
-            }
-        </style>
-		{% block scripts %}
+    <style>
+        .panel-default {
+            box-shadow: 3px 6px 9px RGBA(0, 0, 0, 0.5);
+        }
 
-        {% endblock %}
-	</head>
-	<body>
-	
-	{% load flatpages %}
-	{% get_flatpages as flatpages %}
-	
-		<!-- Top Fixed Navigation Bar -->
-		<nav class="navbar navbar-inverse navbar-fixed-top">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<!-- Mobile sized menu button -->
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span> 
-					</button>
-					<!-- Home button -->
-					<a class="navbar-brand" href="/home/">MAVFC</a>
-				</div>
-				<!-- Mobile collapseable navigation -->
-				<div class="collapse navbar-collapse" id="myNavbar">
-					<!-- Page Navigation -->
-					<ul class="nav navbar-nav">
-						<li class="dropdown">
-								<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-									Pages <span class="caret"></span> 
-								</a>
-								<ul class="dropdown-menu">
-									{% for page in flatpages %}
-									<li><a href="{{ page.get_absolute_url }}">{{ page.title }}</a></li>
-									{% endfor %}
-								</ul>
-							</li>
-					</ul>
-					<!-- Search Form -->
-					<form class="navbar-form navbar-left" action="/experiment/search/" method="post">
+        #baseLoginModal .modal-header {
+            padding: 15px 25px;
+            border-bottom: 1px solid #eee;
+            background-color: #323232;
+            color: #D8D7D5;
+            -webkit-border-top-left-radius: 5px;
+            -webkit-border-top-right-radius: 5px;
+            -moz-border-radius-topleft: 5px;
+            -moz-border-radius-topright: 5px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        #baseLoginModal .modal-header .close {
+            padding: 15px 15px;
+            color: #fff;
+            opacity: .5;
+        }
+
+        #baseLoginModal .modal-body {
+            padding: 25px 60px 15px;
+        }
+
+        #baseLoginModal .modal-footer {
+            background-color: #f9f9f9; /*#19365C;*/
+            -webkit-border-bottom-left-radius: 5px;
+            -webkit-border-bottom-right-radius: 5px;
+            -moz-border-radius-bottomleft: 5px;
+            -moz-border-radius-bottomright: 5px;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+    </style>
+    {% block scripts %}
+
+    {% endblock %}
+</head>
+<body>
+
+{% load flatpages %}
+{% get_flatpages as flatpages %}
+
+<!-- Top Fixed Navigation Bar -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <!-- Mobile sized menu button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!-- Home button -->
+            <a class="navbar-brand" href="/">MAVFC</a>
+        </div>
+        <!-- Mobile collapseable navigation -->
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <!-- Page Navigation -->
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        Pages <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% for page in flatpages %}
+                            <li><a href="{{ page.get_absolute_url }}">{{ page.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+            <!-- Search Form -->
+            <form class="navbar-form navbar-left" action="/experiment/search/" method="post">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search Experiments" name="experimentQuery" value="{{ experimentQuery }}">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <!-- Profile Actions -->
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <span class="caret"></span> {{ user.get_full_name }} <!-- <img src="" class="img-circle" height="25"> -->
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Manage <span class="glyphicon glyphicon-user"></span></a></li>
+                            {% if user.is_staff %}
+                                <li><a href="/admin/">Admin</a></li>
+                            {% endif %}
+                            <li><a href="{% url 'foodcomputer:pi_list' %}">Food Computer List</a></li>
+                            <li><a href="{% url 'experiment:experiment_list' %}">Experiment List</a></li>
+                            <li><a href="{% url 'dj-auth:logout' %}?next={{ request.path }}">Logout <span class="glyphicon glyphicon-log-out"></span></a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'dj-auth:create' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#baseLoginModal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    {% if app_nav %}
+        <div class="container-fluid">
+            <!-- App View Navigation -->
+            <ul class="nav navbar-nav">
+                {% block app_nav %}
+                    <li class="active"><a href="#">App</a></li>
+                {% endblock %}
+            </ul>
+        </div>
+    {% endif %}
+</nav>
+
+
+<!-- Modal Login Form triggered from navbar login button -->
+{% if not user.is_authenticated %}
+    <div class="modal fade" id="baseLoginModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>
+                    <h4><span class="glyphicon glyphicon-lock"></span> Login</h4>
+                </div>
+                <form action="/user/login/" method="post">
+                    <div class="modal-body">
                         {% csrf_token %}
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search Experiments" name="experimentQuery" value="{{ experimentQuery }}">
-							<div class="input-group-btn">
-								<button class="btn btn-default" type="submit">
-									<i class="glyphicon glyphicon-search"></i>
-								</button>
-							</div>
-						</div>
-					</form>
-					<!-- Profile Actions -->
-					<ul class="nav navbar-nav navbar-right">
-						{% if user.is_authenticated %}
-							<li class="dropdown">
-								<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-									<span class="caret"></span> {{ user.get_full_name }} <!-- <img src="" class="img-circle" height="25"> -->
-								</a>
-								<ul class="dropdown-menu">
-									<li><a href="#">Manage <span class="glyphicon glyphicon-user"></span></a></li>
-									{% if user.is_staff %}
-										<li><a href="/admin/">Admin</a></li>
-									{% endif %}
-									<li><a href="{% url 'foodcomputer:pi_list' %}">Food Computer List</a></li>
-									<li><a href="{% url 'experiment:experiment_list' %}">Experiment List</a></li>
-									<li><a href="{% url 'dj-auth:logout' %}?next={{ request.path }}">Logout <span class="glyphicon glyphicon-log-in"></span></a></li>
-								</ul>
-							</li>
-						{% else %}
-							<li><a href="{% url 'dj-auth:create' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-							<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-						{% endif %}
-					</ul>
-				</div>
-			</div>
-			{% if app_nav %}
-			<div class="container-fluid">
-				<!-- App View Navigation -->
-				<ul class="nav navbar-nav">
-					{% block app_nav %}
-						<li class="active"><a href="#">App</a></li>
-					{% endblock %}
-				</ul>
-			</div>
-			{% endif %}
-		</nav>
-		
-		
-		<!-- Modal Login Form triggered from navbar login button -->
-		{% if not user.is_authenticated %}
-			<div class="modal fade" id="myModal" role="dialog">
-				<div class="modal-dialog">
-					<!-- Modal content-->
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h3 class="modal-title">Login</h3>
-						</div>
-						<form action="/user/login/" method="post">
-							<div class="modal-body">
-								{% csrf_token %}							
-								<div class="form-group">
-									<label for="id_username">Username:</label>
-									<input autofocus="" class="form-control" id="id_username" maxlength="254" name="username" type="text" required />
-								</div>
-								<div class="form-group">
-									<label for="id_password">Password:</label>
-									<input class="form-control" id="id_password" name="password" type="password" required />
-								</div>
-								{% if next %}
-							    	<input type="hidden" name="next" value="{{ next }}">
-							  	{% endif %}
-							</div>
-							<div class="modal-footer">
-								<a href="{% url 'dj-auth:login' %}" class="btn btn-default pull-left">Cancel</a>
-							  	<button type="submit" class="btn btn-primary pull-right">{{ login_button|default:'Log in' }}</button>
-								<a href="{% url 'dj-auth:pw_reset_start' %}" class="btn btn-info pull-right" style="margin-right:10px">Forgot Password</a>
-							</div>
-						</form> 
-					</div>
-				</div>
-			</div>
-		{% endif %}
-		
-		
-		<!--  -->
-		{% if app_nav %}
-		<div style="margin-top:100px">
-		{% else %}
-		<div style="margin-top:50px">
-		{% endif %}
-			{% block breadcrumbs %}
-			
-			{% endblock %}
-		</div>
-		<div class="container">
-			{% if messages %}
-				{% for msg in messages %}
-					{% if msg.tags == "success" %}
-						<div class="alert alert-success alert-dismissable" style="margin-top:20px">
-					{% elif msg.tags == "info" %}
-						<div class="alert alert-info alert-dismissable" style="margin-top:20px">
-					{% elif msg.tags == "debug" or msg.tags == "warning" %}
-						<div class="alert alert-warning alert-dismissable" style="margin-top:20px">
-					{% elif msg.tags == "error" %}
-						<div class="alert alert-danger alert-dismissable" style="margin-top:20px">
-					{% else %}
-						<div class="alert alert-info alert-dismissable" style="margin-top:20px">
-					{% endif %}
-							<a href="#" class="close" data-dismiss="alert" aria-label="close"><span class="glyphicon glyphicon-remove"></span></a>
-							<strong>{{ msg.tags|title }}!</strong> {{ msg }}
-						</div>
-				{% endfor %}
-			{% endif %}
-		</div>
-		{% block content %}
-			Default Content
-		{% endblock %}
-	</body>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input autofocus="" id="modal_id_username" type="text" class="form-control" maxlength="254" name="username" placeholder="Username" required>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input id="modal_id_password" type="password" class="form-control" name="password" placeholder="Password" required>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            </div>
+                        </div>
+                        {% if next %}
+                            <input type="hidden" name="next" value="{{ next }}">
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-danger pull-left" data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove"></span> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary pull-right">
+                            Login <span class="glyphicon glyphicon-log-in"></span>
+                        </button>
+                        <a href="{% url 'dj-auth:pw_reset_start' %}" class="btn btn-info pull-right" style="margin-right:10px">Forgot Password</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+
+<!-- Navbar spacing adjustment -->
+{% if app_nav %}
+    <div style="margin-top:100px">
+{% else %}
+    <div style="margin-top:50px">
+{% endif %}
+<!-- Breadcrumb Block -->
+{% block breadcrumbs %}
+
+{% endblock %}
+</div>
+<div class="container">
+    {% if messages %}
+        {% for msg in messages %}
+            {% if msg.tags == "success" %}
+                <div class="alert alert-success alert-dismissable" style="margin-top:20px">
+            {% elif msg.tags == "info" %}
+                <div class="alert alert-info alert-dismissable" style="margin-top:20px">
+            {% elif msg.tags == "debug" or msg.tags == "warning" %}
+                <div class="alert alert-warning alert-dismissable" style="margin-top:20px">
+            {% elif msg.tags == "error" %}
+                <div class="alert alert-danger alert-dismissable" style="margin-top:20px">
+            {% else %}
+                <div class="alert alert-info alert-dismissable" style="margin-top:20px">
+            {% endif %}
+        <a href="#" class="close" data-dismiss="alert" aria-label="close"><span class="glyphicon glyphicon-remove"></span></a>
+        <strong>{{ msg.tags|title }}!</strong> {{ msg }}
+        </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+    {% block content %}
+        Default Content
+    {% endblock %}
+</body>
 </html>

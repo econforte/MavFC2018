@@ -6,9 +6,13 @@
 
 {% block breadcrumbs %}
     <ul class="breadcrumb">
-        <li><a href="/home/">Home</a></li>
-        <li><a href="/food-computer/pi/list/">Food Computer List</a></li>
-		<li class="active">Add New Food Computer</li>
+        {% for bc_url, bc_name in breadcrumb_list reversed %}
+            {% if bc_url == 'active' %}
+                <li class="active">{{ bc_name }}</li>
+            {% else %}
+                <li><a href="{{ bc_url }}">{{ bc_name }}</a></li>
+            {% endif %}
+        {% endfor %}
 	</ul>
 {% endblock %}
 
@@ -17,6 +21,13 @@
 {% endblock %}
 
 {% block content %}
+    <script>
+        $(document).ready(function () {
+            $("#formPanel ul").addClass("list-group");
+            $("#formPanel li").addClass("list-group-item");
+            $("#formPanel li").addClass("list-group-item-danger");
+        });
+    </script>
     <div class="container">
         {% include 'foodcomputer/form_panel.html' with action_str='add new' form_is_multipart=form.is_multipart %}
     </div>

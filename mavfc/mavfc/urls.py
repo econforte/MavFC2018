@@ -19,6 +19,7 @@ from django.contrib import admin
 from user import urls as user_urls
 from django.contrib.flatpages import urls as flatpage_urls
 from django.contrib.staticfiles import views
+from rest_framework.authtoken import views as rest_auth_views
 import experiment
 
 urlpatterns = [
@@ -29,6 +30,7 @@ urlpatterns = [
     url(r'^experiment/', include("experiment.urls")),
     url(r'^media/(?P<path>.*)$', views.serve),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api-token-auth/', rest_auth_views.obtain_auth_token),
     # All other URLs should be placed above this line.
     url(r'^', include(flatpage_urls)),
 ]

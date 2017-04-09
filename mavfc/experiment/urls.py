@@ -35,8 +35,8 @@ urlpatterns = [
     url(r'^instance/(?P<pk>[0-9]+)/delete/$', ExperimentInstanceDelete.as_view(), name='experimentinstance_delete'),
     # ex: /experiment/(experiment.pk)/delete/
     url(r'^instance/(?P<pk>[0-9]+)/get/csv/$', ExperimentInstanceData.as_view(), name='experimentinstance_get_csv'),
-    # ex: /experiment/pi/(pi.pk)/add/instance/
-    url(r'^pi/(?P<pk>[0-9]+)/add/instance/$', ExperimentInstanceAdd.as_view(), name='experimentinstance_add'),
+    # ex: /experiment/(experiment.pk)/add/instance/
+    url(r'^(?P<pk>[0-9]+)/add/instance/$', ExperimentInstanceAdd.as_view(), name='experimentinstance_add'),
     # ex: /experiment/api/v1/getExperiment/(foodComputerKey.pk)
     url(r'^instance/(?P<pk>[0-9]+)/add/user/$', UserExperimentInstanceAdd.as_view(), name='user_experimentinstance_add'),
     # ex: /experiment/api/v1/getExperiment/(foodComputerKey.pk)

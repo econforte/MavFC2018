@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'user',
     'rest_framework',
     'homepage',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -115,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'UTC'#'America/Chicago'
 
 USE_I18N = True
 
@@ -127,6 +128,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
+# _ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 
@@ -140,13 +142,15 @@ STATICFILES_DIRS = [
 
 
 
-SITE_ID = 1
+SITE_ID = 2
 
 
 
 from django.core.urlresolvers import reverse_lazy
 
+
 LOGIN_REDIRECT_URL = '/homepage/'
+
 LOGIN_URL = reverse_lazy('dj-auth:login')
 LOGOUT_URL = reverse_lazy('dj-auth:logout')
 
@@ -170,34 +174,34 @@ verbose = (
     "[%(asctime)s] %(levelname)s "
     "[%(name)s:%(lineno)s] %(message)s")
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'remove_migration_sql': {
-            '()': ManagementFilter,
-        },
-    },
-    'handlers': {
-        'console': {
-            'filters': ['remove_migration_sql'],
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'formatters': {
-        'verbose': {
-            'format': verbose,
-            'datefmt': "%Y-%b-%d %H:%M:%S"
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'formatter': 'verbose'
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'filters': {
+#         'remove_migration_sql': {
+#             '()': ManagementFilter,
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'filters': ['remove_migration_sql'],
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'formatters': {
+#         'verbose': {
+#             'format': verbose,
+#             'datefmt': "%Y-%b-%d %H:%M:%S"
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'formatter': 'verbose'
+#         },
+#     },
+# }
 
 
 

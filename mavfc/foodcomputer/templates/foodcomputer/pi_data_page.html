@@ -17,6 +17,13 @@
 {% endblock %} 
 
 {% block content %}
+    <script>
+        $(document).ready(function () {
+            $("#dataFormPanel ul").addClass("list-group");
+            $("#dataFormPanel li").addClass("list-group-item");
+            $("#dataFormPanel li").addClass("list-group-item-danger");
+        });
+    </script>
 	<div class="container-fluid" style="margin-top:25px">
 		<div class="row">
             <div class="col-md-1"></div>
@@ -24,20 +31,17 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3>
-							Chart Like a Dolphin at BurgerKing: Have it your way, Cetacean. 
+							Advanced Options Chart
 						</h3>
 						<div class="clearfix"></div>
 					</div>
 					<div class="panel-body">
-						<div id="curve_chart" style="height: 900px"></div>
+						<div id="curve_chart" style="height: {{ height }}"></div>
 						<pre id="data">{{ prestring }}</pre>
 						{% include "foodcomputer/chart.html" %}
 					</div>
-					<div class="panel-footer">
-						{% include "foodcomputer/pi_advanced_options.html" %}
-						<div class="clearfix"></div>
-					</div>
 				</div>
+                {% include "foodcomputer/pi_advanced_options.html" %}
 			</div>
 		</div>
 	</div>

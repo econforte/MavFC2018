@@ -3,11 +3,20 @@ from django.http.response import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.messages import success, error
+from django.core.urlresolvers import reverse
 
 from .models import Data, Device
 import collections
 import math
 from datetime import datetime
+
+
+def get_create_bcs(model_name):
+    bc = []
+    bc.append(('active', 'Create '+model_name))
+    bc.append((reverse('foodcomputer:pi_list'), 'Food Computer List'))
+    bc.append(('/', 'Home'))
+    return bc
 
 
 class ObjectCreateMixin:
@@ -27,6 +36,7 @@ class ObjectCreateMixin:
              'form_url': self.form_url,
              'cancel_url': self.cancel_url,
              'model_name': self.model_name,
+             'breadcrumb_list': get_create_bcs(self.model_name),
              'parent_template': self.parent_template})
     
     @method_decorator(login_required)
@@ -40,7 +50,10 @@ class ObjectCreateMixin:
             request,
             self.template_name,
             {'form': bound_form,
+             'form_url': self.form_url,
+             'cancel_url': self.cancel_url,
              'model_name': self.model_name,
+             'breadcrumb_list': get_create_bcs(self.model_name),
              'parent_template': self.parent_template})
 
 
@@ -101,13 +114,72 @@ class ObjectDeleteMixin:
         success(request, self.model_name+' was successfully deleted.')
         return HttpResponseRedirect(self.success_url)
         
-class ChartDataPreparation:
+
+class DeviceDataPreparation():
+    def __init__(self, obj):
+        self.device_name = self.deviceName(obj)
+        self.is_actuator = self.isController(obj)
+    
+    def deviceName(self, obj):
+        return obj.device_type.name
+    
+    def isController(self, obj):
+        return obj.device_type.is_controller
+    
+    def initializeDeviceDataValues(self, obj):
+        time2sensor = {}
+        for value in obj.data.all():
+            dataValue = value.data_value
+            if dataValue < 0:
+                dataValue = 'NA'
+            else:
+                dataValue = str(dataValue)
+            time2sensor[str(value.timestamp)] = dataValue
+        return time2sensor
+    
+    def subsetDataValues(self, time2sensor, numdp=200):
+        times = sorted([x for x in time2sensor])
+        ss = len(times)/numdp # static shift
+        spots = [math.floor(ss*x) for x in range(numdp)]
+        time3sensor = collections.defaultdict(dict)
+        if len(set(spots)) == 1: return time3sensor
+        for spot in set(spots):
+            time3sensor[times[spot]] = time2sensor[times[spot]]
+        return time3sensor            
+    
+    def constructTable(self, time2sensor, numdp = 200):
+        prestring = "date," + self.device_name + '\n'
+        if self.is_actuator:
+            prestring += "0,1\n"
+        else:
+            prestring += "0,0\n"
+            
+        for time in sorted([x for x in time2sensor]):
+            prestring += str(time).split('+')[0] + ',' + str(time2sensor[time]) + '\n'
+        return prestring
+    
+    
+
+        
+class ChartDataPreparation():
     def __init__(self, start_date=datetime.min, end_date=datetime.now(), experiment=None, show_anomalies=False, sensors=None):
-        self.start_date = start_date
-        self.end_date = end_date
+        self.start_date = start_date.replace(tzinfo=None)
+        self.end_date = end_date.replace(tzinfo=None)
         self.experiment = experiment
         self.show_anomalies = show_anomalies
         self.sensors = sensors
+        self.ifExperiment()
+        return
+    
+    def ifExperiment(self):
+        if self.experiment:
+            e_start = self.experiment.start.replace(tzinfo=None)
+            e_end = self.experiment.end.replace(tzinfo=None)
+            
+            if self.start_date < e_start:
+                self.start_date = e_start
+            if self.end_date > e_end:
+                self.end_date = e_end
         return
     
     def getDates(self, experiment):
@@ -178,6 +250,33 @@ class ChartDataPreparation:
         return [device.device_type.name for device in device_names]
         
         
+class DownloadDataPreparation():
+    def __init__(self, pi):
+        self.cdp = ChartDataPreparation()
+        self.namelist = self.cdp.getNameList(pi) 
+        
+    def firstline(self, pi):
+        return ['date'] + self.namelist
+    
+    def secondline(self, pi):
+        isActuator = self.cdp.getActuatorDictionary(pi)
+        return ['0'] + [isActuator[x] for x in self.namelist]
+    
+    def initializeDataValues(self, pi):
+        return self.cdp.initializeDataValues(pi)
+    
+    def downloadFileGenerator(self, time2sensor):
+        for time in sorted([x for x in time2sensor]):
+            temp = [time.split('+')[0]]
+            for name in self.namelist:
+                if name in time2sensor[time]:
+                    temp.append(time2sensor[time][name])
+                else:
+                    temp.append('NA')
+            yield temp
+            
+        
+    
         
         
         
