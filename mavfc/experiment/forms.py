@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from .models import Experiment, ExperimentRule, ExperimentInstance, UserExperimentInstance
 
-
+import pytz
 import datetime
 
 
@@ -91,14 +91,14 @@ class ExperimentInstanceAddForm(forms.ModelForm):
 
     def clean_start(self):
         start = self.cleaned_data['start']
-        if start < (timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone()) - datetime.timedelta(hours=1)):
-            raise forms.ValidationError('The start ('+str(start)+') can not be in the past.'+str(timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone()) - datetime.timedelta(hours=1)))
+        if start < (timezone.make_aware(datetime.datetime.now(), pytz.timezone('America/Chicago')) - datetime.timedelta(hours=1)):
+            raise forms.ValidationError('The start ('+str(start)+') can not be in the past.'+str(timezone.make_aware(datetime.datetime.now(), pytz.timezone('America/Chicago')) - datetime.timedelta(hours=1)))
         return start
 
     def clean_end(self):
         end = self.cleaned_data['end']
-        if end < (timezone.now() - datetime.timedelta(hours=1)):
-            raise forms.ValidationError('The end ('+str(end)+') can not be in the past.'+str(timezone.now() - datetime.timedelta(hours=1)))
+        if end < (timezone.make_aware(datetime.datetime.now(), pytz.timezone('America/Chicago')) - datetime.timedelta(hours=1)):
+            raise forms.ValidationError('The end ('+str(end)+') can not be in the past.'+str(timezone.make_aware(datetime.datetime.now(), pytz.timezone('America/Chicago')) - datetime.timedelta(hours=1)))
         return end
 
 
