@@ -80,7 +80,7 @@ class emailSerializer(serializers.Serializer):
                 sendList.append(user.email())
         #Level 2 = All Admins and Pi User
         if (lvl == 2):
-            admins = User.objects.filter(is_staff = True)
+            admins = User.objects.filter(is_staff = True, pis__contains=pi)
             sendList = []
             for admin in admins:
                 sendList.append(admin.email())
