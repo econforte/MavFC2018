@@ -73,7 +73,7 @@
                         <div class="panel-heading">
                             <h3 style="margin-top:10px">Instances List
                                 {% if user.is_staff %}
-                                    <a href="{% url 'experiment:experimentinstance_create' %}" title="Create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+                                    <a href="{% url 'experiment:experimentinstance_add' obj.pk %}" title="Add a new Instance" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
                                 {% endif %}
                             </h3>
                         </div>
