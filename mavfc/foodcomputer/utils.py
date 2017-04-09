@@ -3,11 +3,20 @@ from django.http.response import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.messages import success, error
+from django.core.urlresolvers import reverse
 
 from .models import Data, Device
 import collections
 import math
 from datetime import datetime
+
+
+def get_create_bcs(model_name):
+    bc = []
+    bc.append(('active', 'Create '+model_name))
+    bc.append((reverse('foodcomputer:pi_list'), 'Food Computer List'))
+    bc.append(('/', 'Home'))
+    return bc
 
 
 class ObjectCreateMixin:
@@ -27,6 +36,7 @@ class ObjectCreateMixin:
              'form_url': self.form_url,
              'cancel_url': self.cancel_url,
              'model_name': self.model_name,
+             'breadcrumb_list': get_create_bcs(self.model_name),
              'parent_template': self.parent_template})
     
     @method_decorator(login_required)
@@ -40,7 +50,10 @@ class ObjectCreateMixin:
             request,
             self.template_name,
             {'form': bound_form,
+             'form_url': self.form_url,
+             'cancel_url': self.cancel_url,
              'model_name': self.model_name,
+             'breadcrumb_list': get_create_bcs(self.model_name),
              'parent_template': self.parent_template})
 
 

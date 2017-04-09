@@ -40,6 +40,24 @@ class Address(models.Model):
     def get_multi_line_str(self):
         return "{l1}\n{l2}\n{c}, {s} {z}".format(l1=self.street_line_1, l2=self.street_line_2, c=self.city, s=self.state, z=self.zip)
 
+    def get_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[])
+
+    def get_update_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Update ")
+
+    def get_delete_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Delete ")
+
+    def gen_breadcrumbs(self, bc=[], pre=""):
+        if bc == [] and not pre:
+            bc.append(('active', self))
+        else:
+            if pre:
+                bc.append(('active', pre + self))
+            bc.append((self.get_absolute_url, self))
+        return self.pi.gen_breadcrumbs(bc)
+
 
 class Pi(models.Model):
     name = models.CharField(max_length=100,)
@@ -106,13 +124,18 @@ class Pi(models.Model):
     def get_delete_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[], pre="Delete ")
 
+    def get_add_address_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Add Address to ")
+
     def gen_breadcrumbs(self, bc=[], pre=""):
-        if bc == []:
-            bc.append(('active', pre+self.name))
+        if bc == [] and not pre:
+            bc.append(('active', self.name))
         else:
+            if pre:
+                bc.append(('active', pre + self.name))
             bc.append((self.get_absolute_url, self.name))
         bc.append((self.get_list_url, 'Food Computer List'))
-        bc.append(('/home/', 'Home'))
+        bc.append(('/', 'Home'))
         return bc
 
 
@@ -153,10 +176,18 @@ class Device(models.Model):
     def get_breadcrumbs(self):
         return self.gen_breadcrumbs(bc=[])
 
-    def gen_breadcrumbs(self, bc=[]):
-        if bc == []:
+    def get_update_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Update ")
+
+    def get_delete_breadcrumbs(self):
+        return self.gen_breadcrumbs(bc=[], pre="Delete ")
+
+    def gen_breadcrumbs(self, bc=[], pre=""):
+        if bc == [] and not pre:
             bc.append(('active', self.device_type.name))
         else:
+            if pre:
+                bc.append(('active', pre + self.device_type.name))
             bc.append((self.get_absolute_url, self.device_type.name))
         return self.pi.gen_breadcrumbs(bc)
 
@@ -170,17 +201,17 @@ class Data(models.Model):
     def __str__(self):
         return str(self.pk) + ' [' + str(self.timestamp) + ']: ' + str(self.data_value)
 
-    def get_absolute_url(self):
-        return reverse('foodcomputer:data_detail', kwargs={'pk': self.pk})
-
-    def get_create_url(self):
-        return reverse('foodcomputer:data_create')
-
-    def get_update_url(self):
-        return reverse('foodcomputer:data_update', kwargs={'pk': self.pk})
-
-    def get_delete_url(self):
-        return reverse('foodcomputer:data_delete', kwargs={'pk': self.pk})
+    # def get_absolute_url(self):
+    #     return reverse('foodcomputer:data_detail', kwargs={'pk': self.pk})
+    #
+    # def get_create_url(self):
+    #     return reverse('foodcomputer:data_create')
+    #
+    # def get_update_url(self):
+    #     return reverse('foodcomputer:data_update', kwargs={'pk': self.pk})
+    #
+    # def get_delete_url(self):
+    #     return reverse('foodcomputer:data_delete', kwargs={'pk': self.pk})
 
     def get_list_url(self):
         return self.device.get_absolute_url()
@@ -203,17 +234,17 @@ class DeviceType(models.Model):
         else:
             return self.name
 
-    def get_absolute_url(self):
-        return reverse('foodcomputer:devicetype_detail', kwargs={'pk': self.pk})
-
-    def get_create_url(self):
-        return reverse('foodcomputer:devicetype_create')
-
-    def get_update_url(self):
-        return reverse('foodcomputer:devicetype_update', kwargs={'pk': self.pk})
-
-    def get_delete_url(self):
-        return reverse('foodcomputer:devicetype_delete', kwargs={'pk': self.pk})
+    # def get_absolute_url(self):
+    #     return reverse('foodcomputer:devicetype_detail', kwargs={'pk': self.pk})
+    #
+    # def get_create_url(self):
+    #     return reverse('foodcomputer:devicetype_create')
+    #
+    # def get_update_url(self):
+    #     return reverse('foodcomputer:devicetype_update', kwargs={'pk': self.pk})
+    #
+    # def get_delete_url(self):
+    #     return reverse('foodcomputer:devicetype_delete', kwargs={'pk': self.pk})
 
 
 class UnitType(models.Model):
@@ -224,17 +255,17 @@ class UnitType(models.Model):
     def __str__(self):
         return str(self.pk) + str(": ") + self.name
 
-    def get_absolute_url(self):
-        return reverse('foodcomputer:unittype_detail', kwargs={'pk': self.pk})
-
-    def get_create_url(self):
-        return reverse('foodcomputer:unittype_create')
-
-    def get_update_url(self):
-        return reverse('foodcomputer:unittype_update', kwargs={'pk': self.pk})
-
-    def get_delete_url(self):
-        return reverse('foodcomputer:unittype_delete', kwargs={'pk': self.pk})
+    # def get_absolute_url(self):
+    #     return reverse('foodcomputer:unittype_detail', kwargs={'pk': self.pk})
+    #
+    # def get_create_url(self):
+    #     return reverse('foodcomputer:unittype_create')
+    #
+    # def get_update_url(self):
+    #     return reverse('foodcomputer:unittype_update', kwargs={'pk': self.pk})
+    #
+    # def get_delete_url(self):
+    #     return reverse('foodcomputer:unittype_delete', kwargs={'pk': self.pk})
 
 
 class DataType(models.Model):
@@ -246,17 +277,17 @@ class DataType(models.Model):
     def __str__(self):
         return str(self.pk) + str(": ") + self.name
 
-    def get_absolute_url(self):
-        return reverse('foodcomputer:pi_detail', kwargs={'pk': self.pk})
-
-    def get_create_url(self):
-        return reverse('foodcomputer:pi_create')
-
-    def get_update_url(self):
-        return reverse('foodcomputer:pi_update', kwargs={'pk': self.pk})
-
-    def get_delete_url(self):
-        return reverse('foodcomputer:pi_delete', kwargs={'pk': self.pk})
+    # def get_absolute_url(self):
+    #     return reverse('foodcomputer:pi_detail', kwargs={'pk': self.pk})
+    #
+    # def get_create_url(self):
+    #     return reverse('foodcomputer:pi_create')
+    #
+    # def get_update_url(self):
+    #     return reverse('foodcomputer:pi_update', kwargs={'pk': self.pk})
+    #
+    # def get_delete_url(self):
+    #     return reverse('foodcomputer:pi_delete', kwargs={'pk': self.pk})
 
 
 class ControllerUpdate(models.Model):
