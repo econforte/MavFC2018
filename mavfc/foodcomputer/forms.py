@@ -16,7 +16,8 @@ class PiForm(forms.ModelForm):
 
     class Meta:
         model = Pi
-        fields = '__all__'
+        exclude = ('pi_SN', 'address',)
+
 
 
 class DeviceForm(forms.ModelForm):
