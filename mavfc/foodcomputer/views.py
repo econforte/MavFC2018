@@ -61,7 +61,7 @@ class PiDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-        
+
         cdp = ChartDataPreparation()
         namelist = cdp.getNameList(obj)
         isActuator = cdp.getActuatorDictionary(obj)
@@ -84,12 +84,12 @@ class PiChart(View):
     model_name = 'Food Computer Chart'
     template_name = 'foodcomputer/pi_data_page.html'
     parent_template = None
-    
+
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
         form_class = AdvancedOptionsForm(request=request, pk=pk)
-        
+
         cdp = ChartDataPreparation()
         namelist = cdp.getNameList(obj)
         isActuator = cdp.getActuatorDictionary(obj)
@@ -97,7 +97,7 @@ class PiChart(View):
         downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator).split('\n') #####
         time2sensor = cdp.subsetDataValues(time2sensor, 500)
         prestring = cdp.constructTable(time2sensor, namelist, isActuator)
-        
+
         return render(\
                       request,\
                       self.template_name,\
@@ -108,23 +108,23 @@ class PiChart(View):
                        'advanced_options_form': form_class,\
                        'model_name':            self.model_name,\
                        'parent_template':       self.parent_template})
-    
+
     def post(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
         form_class = AdvancedOptionsForm(request.POST, request=request, pk=pk)
         cdp = ChartDataPreparation()
         height = '900px'
-        
+
         if form_class.is_valid():
             cdp = ChartDataPreparation(start_date=datetime.datetime.strptime(form_class.cleaned_data['start_date'], '%Y-%m-%dT%H:%M'),\
                                        end_date=datetime.datetime.strptime(form_class.cleaned_data['end_date'], '%Y-%m-%dT%H:%M'),\
                                        show_anomalies=form_class.cleaned_data['show_anomalies'],
                                        sensors=form_class.cleaned_data['devices'],
                                        experiment=form_class.cleaned_data['experiments'])
-                                       
+
         namelist = cdp.getNameList(obj)
         isActuator = cdp.getActuatorDictionary(obj)
-        if not 0 in [isActuator[x] for x in isActuator if x in namelist]: 
+        if not 0 in [isActuator[x] for x in isActuator if x in namelist]:
             height = str(60+len(namelist)*12)+"px"
         print('\n\n\n\n')
         print(isActuator)
@@ -133,7 +133,7 @@ class PiChart(View):
         downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator).split('\n') #####
         time2sensor = cdp.subsetDataValues(time2sensor, 500)
         prestring = cdp.constructTable(time2sensor, namelist, isActuator)
-            
+
         return render(\
                       request,\
                       self.template_name,\
@@ -144,10 +144,10 @@ class PiChart(View):
                        'advanced_options_form': form_class,\
                        'model_name':            self.model_name,\
                        'parent_template':       self.parent_template})
-            
-            
-        
-        
+
+
+
+
 class PiCreate(ObjectCreateMixin, View):
     form_class = PiForm
     template_name = 'foodcomputer/create_page.html'
@@ -181,7 +181,7 @@ class PiData(View):
         response['Content-Disposition'] = 'attachment; filename="food_computer_data.csv"'
         writer = csv.writer(response, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         #writer.writerow(['Device Name', 'Timestamp', 'Value', 'Is Anomily'])
-        
+
         ddp = DownloadDataPreparation(pi)
         writer.writerow(ddp.firstline(pi))
         writer.writerow(ddp.secondline(pi))
@@ -189,7 +189,7 @@ class PiData(View):
         for linelist in ddp.downloadFileGenerator(time2sensor):
             writer.writerow(linelist)
         return response
-    
+
 
 class DeviceDetail(View):
     model = Device
@@ -206,7 +206,7 @@ class DeviceDetail(View):
         time2sensor = ddp.initializeDeviceDataValues(obj)
         time2sensor = ddp.subsetDataValues(time2sensor)
         prestring = ddp.constructTable(time2sensor, numdp=200)
-        
+
         if obj.device_type.is_controller:
             height = "200xp"
 
@@ -379,37 +379,9 @@ class anomalyEmail(APIView):
         #   }
         serializer = emailSerializer(data=request.data)
         if serializer.is_valid():
-            lvl = request.data.get('level')
-            #Level 1 = All Admins and anyone associated to the Pi
-            if (lvl == 1):
-                admins = user.objects.filter(is_staff = True)
-                sendList = []
-                for admin in admins:
-                    sendList.append(admin.email())
-                users = Pi.objects.get(pk=pk).user()
-                for user in users:
-                    sendList.append(user.email())
-            #Level 2 = All Admins and Pi User
-            if (lvl == 2):
-                admins = User.objects.filter(is_staff = True)
-                sendList = []
-                for admin in admins:
-                    sendList.append(admin.email())
-                #sendList.append(Pi.objects.get(pk=pk).user.objects.filter(is_active = True))
-            #Level 3 = All Admins
-            if (lvl == 3):
-                admins = User.objects.filter(is_staff = True)
-                sendList = []
-                for admin in admins:
-                    sendList.append(admin.email())
-            send_mail(
-                "Pi Email",
-                request.data.get('message'),
-                "Default",
-                sendList,
-                fail_silently=False,
-            )
-            return Response("Email(s) Sent")
+            sent = serializer.send_mail();
+            if sent:
+                return Response("Email(s) Sent")
         else: return Response("No Email(s) Sent")
 
 
@@ -418,7 +390,7 @@ class anomalyEmail(APIView):
 class ServerPushAPI(APIView):
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication,)
     permission_classes = (IsAuthenticated,)
-    
+
     # Server Push
     # Long polling idea
     def post(self, request, pk):

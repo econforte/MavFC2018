@@ -61,8 +61,73 @@ class ControllerUpdateSerializer(serializers.ModelSerializer):
 
 
 class emailSerializer(serializers.Serializer):
-    class Meta:
-        fields = ('pi', 'level', 'message',)
+    #fields = ('pi', 'level', 'message',)
+
+    pi = serializers.CharField(source='data.pi', allow_blank=False, max_length=1000)
+    level = serializers.IntegerField(source='data.level', min_value=1, max_value=3)
+    message = serializers.CharField(source='data.message', allow_blank=False, max_length=1000)
+
+    def send_mail(self):
+        lvl = self.cleaned_data.get('level')
+        #Level 1 = All Admins and anyone associated to the Pi
+        if (lvl == 1):
+            admins = user.objects.filter(is_staff = True)
+            sendList = []
+            for admin in admins:
+                sendList.append(admin.email())
+            users = Pi.objects.get(pk=pk).user()
+            for user in users:
+                sendList.append(user.email())
+        #Level 2 = All Admins and Pi User
+        if (lvl == 2):
+            admins = User.objects.filter(is_staff = True)
+            sendList = []
+            for admin in admins:
+                sendList.append(admin.email())
+            #sendList.append(Pi.objects.get(pk=pk).user.objects.filter(is_active = True))
+        #Level 3 = All Admins
+        if (lvl == 3):
+            admins = User.objects.filter(is_staff = True)
+            sendList = []
+            for admin in admins:
+                sendList.append(admin.email())
+        try:
+            send_mail(
+                "Pi Email",
+                self.cleaned_data.get('message'),
+                "Default",
+                sendList,
+                fail_silently=False,
+            )
+        except BadHeaderError:
+            self.add_error(
+                None,
+                ValidationError(
+                    'Could Not Send Email.\n'
+                    'Extra headers are not allowed in email body.',
+                    code='badheader'))
+            return False
+        else:
+            return True
+
+        #-----------------
+        # body = 'Message From: {} {} at {}\nOrganization: {}\n\n{}\n'.format(
+        #     self.cleaned_data.get('pi'),
+        #     self.cleaned_data.get('level'),
+        #     self.cleaned_data.get('message'))
+        # try:
+        #     # Send email (shortcut for send_mail)
+        #     mail_managers(full_reason, body)
+        # except BadHeaderError:
+        #     self.add_error(
+        #         None,
+        #         ValidationError(
+        #             'Could Not Send Email.\n'
+        #             'Extra headers are not allowed in email body.',
+        #             code='badheader'))
+        #     return False
+        # else:
+        #     return True
 
 
 class PiStateSerializer(serializers.Serializer):
@@ -95,4 +160,3 @@ class PiStateSerializer(serializers.Serializer):
     #             actInst.save()
     #             newActInst.active = True
     #             newActInst.save()
-
