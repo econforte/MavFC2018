@@ -194,8 +194,8 @@ LOGOUT_URL = reverse_lazy('dj-auth:logout')
 # EMAIL_PORT = 587
 ##### EHL: Updated email parameters to use Dr. Pawaskar's mailtrap.io account:
 EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = '814bb531039ade'
-EMAIL_HOST_PASSWORD = 'bb66fbb8a77de0'
+EMAIL_HOST_USER = 'c6a0167593ce9f'
+EMAIL_HOST_PASSWORD = '007504884ec1b7'
 EMAIL_PORT = '2525'
 #####
 EMAIL_SUBJECT_PREFIX = '[MAVFC] '
