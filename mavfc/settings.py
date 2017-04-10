@@ -186,15 +186,21 @@ LOGOUT_URL = reverse_lazy('dj-auth:logout')
 
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_PASSWORD = 'mavfc1234'
-EMAIL_HOST_USER = 'maverick.food.comp@gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_PASSWORD = 'mavfc1234'
+# EMAIL_HOST_USER = 'maverick.food.comp@gmail.com'
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
+##### EHL: Updated email parameters to use Dr. Pawaskar's mailtrap.io account:
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = '814bb531039ade'
+EMAIL_HOST_PASSWORD = 'bb66fbb8a77de0'
+EMAIL_PORT = '2525'
+#####
 EMAIL_SUBJECT_PREFIX = '[MAVFC] '
-SERVER_EMAIL = 'maverick.food.comp@gmail.com'
-DEFAULT_FROM_EMAIL = 'maverick.food.comp@gmail.com'
+# SERVER_EMAIL = 'maverick.food.comp@gmail.com'
+# DEFAULT_FROM_EMAIL = 'maverick.food.comp@gmail.com'
 
 
 
