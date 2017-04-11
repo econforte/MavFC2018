@@ -20,6 +20,15 @@ class Homepage(View):
     #@method_decorator(login_required)
     def get(self, request, parent_template=None):
         if request.user.is_authenticated():
-            return render(request, 'homepage/dashboard.html', {'parent_template': parent_template})
+            if request.user.is_staff:
+                pis = Pi.objects.all()
+            else:
+                pis = Pi.objects.filter(user = request.user)
+            return render(
+                request,
+                'foodcomputer/pi_list.html',
+                {'pis': pis,
+                 'parent_template': parent_template})
         else:
             return render(request, 'homepage/Justpage.html', {'parent_template': parent_template})
+
