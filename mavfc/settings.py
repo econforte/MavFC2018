@@ -190,7 +190,7 @@ LOGOUT_URL = reverse_lazy('dj-auth:logout')
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_HOST_PASSWORD = 'mavfc1234'
 # EMAIL_HOST_USER = 'maverick.food.comp@gmail.com'
-# EMAIL_USE_TLS = True
+EMAIL_USE_TLS = True
 # EMAIL_PORT = 587
 ##### EHL: Updated email parameters to use Dr. Pawaskar's mailtrap.io account:
 EMAIL_HOST = 'smtp.mailtrap.io'
@@ -199,8 +199,8 @@ EMAIL_HOST_PASSWORD = '007504884ec1b7'
 EMAIL_PORT = '2525'
 #####
 EMAIL_SUBJECT_PREFIX = '[MAVFC] '
-# SERVER_EMAIL = 'maverick.food.comp@gmail.com'
-# DEFAULT_FROM_EMAIL = 'maverick.food.comp@gmail.com'
+SERVER_EMAIL = 'maverick.food.comp@gmail.com'
+DEFAULT_FROM_EMAIL = 'maverick.food.comp@gmail.com'
 
 
 
