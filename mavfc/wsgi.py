@@ -15,7 +15,7 @@ https://docs.djangoproject.com/en/1.10/howto/deployment/wsgi/
 #
 # application = get_wsgi_application()
 
-##### EHL: Added the following from Heroku documentation
+##### @elocke: Added the following from Heroku documentation
 import os
 from django.core.wsgi import get_wsgi_application
 from whitenoise.django import DjangoWhiteNoise

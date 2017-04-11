@@ -14,7 +14,7 @@ import os
 from django.conf.global_settings import EMAIL_BACKEND
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-# ##### EHL: Changed for Heroku:
+# ##### @elocke: Changed for Heroku:
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -28,7 +28,7 @@ SECRET_KEY = 'yifvznb8)7&d-85x#*yv1js46&_%17gs26of-cc27+3ecg6o5@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-##### EHL: Added Heroku app as allowed host
+##### @elocke: Added Heroku app as allowed host
 ALLOWED_HOSTS = ['mavistfc.herokuapp.com']
 #####
 
@@ -94,14 +94,14 @@ WSGI_APPLICATION = 'mavfc.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 # Update database configuration with $DATABASE_URL.
 
-##### EHL: For sqlite db:
+##### @elocke: For sqlite db:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-# EHL: For Heroku:
+# @elocke: For Heroku:
 import dj_database_url
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
@@ -142,7 +142,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-##### EHL: Removed below based on Heroku documentation:
+##### @elocke: Removed below based on Heroku documentation:
 # STATIC_URL = '/static/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_URL = '/media/'
@@ -151,7 +151,7 @@ USE_TZ = True
 # ]
 #####
 
-##### EHL: Added below from Heroku documentation
+##### @elocke: Added below from Heroku documentation
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
@@ -192,10 +192,12 @@ LOGOUT_URL = reverse_lazy('dj-auth:logout')
 # EMAIL_HOST_USER = 'maverick.food.comp@gmail.com'
 EMAIL_USE_TLS = True
 # EMAIL_PORT = 587
-##### EHL: Updated email parameters to use Dr. Pawaskar's mailtrap.io account:
+##### @elocke: Updated email parameters to use mailtrap.io account:
 EMAIL_HOST = 'smtp.mailtrap.io'
 EMAIL_HOST_USER = 'c6a0167593ce9f'
+# change this to '814bb531039ade' on transfer of ownership to Dr. Pawaskar
 EMAIL_HOST_PASSWORD = '007504884ec1b7'
+# change this to 'bb66fbb8a77de0' on transfer of ownership to Dr. Pawaskar
 EMAIL_PORT = '2525'
 #####
 EMAIL_SUBJECT_PREFIX = '[MAVFC] '

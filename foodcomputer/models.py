@@ -220,6 +220,10 @@ class UnitType(models.Model):
     name = models.CharField(max_length=30,)
     abbr = models.CharField(max_length=10,)
     descr = models.TextField()
+    ##### @elocke: moved the following from the DataType, per @scwest
+    min_limit = models.FloatField(blank=True, null=True,)
+    max_limit = models.FloatField(blank=True, null=True,)
+    #####
 
     def __str__(self):
         return str(self.pk) + str(": ") + self.name
@@ -240,8 +244,10 @@ class UnitType(models.Model):
 class DataType(models.Model):
     name = models.CharField(max_length=30,)
     descr = models.TextField()
-    min_limit = models.FloatField(blank=True, null=True,)
-    max_limit = models.FloatField(blank=True, null=True,)
+    ##### @elocke: move the following fields to UnitType, per @scwest
+    # min_limit = models.FloatField(blank=True, null=True,)
+    # max_limit = models.FloatField(blank=True, null=True,)
+    #####
 
     def __str__(self):
         return str(self.pk) + str(": ") + self.name
