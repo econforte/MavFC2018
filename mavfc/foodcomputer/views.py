@@ -89,7 +89,7 @@ class PiChart(View):
         namelist = cdp.getNameList(obj)
         isActuator = cdp.getActuatorDictionary(obj)
         time2sensor = cdp.initializeDataValues(obj)
-        downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator).split('\n') #####
+        downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator, sep='\\n') #####
         time2sensor = cdp.subsetDataValues(time2sensor, 500)
         prestring = cdp.constructTable(time2sensor, namelist, isActuator)
 
@@ -102,7 +102,8 @@ class PiChart(View):
                        'form_url':              reverse("foodcomputer:pi_chart", kwargs={'pk':pk}),\
                        'advanced_options_form': form_class,\
                        'model_name':            self.model_name,\
-                       'parent_template':       self.parent_template})
+                       'parent_template':       self.parent_template,\
+                       'download_table':        downloadable_table})
 
     def post(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
@@ -121,11 +122,8 @@ class PiChart(View):
         isActuator = cdp.getActuatorDictionary(obj)
         if not 0 in [isActuator[x] for x in isActuator if x in namelist]:
             height = str(60+len(namelist)*12)+"px"
-        print('\n\n\n\n')
-        print(isActuator)
-        print('\n\n\n\n')
         time2sensor = cdp.initializeDataValues(obj)
-        downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator).split('\n') #####
+        downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator, sep='\\n') #####
         time2sensor = cdp.subsetDataValues(time2sensor, 500)
         prestring = cdp.constructTable(time2sensor, namelist, isActuator)
 
@@ -138,7 +136,8 @@ class PiChart(View):
                        'form_url':              reverse("foodcomputer:pi_chart", kwargs={'pk':pk}),\
                        'advanced_options_form': form_class,\
                        'model_name':            self.model_name,\
-                       'parent_template':       self.parent_template})
+                       'parent_template':       self.parent_template,\
+                       'download_table':        downloadable_table})
 
 
 

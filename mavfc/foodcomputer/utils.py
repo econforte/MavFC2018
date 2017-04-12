@@ -231,8 +231,8 @@ class ChartDataPreparation():
             time3sensor[times[spot]] = time2sensor[times[spot]]
         return time3sensor
     
-    def constructTable(self, time2sensor, namelist, isActuator):
-        prestring = "date," + ','.join(namelist) + '\n' + ','.join(["0"]+[str(isActuator[x]) for x in namelist]) + '\n'
+    def constructTable(self, time2sensor, namelist, isActuator, sep='\n'):
+        prestring = "date," + ','.join(namelist) + sep + ','.join(["0"]+[str(isActuator[x]) for x in namelist]) + sep
         for t in time2sensor:
             temp = [t.split('+')[0]]
             for name in namelist:
@@ -240,7 +240,7 @@ class ChartDataPreparation():
                     temp.append(str(time2sensor[t][name]))
                 else:
                     temp.append('NA')
-            prestring += ','.join(temp) + '\n'
+            prestring += ','.join(temp) + sep
         return prestring
     
     def getNameList(self, obj):
