@@ -1,3 +1,6 @@
+<!-- {% if not listID %}
+    <div ng-controller="myCtrldiv{{ device.pk }}">
+{% endif %} -->
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3>
@@ -25,13 +28,25 @@
     {% if clps %}
         <div id="{{ listID }}{{ obj.pk }}" class="panel-collapse collapse">
     {% endif %}
-            <div class="panel-body">
+    <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-6">
                 <p><strong>Serial Number:</strong> {{ obj.pi_SN }}</p>
                 <p><strong>Owner:</strong> {{ obj.user.get_full_name }}</p>
                 <p><strong>Address:</strong> {{ obj.address.get_single_line_str }}</p>
                 <p><strong>In Manual Mode:</strong> {{ obj.manual_control }}</p>
                 <p><strong>Device Number:</strong> {{ obj.get_device_num }}</p>
+              </div>
+              <!-- <div class="col-sm-6">
+                  <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ pi.pk }} == 1.0">
+                      <strong><span id="toggle2" class="glyphicon glyphicon-lock" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:70px;"></span></strong>
+                  </button>
+                  <button type="button" class="btn btn-default" ng-click="toggle(1.0)" ng-if="controllerToggle{{ pi.pk }} == 0.0">
+                      <strong><span id="toggle2" class="glyphicon glyphicon-lock" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:70px;"></span></strong>
+                  </button>
+              </div> -->
             </div>
+      </div>
             <div class="panel-footer">
                 {% if not pi_detail and not clps %}
                     <a href="{% url 'foodcomputer:pi_detail' obj.pk %}" class="btn btn-primary pull-right" title="Details"><span class="glyphicon glyphicon-list-alt"></span></a>
