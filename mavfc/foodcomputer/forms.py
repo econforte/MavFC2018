@@ -52,3 +52,4 @@ class AdvancedOptionsForm(forms.Form):
         self.fields['experiments'].widget.attrs['class'] = 'form-control'
         self.fields['devices'].widget.attrs['class'] = 'form-control'
         self.fields['devices'].widget.attrs['size'] = '15'
+        self.fields['devices'].queryset = Device.objects.filter(pi__pk=self.pk)
