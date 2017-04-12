@@ -264,6 +264,8 @@ class DeviceCurrentValueAPI(APIView):
 
     class AddressDelete(ObjectDeleteMixin, View):
         model = Address
+        success_url = reverse_lazy('address:pi_list')
+        template_name = 'address/delete_confirm.html'
         parent_template = None
         model_name = 'Adress'
 
