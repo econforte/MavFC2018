@@ -262,6 +262,11 @@ class DeviceCurrentValueAPI(APIView):
         jsonObj = dataSerializer(curVal, many=False)
         return Response(jsonObj.data)
 
+    class AddressDelete(ObjectDeleteMixin, View):
+        model = Address
+        parent_template = None
+        model_name = 'Adress'
+
 
 class JSONResponse(HttpResponse):
     """
