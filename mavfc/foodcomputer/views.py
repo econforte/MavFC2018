@@ -262,12 +262,12 @@ class DeviceCurrentValueAPI(APIView):
         jsonObj = dataSerializer(curVal, many=False)
         return Response(jsonObj.data)
 
-    class AddressDelete(ObjectDeleteMixin, View):
-        model = Address
-        success_url = reverse_lazy('address:pi_list')
-        template_name = 'address/delete_confirm.html'
-        parent_template = None
-        model_name = 'Adress'
+class AddressDelete(ObjectDeleteMixin, View):
+    model = Address
+    success_url = reverse_lazy('address:pi_list')
+    template_name = 'address/delete_confirm.html'
+    parent_template = None
+    model_name = 'Adress'
 
 
 class JSONResponse(HttpResponse):
