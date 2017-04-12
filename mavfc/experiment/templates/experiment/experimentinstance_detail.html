@@ -36,10 +36,11 @@
                                 <li class="list-group-item">
                                     {{ user.user.first_name }} {{ user.user.last_name }}
                                     <div class="btn-group pull-right">
-                                        <a href="#" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
-                                        <a href="#" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                                        <a href={% url 'experiment:user_experimentinstance_update' obj.pk %} title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <a href={% url 'experiment:user_experimentinstance_delete' obj.pk %} title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                                     </div>
                                     <div class="clearfix"></div>
+
                                 </li>
                             {% endfor %}
 

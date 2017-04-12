@@ -334,6 +334,20 @@ class JSONResponse(HttpResponse):
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
 
+class UserExperimentInstanceUpdate(ObjectUpdateMixin, View):
+    form_class = UserExperimentInstanceAddForm
+    model = UserExperimentInstance
+    template_name = 'experiment/update_page.html'
+    parent_template = None
+    model_name = 'User Experiment Instance'
+
+class UserExperimentInstanceDelete(ObjectDeleteMixin, View):
+    model = UserExperimentInstance
+    success_url = reverse_lazy('experiment:experiment_list')
+    template_name = 'experiment/delete_confirm.html'
+    parent_template = None
+    model_name = 'User Experiment Instance'
+
 class experimentJSON(View):
     def get(request, pk):
         try:
