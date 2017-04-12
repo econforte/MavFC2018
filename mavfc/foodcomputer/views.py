@@ -71,7 +71,8 @@ class PiDetail(View):
              'prestring': prestring,
              'height': '700px',
              'model_name': self.model_name,
-             'parent_template': self.parent_template})
+             'parent_template': self.parent_template,
+             'show_anomalies':        False})
 
 
 class PiChart(View):
@@ -103,7 +104,8 @@ class PiChart(View):
                        'advanced_options_form': form_class,\
                        'model_name':            self.model_name,\
                        'parent_template':       self.parent_template,\
-                       'download_table':        downloadable_table})
+                       'download_table':        downloadable_table,
+                       'show_anomalies':        False})
 
     def post(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
@@ -137,7 +139,8 @@ class PiChart(View):
                        'advanced_options_form': form_class,\
                        'model_name':            self.model_name,\
                        'parent_template':       self.parent_template,\
-                       'download_table':        downloadable_table})
+                       'download_table':        downloadable_table,\
+                       'show_anomalies':        form_class.cleaned_data['show_anomalies']})
 
 
 
@@ -211,7 +214,8 @@ class DeviceDetail(View):
              'prestring': prestring,
              'height': height,
              'model_name': self.model_name,
-             'parent_template': self.parent_template})
+             'parent_template': self.parent_template,
+             'show_anomalies':        False})
 
 
 class DeviceCreate(ObjectCreateMixin, View):
