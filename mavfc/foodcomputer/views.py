@@ -126,7 +126,7 @@ class PiChart(View):
             height = str(60+len(namelist)*12)+"px"
         time2sensor = cdp.initializeDataValues(obj)
         downloadable_table = cdp.constructTable(time2sensor, namelist, isActuator, sep='\\n') #####
-        time2sensor = cdp.subsetDataValues(time2sensor, 500)
+        time2sensor = cdp.subsetDataValues(time2sensor, 500, form_class.cleaned_data['show_anomalies'])
         prestring = cdp.constructTable(time2sensor, namelist, isActuator)
 
         return render(\

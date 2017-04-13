@@ -221,7 +221,7 @@ class ChartDataPreparation():
             
         return time2sensor
         
-    def subsetDataValues(self, time2sensor, numdp=200):
+    def subsetDataValues(self, time2sensor, numdp=200, show_anomalies=False):
         times = sorted([x for x in time2sensor])
         ss = len(times)/numdp # static shift
         spots = [math.floor(ss*x) for x in range(numdp)]
@@ -229,6 +229,15 @@ class ChartDataPreparation():
         if len(set(spots)) == 1: return time3sensor
         for spot in set(spots):
             time3sensor[times[spot]] = time2sensor[times[spot]]
+        if show_anomalies:
+            for t in time2sensor:
+                for name in time2sensor[t]:
+                    if 'NAN' in time2sensor[t][name]:
+                        try:
+                            empty = [float(x) for x in time2sensor[t][name]]
+                            time3sensor[t][name] = time2sensor[t][name]
+                        except:
+                            continue    
         return time3sensor
     
     def constructTable(self, time2sensor, namelist, isActuator, sep='\n'):
