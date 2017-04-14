@@ -29,6 +29,6 @@
         });
     </script>
     <div class="container">
-        {% include 'foodcomputer/form_panel.html' with form_url=obj.get_update_url action_str='update' form_is_multipart=form.is_multipart %}
+        {% include 'experiment/form_panel.html' with form_url=obj.get_update_url action_str='update' form_is_multipart=form.is_multipart %}
     </div>
 {% endblock %}

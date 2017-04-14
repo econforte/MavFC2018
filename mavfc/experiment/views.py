@@ -327,12 +327,6 @@ class UserExperimentInstanceAdd(View):
              'parent_template': self.parent_template})
 
 
-class JSONResponse(HttpResponse):
-    # An HttpResponse that renders its content into JSON.
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
 
 class UserExperimentInstanceUpdate(ObjectUpdateMixin, View):
     form_class = UserExperimentInstanceAddForm
@@ -340,6 +334,7 @@ class UserExperimentInstanceUpdate(ObjectUpdateMixin, View):
     template_name = 'experiment/update_page.html'
     parent_template = None
     model_name = 'User Experiment Instance'
+    cancel_url = ''
 
 class UserExperimentInstanceDelete(ObjectDeleteMixin, View):
     model = UserExperimentInstance
@@ -347,14 +342,5 @@ class UserExperimentInstanceDelete(ObjectDeleteMixin, View):
     template_name = 'experiment/delete_confirm.html'
     parent_template = None
     model_name = 'User Experiment Instance'
+    cancel_url = ''
 
-class experimentJSON(View):
-    def get(request, pk):
-        try:
-            experiment = Experiment.objects.get(pk=pk)
-        except Experiment.DoesNotExist:
-            return HttpResponse(status=404)
-
-        if request.method == 'GET':
-            serializer = ExperimentsSerializer(experiment)
-            return JSONResponse(serializer.data)

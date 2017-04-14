@@ -39,7 +39,7 @@ class PiList(View):
         if request.user.is_staff:
             pis = Pi.objects.all()
         else:
-            pis = Pi.objects.filter(user = request.user)
+            pis = Pi.objects.filter(user=request.user)
         return render(
             request,
             'foodcomputer/pi_list.html',

@@ -32,12 +32,12 @@
                     </div>
                     <div class="panel-body">
                         <div class="list-group">
-                            {% for user in obj.instance_users.all %}
+                            {% for user_exp_inst in obj.instance_users.all %}
                                 <li class="list-group-item">
-                                    {{ user.user.first_name }} {{ user.user.last_name }}
+                                    {{ user_exp_inst.user.first_name }} {{ user_exp_inst.user.last_name }}
                                     <div class="btn-group pull-right">
-                                        <a href={% url 'experiment:user_experimentinstance_update' obj.pk %} title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
-                                        <a href={% url 'experiment:user_experimentinstance_delete' obj.pk %} title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                                        <a href={% url 'experiment:user_experimentinstance_update' user_exp_inst.pk %} title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <a href={% url 'experiment:user_experimentinstance_delete' user_exp_inst.pk %} title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                                     </div>
                                     <div class="clearfix"></div>
 
