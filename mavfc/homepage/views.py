@@ -26,7 +26,7 @@ class Homepage(View):
                 pis = Pi.objects.filter(user = request.user)
             return render(
                 request,
-                'foodcomputer/pi_list.html',
+                'homepage/dashboard.html',
                 {'pis': pis,
                  'parent_template': parent_template})
         else:
