@@ -251,6 +251,8 @@ class UnitType(models.Model):
     name = models.CharField(max_length=30,)
     abbr = models.CharField(max_length=10,)
     descr = models.TextField()
+    min_limit = models.FloatField(blank=True, null=True,)
+    max_limit = models.FloatField(blank=True, null=True,)
 
     def __str__(self):
         return str(self.pk) + ": " + self.name
