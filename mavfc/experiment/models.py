@@ -179,7 +179,7 @@ class UserExperimentInstance(models.Model):
         return self.experiment_instance.get_absolute_url()
 
     def get_create_url(self):
-        return reverse('experiment:user_experimentinstance_create')
+        return reverse('experiment:user_experimentinstance_add', kwargs={'pk': self.experiment_instance.pk})
 
     def get_update_url(self):
         return reverse('experiment:user_experimentinstance_update', kwargs={'pk': self.pk})

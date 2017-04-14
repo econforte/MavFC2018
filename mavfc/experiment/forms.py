@@ -3,6 +3,7 @@ from foodcomputer.models import Device
 # from django.core.exceptions import ValidationError
 from django.contrib.admin import widgets
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 from .models import Experiment, ExperimentRule, ExperimentInstance, UserExperimentInstance
 
@@ -36,9 +37,7 @@ class ExperimentRuleForm(forms.ModelForm):
         })
         self.fields['device'].queryset = Device.objects.filter(pi__pk = self.pi_pk)
         if self.isupdate:
-            self.fields['device'].widget.attrs.update({
-                'disabled':''
-            })
+            self.fields['device'].widget.attrs.update({'disabled':''})
 
     class Meta:
         model = ExperimentRule
@@ -104,12 +103,19 @@ class ExperimentInstanceAddForm(forms.ModelForm):
 
 class UserExperimentInstanceAddForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
+        self.parent = kwargs.pop('parent')
         super(UserExperimentInstanceAddForm, self).__init__(*args, **kwargs)
         for (field_name, field) in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+        self.fields['user'].queryset = User.objects.exclude(experiment_instances__experiment_instance__in=[self.parent])
 
     class Meta:
         model = UserExperimentInstance
         fields = ['user', 'is_user']
-        #fields = forms.ModelChoiceField(queuryset = ..., empty_label= "(Nothing)" )
+
+
+class UserExperimentInstanceForm(forms.ModelForm):
+
+    class Meta:
+        model = UserExperimentInstance
+        fields = ['is_user']

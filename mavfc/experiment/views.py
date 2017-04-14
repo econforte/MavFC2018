@@ -300,7 +300,7 @@ class UserExperimentInstanceAdd(View):
         return render(
             request,
             self.template_name,
-            {'form': self.form_class,
+            {'form': self.form_class(parent=parent),
              'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
              'model_name': self.model_name,
              'breadcrumb_list': parent.get_add_breadcrumbs(),
@@ -310,7 +310,7 @@ class UserExperimentInstanceAdd(View):
     @method_decorator(login_required)
     def post(self, request, pk):
         parent = get_object_or_404(self.parent_model, pk=pk)
-        bound_form = self.form_class(request.POST)
+        bound_form = self.form_class(request.POST, parent=parent)
         if bound_form.is_valid():
             new_obj = bound_form.save(commit=False)
             new_obj.experiment_instance = parent
@@ -329,7 +329,7 @@ class UserExperimentInstanceAdd(View):
 
 
 class UserExperimentInstanceUpdate(ObjectUpdateMixin, View):
-    form_class = UserExperimentInstanceAddForm
+    form_class = UserExperimentInstanceForm
     model = UserExperimentInstance
     template_name = 'experiment/update_page.html'
     parent_template = None
