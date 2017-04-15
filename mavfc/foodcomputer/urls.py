@@ -33,6 +33,8 @@ urlpatterns = [
     url(r'^device/(?P<pk>[0-9]+)/get/csv/$', DeviceData.as_view(), name='device_get_csv'),
     # ex: /food-computer/api/v1/sensorValues/(foodComputerKey.pk, [data])
     url(r'^api/v1/device/(?P<pk>[0-9]+)/current/value/$', DeviceCurrentValueAPI.as_view(), name='api_device_current_value'),
+    # ex: /food-computer/address/(address.pk)/delete/
+    url(r'^address/(?P<pk>[0-9]+)/delete/$', AddressDelete.as_view(), name='address_delete'),
 
     #----------Pi Send-------------
     # ex: /food-computer/api/v1/initpi/(piSerial.pk)

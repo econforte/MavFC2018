@@ -2,13 +2,12 @@
     <div ng-controller="myCtrldiv{{ device.pk }}">
 {% endif %}
 <div class="panel panel-default">
+
     <div class="panel-heading">
         {% if device_detail %}
             <h3>
                 {{ device.device_type.name }}
                 <small>{{ device.device_id }}</small>
-    {#            <a href="#" title="Go to current experiment Rule" class="btn btn-success pull-right"><span class="glyphicon glyphicon-leaf"></span></a>#}
-    {#            <a href="#" class="btn btn-default pull-right">Toggle</a>#}
                 <div class="btn-group pull-right">
                     <a href="{% url 'foodcomputer:device_get_csv' device.pk %}" title="Download CSV of Device Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
                     {% if user.is_staff %}
@@ -17,18 +16,12 @@
                     {% endif %}
                 </div>
             </h3>
-        {% else %}
+        {% elif clps %}
             <h4>
-                {% if clps %}
-                    <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ device.pk }}">
-                        {{ device.device_type.name }}
-                    </a>
-                {% else %}
+                <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ device.pk }}">
                     {{ device.device_type.name }}
-                {% endif %}
+                </a>
                 <small>{{ device.device_id }}</small>
-    {#            <a href="#" title="Go to current experiment Rule" class="btn btn-success pull-right"><span class="glyphicon glyphicon-leaf"></span></a>#}
-    {#            <a href="#" class="btn btn-default pull-right">Toggle</a>#}
                 <div class="btn-group pull-right">
                     <a href="{% url 'foodcomputer:device_get_csv' device.pk %}" title="Download CSV of Device Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
                     {% if clps %}
@@ -40,6 +33,25 @@
                     {% endif %}
                 </div>
             </h4>
+        {% else %}
+            <div class="col-xs-7" style="overflow:hidden;white-space:nowrap;padding:0px;">
+                <h4>
+                    {{ device.device_type.name }}
+                    <small>{{ device.device_id }}</small>
+                </h4>
+            </div>
+            <div class="col-xs-5" style="padding-right:0px">
+                <div class="btn-group pull-right h4">
+                    <a href="{% url 'foodcomputer:device_get_csv' device.pk %}" title="Download CSV of Device Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
+                    {% if clps %}
+                        <a href="{{ device.get_absolute_url }}" title="Detail Page" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
+                    {% endif %}
+                    {% if user.is_staff %}
+                        <a href="{{ device.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="{{ device.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                    {% endif %}
+                </div>
+            </div>
         {% endif %}
         <div class="clearfix"></div>
     </div>
@@ -48,20 +60,20 @@
     {% endif %}
     <div class="panel-body">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-xs-6">
                 <p><strong>Unit Type:</strong> {{ device.device_type.unit_type }}</p>
                 <p><strong>Data Type:</strong> {{ device.device_type.data_type }}</p>
                 <p><strong>Residual Threshold:</strong> {{ device.residual_threshold }}</p>
                 <p><strong>Biological Threshold:</strong> {{ device.device_type.bio_threshold }}</p>
                 <p><strong>Is a Controller:</strong> {{ device.device_type.is_controller }}</p>
             </div>
-            <div class="col-sm-6">
+            <div class="col-xs-6">
                 {% if device.device_type.is_controller %}
                     <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ device.pk }} == 1.0">
-                        <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:40px;"></span></strong>
+                        <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:70px;"></span></strong>
                     </button>
                     <button type="button" class="btn btn-default" ng-click="toggle(1.0)" ng-if="controllerToggle{{ device.pk }} == 0.0">
-                        <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:40px;"></span></strong>
+                        <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:70px;"></span></strong>
                     </button>
                 {% else %}
                     <div id="chart_div{{ device.pk }}" style="width: 400px; height: 120px;"></div>
@@ -97,6 +109,8 @@
         var options = {
             width: 400, height: 120,
             minorTicks: 5
+            {% if device.device_type.unit_type.min_limit %}, min:{{ device.device_type.unit_type.min_limit }}{% endif %}
+            {% if device.device_type.unit_type.max_limit %}, max:{{ device.device_type.unit_type.max_limit }}{% endif %}
         };
         var chart = new google.visualization.Gauge(document.getElementById('chart_div{{ device.pk }}'));
         chart.draw(data, options);

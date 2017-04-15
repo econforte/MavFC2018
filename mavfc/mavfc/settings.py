@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'foodcomputer',
     'user',
     'rest_framework',
+    'homepage',
     'rest_framework.authtoken',
 ]
 
@@ -115,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'UTC'#'America/Chicago'
 
 USE_I18N = True
 
@@ -147,7 +148,9 @@ SITE_ID = 2
 
 from django.core.urlresolvers import reverse_lazy
 
-LOGIN_REDIRECT_URL = '/'
+
+LOGIN_REDIRECT_URL = '/homepage/'
+
 LOGIN_URL = reverse_lazy('dj-auth:login')
 LOGOUT_URL = reverse_lazy('dj-auth:logout')
 

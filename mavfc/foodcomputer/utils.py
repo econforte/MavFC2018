@@ -3,11 +3,20 @@ from django.http.response import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.messages import success, error
+from django.core.urlresolvers import reverse
 
 from .models import Data, Device
 import collections
 import math
 from datetime import datetime
+
+
+def get_create_bcs(model_name):
+    bc = []
+    bc.append(('active', 'Create '+model_name))
+    bc.append((reverse('foodcomputer:pi_list'), 'Food Computer List'))
+    bc.append(('/', 'Home'))
+    return bc
 
 
 class ObjectCreateMixin:
@@ -27,6 +36,7 @@ class ObjectCreateMixin:
              'form_url': self.form_url,
              'cancel_url': self.cancel_url,
              'model_name': self.model_name,
+             'breadcrumb_list': get_create_bcs(self.model_name),
              'parent_template': self.parent_template})
     
     @method_decorator(login_required)
@@ -40,7 +50,10 @@ class ObjectCreateMixin:
             request,
             self.template_name,
             {'form': bound_form,
+             'form_url': self.form_url,
+             'cancel_url': self.cancel_url,
              'model_name': self.model_name,
+             'breadcrumb_list': get_create_bcs(self.model_name),
              'parent_template': self.parent_template})
 
 
@@ -208,7 +221,7 @@ class ChartDataPreparation():
             
         return time2sensor
         
-    def subsetDataValues(self, time2sensor, numdp=200):
+    def subsetDataValues(self, time2sensor, numdp=200, show_anomalies=False):
         times = sorted([x for x in time2sensor])
         ss = len(times)/numdp # static shift
         spots = [math.floor(ss*x) for x in range(numdp)]
@@ -216,10 +229,19 @@ class ChartDataPreparation():
         if len(set(spots)) == 1: return time3sensor
         for spot in set(spots):
             time3sensor[times[spot]] = time2sensor[times[spot]]
+        if show_anomalies:
+            for t in time2sensor:
+                for name in time2sensor[t]:
+                    if 'NAN' in time2sensor[t][name]:
+                        try:
+                            empty = [float(x) for x in time2sensor[t][name]]
+                            time3sensor[t][name] = time2sensor[t][name]
+                        except:
+                            continue    
         return time3sensor
     
-    def constructTable(self, time2sensor, namelist, isActuator):
-        prestring = "date," + ','.join(namelist) + '\n' + ','.join(["0"]+[str(isActuator[x]) for x in namelist]) + '\n'
+    def constructTable(self, time2sensor, namelist, isActuator, sep='\n'):
+        prestring = "date," + ','.join(namelist) + sep + ','.join(["0"]+[str(isActuator[x]) for x in namelist]) + sep
         for t in time2sensor:
             temp = [t.split('+')[0]]
             for name in namelist:
@@ -227,7 +249,7 @@ class ChartDataPreparation():
                     temp.append(str(time2sensor[t][name]))
                 else:
                     temp.append('NA')
-            prestring += ','.join(temp) + '\n'
+            prestring += ','.join(temp) + sep
         return prestring
     
     def getNameList(self, obj):
