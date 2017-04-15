@@ -164,6 +164,9 @@ class Device(models.Model):
     def get_delete_url(self):
         return reverse('foodcomputer:device_delete', kwargs={'pk': self.pk})
 
+    def get_active_baseline(self):
+        rules = self.pi.get_active_instance().experiment.experiment_rules.filter(device__pk=self.pk)
+
     def get_list_url(self):
         return self.pi.get_absolute_url()
 
