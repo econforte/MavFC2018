@@ -22,10 +22,10 @@
         var app = angular.module("DeviceValueUpdate", []);
     </script>
     <div ng-app="DeviceValueUpdate">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10 col-sm-12">
+        <div class="container">
+{#            <div class="row">#}
+{#                <div class="col-lg-1 col-lg-offset-1"></div>#}
+{#                <div class="col-lg-10 col-lg-offset-1 col-md-12">#}
                     {% include "foodcomputer/pi_panel.html" with pi_detail="true" %}
                     {% include "foodcomputer/data_panel.html" with dp_pi_key=obj.pk %}
                     <div class="panel panel-default">
@@ -45,6 +45,7 @@
 		                                        {% for device in obj.devices.all %}
 		                                            <div class="col-md-6">
 		                                                {% include "foodcomputer/device_panel.html" %}
+{#                                                        <div class="clearfix visible-sm"></div>#}
 		                                            </div>
 		                                        {% endfor %}
 		                                    </div>
@@ -77,9 +78,9 @@
 {#                            </div>#}
 {#                        </div> -->#}
                     </div>
-                </div>
-                <div class="col-md-1"></div>
-            </div>
+{#                </div>#}
+{#                <div class="col-lg-1 col-lg-offset-1"></div>#}
+{#            </div>#}
         </div>
     </div>
 {% endblock %}
