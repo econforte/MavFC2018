@@ -25,14 +25,14 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-1"></div>
-                <div class="col-md-10">
+                <div class="col-md-10 col-sm-12">
                     {% include "foodcomputer/pi_panel.html" with pi_detail="true" %}
                     {% include "foodcomputer/data_panel.html" with dp_pi_key=obj.pk %}
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 style="margin-top:10px">Device List {#% if user.is_staff %}<a href="#{% url 'foodcomputer:device_add' obj.pk %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Device</a>{% endif %#}</h3>
                         </div>
-												<div class="panel-body">
+                            <div class="panel-body">
 		                        {% if obj.devices.all %}
 		                            <ul class="nav nav-pills pull-right">
 		                                <li class="active"><a data-toggle="pill" href="#tile"><span class="glyphicon glyphicon-th"></span></a></li>
@@ -78,6 +78,7 @@
 {#                        </div> -->#}
                     </div>
                 </div>
+                <div class="col-md-1"></div>
             </div>
         </div>
     </div>
