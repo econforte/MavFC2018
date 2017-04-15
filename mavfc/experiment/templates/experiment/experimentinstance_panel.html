@@ -1,31 +1,31 @@
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3>
-            {% if clps %}
-                <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
+        <div class="col-xs-6" style="padding:0px">
+            <h3>
+                {% if clps %}
+                    <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
+                        {{ obj.experiment.pi.name }}: {{ obj.experiment.name }}
+                    </a>
+                {% else %}
                     {{ obj.experiment.pi.name }}: {{ obj.experiment.name }}
-                </a>
-            {% else %}
-                {{ obj.experiment.pi.name }}: {{ obj.experiment.name }}
-            {% endif %}
-
-            {% if user.is_staff %}
-                <div class="btn-group pull-right">
-                    {% if experimentinstance_detail %}
-                        <a href="{{ obj.experiment.get_absolute_url }}" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>
-                    {% endif %}
-                    <a href="{{ obj.get_csv_url }}" title="Download Instance CSV File" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
-                    {% if clps %}
-                        <a href="{{ obj.get_absolute_url }}" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
-                    {% endif %}
-                    {% if user.is_staff %}
-                        <a href="{{ obj.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
-                        <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
-                    {% endif %}
-                </div>
-            {% endif %}
-            <div class="btn-group pull-right">
-        </h3>
+                {% endif %}
+            </h3>
+        </div>
+        <div class="col-xs-6" style="padding-right:0px">
+            <div class="btn-group pull-right h3">
+                {% if experimentinstance_detail %}
+                    <a href="{{ obj.experiment.get_absolute_url }}" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>
+                {% endif %}
+                <a href="{{ obj.get_csv_url }}" title="Download Instance CSV File" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
+                {% if clps %}
+                    <a href="{{ obj.get_absolute_url }}" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
+                {% endif %}
+                {% if user.is_staff %}
+                    <a href="{{ obj.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                {% endif %}
+            </div>
+        </div>
         <div class="clearfix"></div>
     </div>
     {% if clps %}
