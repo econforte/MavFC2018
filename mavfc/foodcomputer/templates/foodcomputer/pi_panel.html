@@ -37,6 +37,16 @@
         <div id="{{ listID }}{{ obj.pk }}" class="panel-collapse collapse">
     {% endif %}
     <div class="panel-body">
+        <div class="btn-group pull-right">
+            {% if user.is_staff or user == pi.user %}
+                {% if obj.address %}
+                    <a href="{% url 'foodcomputer:address_update' obj.address.pk %}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> <span class="glyphicon glyphicon-map-marker"></span></a>
+                    <a href="{% url 'foodcomputer:address_delete' obj.address.pk %}" title="Delete" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span> <span class="glyphicon glyphicon-map-marker"></span></a>
+                {% else %}
+                    <a href="{% url 'foodcomputer:address_add' obj.pk %}" title="Add Address" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-map-marker"></span></a>
+                {% endif %}
+            {% endif %}
+        </div>
         <div class="row">
             <div class="col-sm-6">
                 <p><strong>Serial Number:</strong> {{ obj.pi_SN }}</p>
@@ -59,6 +69,9 @@
         <div class="panel-footer">
             <a href="{% url 'foodcomputer:pi_detail' obj.pk %}" class="btn btn-primary pull-right" title="Details"><span class="glyphicon glyphicon-list-alt"></span></a>
             <div class="clearfix"></div>
+        </div>
+    {% endif %}
+    {% if clps %}
         </div>
     {% endif %}
 </div>

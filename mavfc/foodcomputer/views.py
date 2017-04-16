@@ -265,22 +265,62 @@ class DeviceCurrentValueAPI(APIView):
         jsonObj = dataSerializer(curVal, many=False)
         return Response(jsonObj.data)
 
+
+class AddressAdd(View):
+    parent = Pi
+    form_class = AddressForm
+    template_name = 'foodcomputer/create_page.html'
+    parent_template = None
+    model_name = 'Address'
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        pi = get_object_or_404(Pi, pk=pk)
+        return render(
+            request,
+            self.template_name,
+            {'form': self.form_class,
+             'form_url': reverse('foodcomputer:address_add', kwargs={'pk': pk}),
+             'cancel_url': reverse('foodcomputer:pi_detail', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'breadcrumb_list': pi.get_add_address_breadcrumbs(),
+             'parent_template': self.parent_template})
+
+    @method_decorator(login_required)
+    def post(self, request, pk):
+        pi = get_object_or_404(Pi, pk=pk)
+        bound_form = self.form_class(request.POST)
+        if bound_form.is_valid():
+            new_obj = bound_form.save()
+            pi.address = new_obj
+            pi.save()
+            success(request, self.model_name + ' was successfully added.')
+            return redirect(pi)
+        return render(
+            request,
+            self.template_name,
+            {'form': bound_form,
+             'form_url': reverse('foodcomputer:address_add', kwargs={'pk': pk}),
+             'cancel_url': reverse('foodcomputer:pi_detail', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'breadcrumb_list': pi.get_add_address_breadcrumbs(),
+             'parent_template': self.parent_template})
+
+
+class AddressUpdate(ObjectUpdateMixin, View):
+    model = Address
+    form_class = AddressForm
+    template_name = 'foodcomputer/update_page.html'
+    parent_template = None
+    model_name = 'Address'
+
+
 class AddressDelete(ObjectDeleteMixin, View):
     model = Address
-    success_url = reverse_lazy('address:pi_list')
-    template_name = 'address/delete_confirm.html'
+    success_url = reverse_lazy('foodcomputer:pi_list')
+    template_name = 'foodcomputer/delete_confirm.html'
     parent_template = None
-    model_name = 'Adress'
-
-
-class JSONResponse(HttpResponse):
-    """
-    An HttpResponse that renders its content into JSON.
-    """
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
+    model_name = 'Address'
 
 
 #----------Pi Send-------------

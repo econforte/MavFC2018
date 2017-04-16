@@ -19,9 +19,6 @@ class Address(models.Model):
     def __str__(self):
         return "{p} {n}: {c}, {s}".format(p=self.pk, n=self.name, c=self.city, s=self.state)
 
-    def get_absolute_url(self):
-        return reverse('foodcomputer:address_detail', kwargs={'pk': self.pk})
-
     def get_create_url(self):
         return reverse('foodcomputer:address_create')
 
@@ -51,12 +48,11 @@ class Address(models.Model):
 
     def gen_breadcrumbs(self, bc=[], pre=""):
         if bc == [] and not pre:
-            bc.append(('active', self))
+            bc.append(('active', str(self)))
         else:
             if pre:
-                bc.append(('active', pre + self))
-            bc.append((self.get_absolute_url, self))
-        return self.pi.gen_breadcrumbs(bc)
+                bc.append(('active', pre + str(self)))
+        return self.pis.all()[0].gen_breadcrumbs(bc)
 
 
 class Pi(models.Model):
@@ -166,6 +162,7 @@ class Device(models.Model):
 
     def get_active_baseline(self):
         rules = self.pi.get_active_instance().experiment.experiment_rules.filter(device__pk=self.pk)
+        pass
 
     def get_list_url(self):
         return self.pi.get_absolute_url()

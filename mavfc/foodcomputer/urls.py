@@ -34,6 +34,10 @@ urlpatterns = [
     # ex: /food-computer/api/v1/sensorValues/(foodComputerKey.pk, [data])
     url(r'^api/v1/device/(?P<pk>[0-9]+)/current/value/$', DeviceCurrentValueAPI.as_view(), name='api_device_current_value'),
     # ex: /food-computer/address/(address.pk)/delete/
+    url(r'^(?P<pk>[0-9]+)/address/add/$', AddressAdd.as_view(), name='address_add'),
+    # ex: /food-computer/address/(address.pk)/delete/
+    url(r'^address/(?P<pk>[0-9]+)/update/$', AddressUpdate.as_view(), name='address_update'),
+    # ex: /food-computer/address/(address.pk)/delete/
     url(r'^address/(?P<pk>[0-9]+)/delete/$', AddressDelete.as_view(), name='address_delete'),
 
     #----------Pi Send-------------
