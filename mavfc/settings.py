@@ -49,15 +49,12 @@ INSTALLED_APPS = [
     'foodcomputer',
     'user',
     'rest_framework',
-<<<<<<< HEAD:mavfc/settings.py
     # Disable Django's own staticfiles handling in favour of WhiteNoise, for
     # greater consistency between gunicorn and `./manage.py runserver`. See:
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
-=======
     'homepage',
->>>>>>> SachinPawaskarUNO/master:mavfc/mavfc/settings.py
     'rest_framework.authtoken',
 ]
 
