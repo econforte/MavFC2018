@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.messages import success
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseForbidden
 
 
 def get_create_bcs(model_name):
@@ -24,6 +25,7 @@ class ObjectCreateMixin:
     
     @method_decorator(login_required)
     def get(self, request):
+        # if not request.user.is_staff: return HttpResponseForbidden()
         return render(
             request,
             self.template_name,
@@ -36,6 +38,7 @@ class ObjectCreateMixin:
     
     @method_decorator(login_required)
     def post(self, request):
+        # if not request.user.is_staff: return HttpResponseForbidden()
         bound_form = self.form_class(request.POST)
         if bound_form.is_valid():
             new_obj = bound_form.save()
@@ -62,6 +65,7 @@ class ObjectUpdateMixin:
     
     @method_decorator(login_required)
     def get(self, request, pk):
+        # if not request.user.is_staff: return HttpResponseForbidden()
         obj = get_object_or_404(self.model, pk=pk)
         return render(
             request,
@@ -74,6 +78,7 @@ class ObjectUpdateMixin:
     
     @method_decorator(login_required)
     def post(self, request, pk):
+        # if not request.user.is_staff: return HttpResponseForbidden()
         obj = get_object_or_404(self.model, pk=pk)
         bound_form = self.form_class(request.POST, instance=obj)
         if bound_form.is_valid():
@@ -100,6 +105,7 @@ class ObjectDeleteMixin:
     
     @method_decorator(login_required)
     def get(self, request, pk):
+        # if not request.user.is_staff: return HttpResponseForbidden()
         obj = get_object_or_404(self.model, pk=pk)
         return render(
             request,
@@ -111,6 +117,7 @@ class ObjectDeleteMixin:
     
     @method_decorator(login_required)
     def post(self, request, pk):
+        # if not request.user.is_staff: return HttpResponseForbidden()
         obj = get_object_or_404(self.model, pk=pk)
         obj.delete()
         success(request, self.model_name+' was successfully deleted.')

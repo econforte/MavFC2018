@@ -56,6 +56,11 @@ class Experiment(models.Model):
         bc.append(('/', 'Home'))
         return bc
 
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.pi.pk):
+            return True
+        return False
+
 
 class Day(models.Model):
     name = models.CharField(max_length=9, )

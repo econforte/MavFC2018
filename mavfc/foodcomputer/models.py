@@ -54,6 +54,11 @@ class Address(models.Model):
                 bc.append(('active', pre + str(self)))
         return self.pis.all()[0].gen_breadcrumbs(bc)
 
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.pk):
+            return True
+        return False
+
 
 class Pi(models.Model):
     name = models.CharField(max_length=100,)
@@ -134,6 +139,11 @@ class Pi(models.Model):
         bc.append(('/', 'Home'))
         return bc
 
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.pk):
+            return True
+        return False
+
 
 class Device(models.Model):
     pi = models.ForeignKey(Pi, on_delete=models.CASCADE, related_name="devices",)
@@ -190,6 +200,11 @@ class Device(models.Model):
                 bc.append(('active', pre + self.device_type.name))
             bc.append((self.get_absolute_url, self.device_type.name))
         return self.pi.gen_breadcrumbs(bc)
+
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.pi.pk):
+            return True
+        return False
 
 
 class Data(models.Model):

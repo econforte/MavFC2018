@@ -9,6 +9,7 @@ from django.contrib.messages import success
 from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
+from django.http import HttpResponseForbidden
 
 # Imports used to serve JSON
 from django.views.decorators.csrf import csrf_exempt
@@ -39,7 +40,7 @@ class PiList(View):
         if request.user.is_staff:
             pis = Pi.objects.all()
         else:
-            pis = Pi.objects.filter(user=request.user)
+            pis = Pi.objects.filter(Q(user=request.user) | Q(experiment__instances__active=True, experiment__instances__instance_users__user__in=request.user))
         return render(
             request,
             'foodcomputer/pi_list.html',
@@ -55,7 +56,9 @@ class PiDetail(View):
 
     @method_decorator(login_required)
     def get(self, request, pk):
-        obj = get_object_or_404(self.model, pk=pk)
+        obj = None
+        if request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment__pi__pk=pk):
+            obj = get_object_or_404(self.model, pk=pk)
 
         cdp = ChartDataPreparation()
         namelist = cdp.getNameList(obj)
@@ -83,7 +86,10 @@ class PiChart(View):
 
     @method_decorator(login_required)
     def get(self, request, pk):
-        obj = get_object_or_404(self.model, pk=pk)
+        if request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment__pi__pk=pk):
+            obj = get_object_or_404(self.model, pk=pk)
+        else:
+            return HttpResponseForbidden()
         form_class = AdvancedOptionsForm(request=request, pk=pk)
 
         cdp = ChartDataPreparation()
