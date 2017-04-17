@@ -126,6 +126,11 @@ class ExperimentRule(models.Model):
             bc.append((self.get_absolute_url, self.device.device_type.name + ' Rule'))
         return self.experiment.gen_breadcrumbs(bc)
 
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.experiment.pi.pk):
+            return True
+        return False
+
 
 class ExperimentInstance(models.Model):
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name="instances", )
@@ -172,6 +177,11 @@ class ExperimentInstance(models.Model):
             bc.append((self.get_absolute_url, self.start.strftime("%m/%d/%y") + ' - ' + self.end.strftime("%m/%d/%y") + 'Instance'))
         return self.experiment.gen_breadcrumbs(bc)
 
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.experiment.pi.pk):
+            return True
+        return False
+
 
 class UserExperimentInstance(models.Model):
     experiment_instance = models.ForeignKey(ExperimentInstance, on_delete=models.CASCADE, related_name="instance_users", )
@@ -213,3 +223,8 @@ class UserExperimentInstance(models.Model):
                 bc.append(('active', pre + str(self.user)))
             # bc.append((self.get_absolute_url, str(self.user)))
         return self.experiment_instance.gen_breadcrumbs(bc)
+
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.experiment_instance.experiment.pi.pk):
+            return True
+        return False

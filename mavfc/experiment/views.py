@@ -126,6 +126,8 @@ class ExperimentRuleCreate(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         parent = get_object_or_404(self.parent_model, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=parent.pi.pk)):
+            return HttpResponseForbidden()
         return render(
             request,
             self.template_name,
@@ -138,6 +140,8 @@ class ExperimentRuleCreate(View):
     @method_decorator(login_required)
     def post(self, request, pk):
         parent = get_object_or_404(self.parent_model, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=parent.pi.pk)):
+            return HttpResponseForbidden()
         bound_form = self.form_class(request.POST, pi_pk=parent.pi.pk, isupdate = False)
         if bound_form.is_valid():
             new_obj = bound_form.save(commit = False)
@@ -164,6 +168,8 @@ class ExperimentRuleUpdate(ObjectUpdateMixin, View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=obj.experiment.pi.pk)):
+            return HttpResponseForbidden()
         return render(
             request,
             self.template_name,
@@ -175,6 +181,8 @@ class ExperimentRuleUpdate(ObjectUpdateMixin, View):
     @method_decorator(login_required)
     def post(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=obj.experiment.pi.pk)):
+            return HttpResponseForbidden()
         bound_form = self.form_class(request.POST, instance=obj, pi_pk = obj.experiment.pi.pk, isupdate = True)
         if bound_form.is_valid():
             new_obj = bound_form.save()
@@ -250,6 +258,8 @@ class ExperimentInstanceAdd(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         parent = get_object_or_404(self.parent_model, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=parent.pi.pk)):
+            return HttpResponseForbidden()
         return render(
             request,
             self.template_name,
@@ -263,6 +273,8 @@ class ExperimentInstanceAdd(View):
     @method_decorator(login_required)
     def post(self, request, pk):
         parent = get_object_or_404(self.parent_model, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=parent.pi.pk)):
+            return HttpResponseForbidden()
         bound_form = self.form_class(request.POST, experiment_pk=parent.pk)
         if bound_form.is_valid():
             new_obj = bound_form.save(commit = False)
@@ -307,6 +319,8 @@ class UserExperimentInstanceAdd(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         parent = get_object_or_404(self.parent_model, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=parent.experiment.pi.pk)):
+            return HttpResponseForbidden()
         return render(
             request,
             self.template_name,
@@ -320,6 +334,8 @@ class UserExperimentInstanceAdd(View):
     @method_decorator(login_required)
     def post(self, request, pk):
         parent = get_object_or_404(self.parent_model, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=parent.experiment.pi.pk)):
+            return HttpResponseForbidden()
         bound_form = self.form_class(request.POST, parent=parent)
         if bound_form.is_valid():
             new_obj = bound_form.save(commit=False)
