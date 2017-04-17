@@ -15,17 +15,17 @@
 
 
 {% block content %}
-    <div class="container-fluid" style="margin-top:25px">
+    <div class="container" style="margin-top:25px">
         <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
+{#            <div class="col-md-1"></div>#}
+{#            <div class="col-md-10">#}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h1>
                             Food Computer List
-                            {% if user.is_staff %}
-                                <a href="{% url 'foodcomputer:pi_create' %}" title="Create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
-                            {% endif %}
+{#                            {% if user.is_staff %}#}
+{#                                <a href="{% url 'foodcomputer:pi_create' %}" title="Create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>#}
+{#                            {% endif %}#}
                         </h1>
                         <div class="clearfix"></div>
                     </div>
@@ -43,6 +43,7 @@
                                             <div class="col-md-6">
                                                 {% include "foodcomputer/pi_panel.html" with obj=pi %}
                                             </div>
+                                            {% cycle '' '<div class="clearfix visible-md visible-lg"></div>' %}
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -61,8 +62,8 @@
                         {% endif %}
                     </div>
                 </div>
-            </div>
-            <div class="col-md-1"></div>
+{#            </div>#}
+{#            <div class="col-md-1"></div>#}
         </div>
     </div>
 {% endblock %}

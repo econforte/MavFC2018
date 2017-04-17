@@ -58,6 +58,7 @@ class ObjectUpdateMixin:
     template_name = ''
     parent_template=None
     model_name=''
+    cancel_url = ''
     
     @method_decorator(login_required)
     def get(self, request, pk):
@@ -67,6 +68,7 @@ class ObjectUpdateMixin:
             self.template_name,
             {'form': self.form_class(instance=obj),
              'obj': obj,
+             'cancel_url': self.cancel_url,
              'model_name': self.model_name,
              'parent_template': self.parent_template})
     
@@ -83,6 +85,7 @@ class ObjectUpdateMixin:
             self.template_name,
             {'form': bound_form,
              'obj': obj,
+             'cancel_url': self.cancel_url,
              'model_name': self.model.__name__,
              'parent_template': self.parent_template})
 
@@ -91,8 +94,9 @@ class ObjectDeleteMixin:
     model = None
     success_url = ''
     template_name = ''
-    parent_template=None
+    parent_template = None
     model_name = ''
+    cancel_url = ''
     
     @method_decorator(login_required)
     def get(self, request, pk):
@@ -101,6 +105,7 @@ class ObjectDeleteMixin:
             request,
             self.template_name,
             {'obj': obj,
+             'cancel_url': self.cancel_url,
              'model_name': self.model.__name__,
              'parent_template': self.parent_template})
     

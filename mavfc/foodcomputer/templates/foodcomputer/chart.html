@@ -20,7 +20,7 @@
     }
 </style>
 
-<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript">
 
 function drawChart(){
@@ -69,6 +69,8 @@ function drawChart(){
 
 		//GETTING THE DATA
 		var data = d3.csv.parse( d3.select("pre#data").text() );
+		
+		var show_anomalies = {{ show_anomalies|yesno:"true,false" }};
 
 		//Processing the DATA
 		var columns = Object.keys(data[0]);
@@ -131,23 +133,26 @@ function drawChart(){
 			return subset;
 		}
 		
-		function onlyNulls(d, column){
+		
+		function onlyNANs(d, column){
 			var subset = new Array();
 			var prevVal = d[0][column];
 			var n = 0;
-			while (prevVal == null) {
-				prevVal = d[n][column]
+			while (isNaN(prevVal) && prevVal != null) {
+				prevVal = d[n][column];
 				n++;
 			}
 			
 			for (var i=0; i<d.length; i++){
-				if (d[i][column] == null){
+				if (isNaN(d[i][column])){
 					var temp = new Object();
 					temp["date"] = d[i]["date"];
 					temp[column] = prevVal;
 					subset.push(temp);
 				} else {
-					prevVal = d[i][column];
+					if (!isNaN(d[i][column]) && d[i][column] != null){
+						prevVal = d[i][column];
+					}
 				}
 			}
 			return subset;
@@ -182,7 +187,7 @@ function drawChart(){
 					.defined(function(d) { return d[column]; } )
 					.x(function (d) { return x(d["date"]); } )
 					.y(function (d) { return a(d[column]); } );
-				
+			
 				svg.append("path")
 					.style("stroke", color)
 					.style("stroke-width", 10)
@@ -193,6 +198,23 @@ function drawChart(){
 					.attr("x", -45)
 					.attr("y", -6-(10*aspot))
 					.text(column);
+				
+				if (show_anomalies){
+					var dn = onlyNANs(data, column);
+					for (var i=0; i<dn.length; i++){
+						console.log(column);
+						console.log(i);
+						console.log(x(dn[i]["date"]));
+						console.log(a(dn[i][column]));
+						svg.append("circle")
+							.attr("r", 4)
+							.style("fill", color)
+							.style("stroke", "red")
+							.style("stroke-width", 3)
+							.attr("cx", x(dn[i]["date"]))
+							.attr("cy", -1*(10+10*aspot));
+					}
+				};
 
 				aspot ++;
 				color = acceptableColors.shift()
@@ -245,6 +267,24 @@ function drawChart(){
 		    		.style("text-anchor", "end")
 		    		.text(column);
 			    }
+			    
+				if (show_anomalies){
+					console.log(column);
+					var dn = onlyNANs(data, column);
+					for (var i=0; i<dn.length; i++){
+						console.log(column);
+						console.log(i);
+						console.log(x(dn[i]["date"]));
+						console.log(y(dn[i][column]));
+						svg.append("circle")
+							.attr("cx", x(dn[i]["date"])) //function(d) { return x(d[i]["date"]); } )
+							.attr("cy", y(dn[i][column]))  //function(d) { return a(dn[i][column]); } )
+							.attr("r", 5)
+							.style("fill", color)
+							.style("stroke", "red")
+							.style("stroke-width", 2);
+					}
+				};
 			    
 			    yspot++;
 			    yside = "right";

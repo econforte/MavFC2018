@@ -1,11 +1,22 @@
 from django import forms
 # from django.core.exceptions import ValidationError
 
-from .models import Pi, Device
+from .models import Pi, Device, Address
 from experiment.models import ExperimentInstance
 from django.forms.widgets import CheckboxSelectMultiple, DateInput,\
     SelectDateWidget, TimeInput
 import datetime
+
+
+class AddressForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AddressForm, self).__init__(*args, **kwargs)
+        for (field_name, field) in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+    class Meta:
+        model = Address
+        exclude = '__all__'
 
 
 class PiForm(forms.ModelForm):
@@ -52,3 +63,4 @@ class AdvancedOptionsForm(forms.Form):
         self.fields['experiments'].widget.attrs['class'] = 'form-control'
         self.fields['devices'].widget.attrs['class'] = 'form-control'
         self.fields['devices'].widget.attrs['size'] = '15'
+        self.fields['devices'].queryset = Device.objects.filter(pi__pk=self.pk)

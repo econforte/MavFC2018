@@ -33,12 +33,14 @@ urlpatterns = [
     url(r'^instance/(?P<pk>[0-9]+)/update/$', ExperimentInstanceUpdate.as_view(), name='experimentinstance_update'),
     # ex: /experiment/(experiment.pk)/delete/
     url(r'^instance/(?P<pk>[0-9]+)/delete/$', ExperimentInstanceDelete.as_view(), name='experimentinstance_delete'),
-    # ex: /experiment/(experiment.pk)/delete/
+    # ex: /experiment/(experiment.pk)/csv/
     url(r'^instance/(?P<pk>[0-9]+)/get/csv/$', ExperimentInstanceData.as_view(), name='experimentinstance_get_csv'),
     # ex: /experiment/(experiment.pk)/add/instance/
     url(r'^(?P<pk>[0-9]+)/add/instance/$', ExperimentInstanceAdd.as_view(), name='experimentinstance_add'),
     # ex: /experiment/api/v1/getExperiment/(foodComputerKey.pk)
     url(r'^instance/(?P<pk>[0-9]+)/add/user/$', UserExperimentInstanceAdd.as_view(), name='user_experimentinstance_add'),
-    # ex: /experiment/api/v1/getExperiment/(foodComputerKey.pk)
-    url(r'^api/v1/getexperiment/(?P<pk>[0-9]+)/$', experimentJSON.as_view(), name='api_get_device_experiment'),
+    # ex: /experiment/api/v1/getExperiment/update/user
+    url(r'^instance/(?P<pk>[0-9]+)/update/user/$', UserExperimentInstanceUpdate.as_view(), name='user_experimentinstance_update'),
+    # ex: /experiment/getExperiment/delete/user
+    url(r'^instance/(?P<pk>[0-9]+)/user/$', UserExperimentInstanceDelete.as_view(), name='user_experimentinstance_delete'),
 ]

@@ -176,10 +176,10 @@ class UserExperimentInstance(models.Model):
         return self.experiment_instance.experiment.name + ": " + self.user.username
 
     def get_absolute_url(self):
-        return reverse('experiment:user_experimentinstance_detail', kwargs={'pk': self.pk})
+        return self.experiment_instance.get_absolute_url()
 
     def get_create_url(self):
-        return reverse('experiment:user_experimentinstance_create')
+        return reverse('experiment:user_experimentinstance_add', kwargs={'pk': self.experiment_instance.pk})
 
     def get_update_url(self):
         return reverse('experiment:user_experimentinstance_update', kwargs={'pk': self.pk})
@@ -201,9 +201,9 @@ class UserExperimentInstance(models.Model):
 
     def gen_breadcrumbs(self, bc=[], pre=""):
         if bc == [] and not pre:
-            bc.append(('active', self.user))
+            bc.append(('active', str(self.user)))
         else:
             if pre:
-                bc.append(('active', pre + self.user))
-            bc.append((self.get_absolute_url, self.user))
+                bc.append(('active', pre + str(self.user)))
+            # bc.append((self.get_absolute_url, str(self.user)))
         return self.experiment_instance.gen_breadcrumbs(bc)
