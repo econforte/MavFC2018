@@ -41,7 +41,11 @@
 									<div class="col-sm-offset-0 col-sm-11">
 										<p>Are you sure you want to delete the {{ model_name | lower}}, {{ obj }}?</p>
 										<br>
-										<a href="{{ obj.get_absolute_url }}" class="btn btn-default">Cancel</a>
+                                        {% if obj.get_absolute_url %}
+										    <a href="{{ obj.get_absolute_url }}" class="btn btn-default">Cancel</a>
+                                        {% elif cancel_url %}
+                                            <a href="{{ cancel_url }}" class="btn btn-default">Cancel</a>
+                                        {% endif %}
 										<button type="submit" title="Delete" class="btn btn-danger pull-right">Delete {{ model_name }}</button>
 									</div>
 								</div>

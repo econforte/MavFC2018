@@ -233,7 +233,7 @@ class ExperimentInstanceDelete(ObjectDeleteMixin, View):
 
 class ExperimentInstanceAdd(View):
     form_class = ExperimentInstanceAddForm
-    parent_model = Pi
+    parent_model = Experiment
     template_name = 'experiment/create_page.html'
     parent_template = None
     model_name = 'Experiment Instance'
@@ -244,19 +244,20 @@ class ExperimentInstanceAdd(View):
         return render(
             request,
             self.template_name,
-            {'form': self.form_class,
+            {'form': self.form_class(experiment_pk=parent.pk),
              'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
              'model_name': self.model_name,
+             'breadcrumb_list': parent.get_add_inst_breadcrumbs(),
              'parent_template': self.parent_template
              })
 
     @method_decorator(login_required)
     def post(self, request, pk):
         parent = get_object_or_404(self.parent_model, pk=pk)
-        bound_form = self.form_class(request.POST)
+        bound_form = self.form_class(request.POST, experiment_pk=parent.pk)
         if bound_form.is_valid():
             new_obj = bound_form.save(commit = False)
-            new_obj.pi = parent
+            new_obj.experiment = parent
             new_obj.save()
             success(request, self.model_name + ' was successfully added.')
             return redirect(new_obj)
@@ -266,6 +267,7 @@ class ExperimentInstanceAdd(View):
             {'form': bound_form,
              'form_url': reverse('experiment:experimentinstance_add', kwargs={'pk': pk}),
              'model_name': self.model_name,
+             'breadcrumb_list': parent.get_add_inst_breadcrumbs(),
              'parent_template': self.parent_template})
 
 
@@ -297,16 +299,17 @@ class UserExperimentInstanceAdd(View):
         return render(
             request,
             self.template_name,
-            {'form': self.form_class,
+            {'form': self.form_class(parent=parent),
              'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
              'model_name': self.model_name,
+             'breadcrumb_list': parent.get_add_breadcrumbs(),
              'parent_template': self.parent_template
              })
 
     @method_decorator(login_required)
     def post(self, request, pk):
         parent = get_object_or_404(self.parent_model, pk=pk)
-        bound_form = self.form_class(request.POST)
+        bound_form = self.form_class(request.POST, parent=parent)
         if bound_form.is_valid():
             new_obj = bound_form.save(commit=False)
             new_obj.experiment_instance = parent
@@ -319,23 +322,24 @@ class UserExperimentInstanceAdd(View):
             {'form': bound_form,
              'form_url': reverse('experiment:user_experimentinstance_add', kwargs={'pk': pk}),
              'model_name': self.model_name,
+             'breadcrumb_list': parent.get_add_breadcrumbs(),
              'parent_template': self.parent_template})
 
 
-class JSONResponse(HttpResponse):
-    # An HttpResponse that renders its content into JSON.
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
 
-class experimentJSON(View):
-    def get(request, pk):
-        try:
-            experiment = Experiment.objects.get(pk=pk)
-        except Experiment.DoesNotExist:
-            return HttpResponse(status=404)
+class UserExperimentInstanceUpdate(ObjectUpdateMixin, View):
+    form_class = UserExperimentInstanceForm
+    model = UserExperimentInstance
+    template_name = 'experiment/update_page.html'
+    parent_template = None
+    model_name = 'User Experiment Instance'
+    cancel_url = ''
 
-        if request.method == 'GET':
-            serializer = ExperimentsSerializer(experiment)
-            return JSONResponse(serializer.data)
+class UserExperimentInstanceDelete(ObjectDeleteMixin, View):
+    model = UserExperimentInstance
+    success_url = reverse_lazy('experiment:experiment_list')
+    template_name = 'experiment/delete_confirm.html'
+    parent_template = None
+    model_name = 'User Experiment Instance'
+    cancel_url = ''
+

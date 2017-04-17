@@ -1,15 +1,42 @@
+<form class="form-horizontal" active="{{ form_url }}" method="post">
+    <div class="panel panel-default" id="dataFormPanel">
+        <div class="panel-heading">
+            <h3>
+                Advanced Options Form
+            </h3>
+            <div class="clearfix"></div>
+        </div>
 
-<form active="{{ form_url }}" method="post">
-	{{ fm.non_field_errors }}
-	{% csrf_token %}
-	{% for field in advanced_options_form %}
-		<div class="fieldWrapper">
-		{{ field.errors }}
-				<p><strong><font size="4">{{ field.label }}</font>&emsp;&emsp;{{ field }}</strong>
-				</p>
-		</div>
-	{% endfor %}
-	<div>
-		<button type="submit" class="submit-with-icon"><strong>Submit&ensp;</strong><span class="glyphicon glyphicon-ok"></span></button>
-	</div>
+        <div class="panel-body">
+            {{ advanced_options_form.non_field_errors }}
+            {% csrf_token %}
+            {% for field in advanced_options_form %}
+                <div class="form-group">
+                    {{ field.errors }}
+                    {#            <label class="control-label col-sm-4" for="{{ field.id_for_label }}">{{ field.label }}:</label>#}
+                    {% if field.auto_id == 'id_show_anomalies' %}
+                        <div class="col-sm-offset-2 col-sm-8 checkbox">
+                            <div class="checkbox">
+                                <label for="{{ field.id_for_label }}">{{ field }} {{ field.label }}</label>
+                            </div>
+                        </div>
+                    {% else %}
+                        <label class="control-label col-sm-2" for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                        <div class="col-sm-8">
+                            {{ field }}
+                        </div>
+                    {% endif %}
+                    {% if field.help_text %}
+                        <span class="helptext">{{ field.help_text }}</span>
+                    {% endif %}
+                    <div class="col-sm-2"></div>
+                </div>
+            {% endfor %}
+            <p class="col-sm-offset-2 col-sm-8">To Select Multiple Devices hold down <strong>Ctrl</strong>.</p>
+        </div>
+        <div class="panel-footer">
+            <button type="submit" class="btn btn-primary pull-right">Submit&ensp;<span class="glyphicon glyphicon-ok"></span></button>
+            <div class="clearfix"></div>
+        </div>
+    </div>
 </form>

@@ -16,7 +16,8 @@ class PiForm(forms.ModelForm):
 
     class Meta:
         model = Pi
-        fields = '__all__'
+        exclude = ('pi_SN', 'address','manual_control',)
+
 
 
 class DeviceForm(forms.ModelForm):
@@ -29,28 +30,18 @@ class DeviceForm(forms.ModelForm):
         model = Device
         fields = '__all__'
         
-class AdvancedOptionsForm(forms.Form):    
-    start_date = forms.CharField(required=False,\
-                                 label="Start Date",\
-                                 widget=forms.DateTimeInput(attrs={'type':'datetime-local'}),\
+class AdvancedOptionsForm(forms.Form):
+    start_date = forms.CharField(required=False, label="Start Date",\
+                                 widget=forms.DateTimeInput(attrs={'type':'datetime-local', 'class':'form-control'}),\
                                  initial=datetime.datetime.strftime(datetime.datetime.min, '%Y-%m-%dT%H:%M'))
-    
-    end_date = forms.CharField(required=False,\
-                                 label="End Date",\
-                                 widget=forms.DateTimeInput(attrs={'type':'datetime-local'}),\
+    end_date = forms.CharField(required=False, label="End Date",\
+                                 widget=forms.DateTimeInput(attrs={'type':'datetime-local', 'class':'form-control'}),\
                                  initial=datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%dT%H:%M'))
-    
-    show_anomalies = forms.BooleanField(required=False,\
-                                        label='Show Anomalies')
-    
-    devices = forms.ModelMultipleChoiceField(required=False,\
-                                             label='Available Sensors and Actuators',\
-                                             queryset=Device.objects.all(),\
-                                             widget=CheckboxSelectMultiple())
-    
-    experiments = forms.ModelChoiceField(required=False,\
-                                         label="Experiments",\
-                                         queryset=ExperimentInstance.objects.all())
+    experiments = forms.ModelChoiceField(required=False, label="Experiments", queryset=ExperimentInstance.objects.all())
+    show_anomalies = forms.BooleanField(required=False, label='Show Anomalies')
+    devices = forms.ModelMultipleChoiceField(required=False, label='Sensors and Actuators',\
+                                             queryset=Device.objects.all())#,\
+                                             # widget=CheckboxSelectMultiple())
         
     def __init__(self, *args, **kwargs):
         request = kwargs.pop('request')
@@ -58,3 +49,7 @@ class AdvancedOptionsForm(forms.Form):
         self.user = request.user
         super(AdvancedOptionsForm, self).__init__(*args, **kwargs)
         self.fields['experiments'].queryset = ExperimentInstance.objects.filter(experiment__pi__pk=self.pk)
+        self.fields['experiments'].widget.attrs['class'] = 'form-control'
+        self.fields['devices'].widget.attrs['class'] = 'form-control'
+        self.fields['devices'].widget.attrs['size'] = '15'
+        self.fields['devices'].queryset = Device.objects.filter(pi__pk=self.pk)
