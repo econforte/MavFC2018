@@ -28,7 +28,7 @@
             <div id="rules" class="panel panel-default tab-pane fade in active">
                 <div class="panel-heading">
                     <h3 style="margin-top:10px">Rules List
-                        {% if user.is_staff %}
+                        {% if user.is_staff or user == obj.pi.user %}
                             <a href="{% url 'experiment:experimentrule_create' obj.pk %}" title="Create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
                         {% endif %}
                     </h3>
@@ -70,7 +70,7 @@
             <div id="instances" class="panel panel-default tab-pane fade">
                 <div class="panel-heading">
                     <h3 style="margin-top:10px">Instances List
-                        {% if user.is_staff %}
+                        {% if user.is_staff or user == obj.pi.user %}
                             <a href="{% url 'experiment:experimentinstance_add' obj.pk %}" title="Add a new Instance" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>
                         {% endif %}
                     </h3>

@@ -25,7 +25,7 @@
                 {% if clps %}
                     <a href="{{ obj.get_absolute_url }}" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
                 {% endif %}
-                {% if user.is_staff %}
+                {% if user.is_staff or obj.user == user %}
                     <a href="{% url 'foodcomputer:pi_update' obj.pk %}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                     <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
                 {% endif %}
@@ -38,7 +38,7 @@
     {% endif %}
     <div class="panel-body">
         <div class="btn-group pull-right">
-            {% if user.is_staff or user == pi.user %}
+            {% if user.is_staff or user == obj.user %}
                 {% if obj.address %}
                     <a href="{% url 'foodcomputer:address_update' obj.address.pk %}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> <span class="glyphicon glyphicon-map-marker"></span></a>
                     <a href="{% url 'foodcomputer:address_delete' obj.address.pk %}" title="Delete" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span> <span class="glyphicon glyphicon-map-marker"></span></a>

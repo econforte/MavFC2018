@@ -10,7 +10,7 @@
                 <small>{{ device.device_id }}</small>
                 <div class="btn-group pull-right">
                     <a href="{% url 'foodcomputer:device_get_csv' device.pk %}" title="Download CSV of Device Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
-                    {% if user.is_staff %}
+                    {% if user.is_staff or user == device.pi.user %}
                         <a href="{{ device.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ device.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                     {% endif %}
@@ -27,7 +27,7 @@
                     {% if clps %}
                         <a href="{{ device.get_absolute_url }}" title="Detail Page" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
                     {% endif %}
-                    {% if user.is_staff %}
+                    {% if user.is_staff or user == device.pi.user %}
                         <a href="{{ device.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ device.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                     {% endif %}
@@ -46,7 +46,7 @@
                     {% if clps %}
                         <a href="{{ device.get_absolute_url }}" title="Detail Page" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
                     {% endif %}
-                    {% if user.is_staff %}
+                    {% if user.is_staff or user == device.pi.user %}
                         <a href="{{ device.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ device.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                     {% endif %}

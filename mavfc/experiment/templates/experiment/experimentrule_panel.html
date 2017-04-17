@@ -8,7 +8,7 @@
             {% else %}
                 {{ obj.experiment.name }}: {{ obj.device.device_type.name|title }} Rule
             {% endif %}
-            {% if user.is_staff %}
+            {% if user.is_staff or user == obj.experiment.pi.user %}
                 <div class="btn-group pull-right">
                     {% if experimentrule_detail %}
                         <a href="{{ obj.experiment.get_absolute_url }}" title="Current Rules" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>
