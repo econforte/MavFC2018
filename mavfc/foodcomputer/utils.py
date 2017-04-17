@@ -64,7 +64,7 @@ class ObjectUpdateMixin:
     form_class = None
     model = None
     template_name = ''
-    parent_template=None
+    parent_template = None
     
     @method_decorator(login_required)
     def get(self, request, pk):

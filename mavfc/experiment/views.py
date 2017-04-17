@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.messages import success, error
 from django.forms import ModelChoiceField
+from django.http import HttpResponseForbidden
+from django.db.models import Q
 
 
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
@@ -29,7 +31,7 @@ class ExperimentSearch(View):
         if request.user.is_staff:
             experiments = Experiment.objects.filter(name__contains=q)
         else:
-            experiments = Experiment.objects.filter(name__contains=q)
+            experiments = Experiment.objects.filter(Q(name__contains=q) & (Q(pi__user__pk=request.user.pk) | Q(instances__instance_users__user__pk=request.user.pk)))
         return render(
             request,
             'experiment/experiment_list.html',
@@ -44,7 +46,7 @@ class ExperimentList(View):
         if request.user.is_staff:
             experiments = Experiment.objects.all()
         else:
-            experiments = Experiment.objects.all()
+            experiments = Experiment.objects.filter(Q(pi__user__pk=request.user.pk) | Q(instances__instance_users__user__pk=request.user.pk))
         return render(
             request,
             'experiment/experiment_list.html',
@@ -61,6 +63,8 @@ class ExperimentDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=obj.pi.pk) or request.user.experiment_instances.filter(experiment__pk=pk)):
+            return HttpResponseForbidden()
         return render(
             request,
             self.template_name,
@@ -84,6 +88,7 @@ class ExperimentUpdate(ObjectUpdateMixin, View):
     parent_template = None
     model_name = 'Experiment'
 
+
 class ExperimentDelete(ObjectDeleteMixin, View):
     model = Experiment
     success_url = reverse_lazy('experiment:experiment_list')
@@ -101,6 +106,8 @@ class ExperimentRuleDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=obj.experiment.pi.pk) or request.user.experiment_instances.filter(experiment__pk=obj.experiment.pk)):
+            return HttpResponseForbidden()
         return render(
             request,
             self.template_name,
@@ -182,7 +189,6 @@ class ExperimentRuleUpdate(ObjectUpdateMixin, View):
              'parent_template': self.parent_template})
 
 
-
 class ExperimentRuleDelete(ObjectDeleteMixin, View):
     model = ExperimentRule
     success_url = reverse_lazy('experiment:experiment_list')
@@ -200,6 +206,8 @@ class ExperimentInstanceDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=obj.experiment.pi.pk) or request.user.experiment_instances.filter(experiment__pk=obj.experiment.pk)):
+            return HttpResponseForbidden()
         return render(
             request,
             self.template_name,
@@ -277,6 +285,8 @@ class ExperimentInstanceData(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         expInst = get_object_or_404(ExperimentInstance, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=expInst.experiment.pi.pk) or request.user.experiment_instances.filter(experiment__pk=expInst.experiment.pk)):
+            return HttpResponseForbidden()
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="experiment_instance_data.csv"'
         writer = csv.writer(response)
@@ -327,7 +337,6 @@ class UserExperimentInstanceAdd(View):
              'parent_template': self.parent_template})
 
 
-
 class UserExperimentInstanceUpdate(ObjectUpdateMixin, View):
     form_class = UserExperimentInstanceForm
     model = UserExperimentInstance
@@ -335,6 +344,7 @@ class UserExperimentInstanceUpdate(ObjectUpdateMixin, View):
     parent_template = None
     model_name = 'User Experiment Instance'
     cancel_url = ''
+
 
 class UserExperimentInstanceDelete(ObjectDeleteMixin, View):
     model = UserExperimentInstance
