@@ -1,6 +1,6 @@
-{#{% if not listID %}#}
-{#    <div ng-controller="myCtrldiv{{ obj.pk }}">#}
-{#{% endif %}#}
+{% if not listID %}
+    <div ng-controller="myCtrldiv{{ obj.pk }}">
+{% endif %}
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="col-xs-6" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">
@@ -56,12 +56,12 @@
                 <p><strong>Device Number:</strong> {{ obj.get_device_num }}</p>
             </div>
             <div class="col-sm-6">
-            <!--     <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ obj.pk }} == 1.0">
+                <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ obj.pk }} == 1.0">
                     <strong><span id="toggle2" class="glyphicon glyphicon-lock" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:70px;"></span></strong>
                 </button>
                 <button type="button" class="btn btn-default" ng-click="toggle(1.0)" ng-if="controllerToggle{{ obj.pk }} == 0.0">
                     <strong><span id="toggle2" class="glyphicon glyphicon-lock" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:70px;"></span></strong>
-                </button> -->
+                </button>
             </div>
         </div>
     </div>
@@ -77,11 +77,10 @@
 </div>
 {% if not listID %}
 </div>
-{% comment %}
 <script>
     app.controller('myCtrldiv{{ obj.pk }}', function($scope, $http, $timeout) {
 
-        $scope.controllerToggle{{ obj.pk }} = 0;
+        $scope.controllerToggle{{ obj.pk }} = 0.0;
 
         // Function to get the data
         $scope.getData = function(){
@@ -112,5 +111,4 @@
         $scope.intervalFunction();
     });
 </script>
-{% endcomment %}
 {% endif %}
