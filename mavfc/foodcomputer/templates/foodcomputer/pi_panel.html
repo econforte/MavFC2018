@@ -1,5 +1,5 @@
 {#{% if not listID %}#}
-{#    <div ng-controller="myCtrldiv{{ device.pk }}">#}
+{#    <div ng-controller="myCtrldiv{{ pi.pk }}">#}
 {#{% endif %}#}
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -75,3 +75,42 @@
         </div>
     {% endif %}
 </div>
+{% if not listID %}
+</div>
+{% comment %}
+<script>
+    app.controller('myCtrldiv{{ pi.pk }}', function($scope, $http, $timeout) {
+
+        $scope.controllerToggle{{ pi.pk }} = 0;
+
+        // Function to get the data
+        $scope.getData = function(){
+            //This needs to make an api call that does not exist yet
+            //This api call will be api_pi_current_value
+            //And get whether or not the pi is in manual mode
+            $http.get("{% url 'foodcomputer:api_device_current_value' pi.pk %}")
+                .success(function(data, status, headers, config) {
+                    $scope.controllerToggle{{ pi.pk }} = data.data_value;
+                    console.log('Fetched data!    '+ data.data_value);
+            });
+        };
+
+        $scope.toggle = function(v) {
+{#            Send API to update controller here.#}
+             $scope.controllerToggle{{ pi.pk }} = v; {# Remove line when API is added #}
+        };
+
+        // Function to replicate setInterval using $timeout service.
+        $scope.intervalFunction = function(){
+            $timeout(function() {
+                $scope.getData();
+                $scope.intervalFunction();
+            }, 20000)
+        };
+
+        // Kick off the interval
+        $scope.intervalFunction();
+    });
+</script>
+{% endcomment %}
+{% endif %}
