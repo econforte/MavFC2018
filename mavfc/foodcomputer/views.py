@@ -280,6 +280,17 @@ class DeviceCurrentValueAPI(APIView):
         return Response(jsonObj.data)
 
 
+class PiCurrentValueAPI(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, pk, format=None):
+        # Not sure if this db call is correct/may not need timestamp
+        curVal = Data.objects.filter(pi__pk=pk).latest('timestamp')
+        jsonObj = piSerializer(curVal, many=False)
+        return Response(jsonObj.data)
+
+
 class AddressAdd(View):
     parent = Pi
     form_class = AddressForm

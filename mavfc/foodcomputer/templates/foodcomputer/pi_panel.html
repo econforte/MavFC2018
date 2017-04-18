@@ -1,5 +1,5 @@
 {#{% if not listID %}#}
-{#    <div ng-controller="myCtrldiv{{ pi.pk }}">#}
+{#    <div ng-controller="myCtrldiv{{ obj.pk }}">#}
 {#{% endif %}#}
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -56,10 +56,10 @@
                 <p><strong>Device Number:</strong> {{ obj.get_device_num }}</p>
             </div>
             <div class="col-sm-6">
-            <!--     <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ pi.pk }} == 1.0">
+            <!--     <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ obj.pk }} == 1.0">
                     <strong><span id="toggle2" class="glyphicon glyphicon-lock" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:70px;"></span></strong>
                 </button>
-                <button type="button" class="btn btn-default" ng-click="toggle(1.0)" ng-if="controllerToggle{{ pi.pk }} == 0.0">
+                <button type="button" class="btn btn-default" ng-click="toggle(1.0)" ng-if="controllerToggle{{ obj.pk }} == 0.0">
                     <strong><span id="toggle2" class="glyphicon glyphicon-lock" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:70px;"></span></strong>
                 </button> -->
             </div>
@@ -79,25 +79,25 @@
 </div>
 {% comment %}
 <script>
-    app.controller('myCtrldiv{{ pi.pk }}', function($scope, $http, $timeout) {
+    app.controller('myCtrldiv{{ obj.pk }}', function($scope, $http, $timeout) {
 
-        $scope.controllerToggle{{ pi.pk }} = 0;
+        $scope.controllerToggle{{ obj.pk }} = 0;
 
         // Function to get the data
         $scope.getData = function(){
             //This needs to make an api call that does not exist yet
             //This api call will be api_pi_current_value
             //And get whether or not the pi is in manual mode
-            $http.get("{% url 'foodcomputer:api_device_current_value' pi.pk %}")
+            $http.get("{% url 'foodcomputer:api_pi_current_value' obj.pk %}")
                 .success(function(data, status, headers, config) {
-                    $scope.controllerToggle{{ pi.pk }} = data.data_value;
+                    $scope.controllerToggle{{ obj.pk }} = data.data_value;
                     console.log('Fetched data!    '+ data.data_value);
             });
         };
 
         $scope.toggle = function(v) {
 {#            Send API to update controller here.#}
-             $scope.controllerToggle{{ pi.pk }} = v; {# Remove line when API is added #}
+             $scope.controllerToggle{{ obj.pk }} = v; {# Remove line when API is added #}
         };
 
         // Function to replicate setInterval using $timeout service.
