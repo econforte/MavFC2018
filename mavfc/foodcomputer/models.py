@@ -5,7 +5,7 @@ from django.db.models import Q
 
 from experiment.models import ExperimentInstance
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Address(models.Model):
@@ -170,9 +170,31 @@ class Device(models.Model):
     def get_delete_url(self):
         return reverse('foodcomputer:device_delete', kwargs={'pk': self.pk})
 
-    def get_active_baseline(self):
+    def get_active_baseline(self): # Assumes that 0 is Monday; oh and military time
+        # get rules
         rules = self.pi.get_active_instance().experiment.experiment_rules.filter(device__pk=self.pk)
-        pass
+        
+        # get the beginning of the weeks (last sunday at 0:00)
+        now = datetime.now(tz=None)
+        start_of_week = now - timedelta(days=now.weekday(), hours=now.hour, minutes=now.minute, seconds=now.second)
+        
+        # create dictionary of [datetime] = rule
+        time2rule = {}
+        for rule in rules:
+            for day in rule.days:
+                time2rule[start_of_week + timedelta(days=rule.day, hours=rule.hour, minutes=rule.minute)] = rule
+        
+        # determine active rule
+        sd = sorted([x for x in datetime])
+        if not sd: return None
+        prev_spot = sd.pop(0)
+        for spot in sd:
+            if spot > now:
+                break
+            prev_spot = spot
+            
+        # return baseline
+        return time2rule[prev_spot]
 
     def get_list_url(self):
         return self.pi.get_absolute_url()
