@@ -44,6 +44,23 @@ class ExperimentRuleForm(forms.ModelForm):
         fields = ('device', 'hour', 'minute', 'baseline_target', 'days',)
 
 
+class ExperimentRuleUpdateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ExperimentRuleUpdateForm, self).__init__(*args, **kwargs)
+        for (field_name, field) in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+        self.fields['hour'].widget.attrs.update({
+            'min':'0', 'max': '23', 'step':'1', 'placeholder':'Integers from 0 to 23'
+        })
+        self.fields['minute'].widget.attrs.update({
+            'min':'0', 'max':'59', 'step':'1', 'placeholder':'Integers from 0 to 59'
+        })
+
+    class Meta:
+        model = ExperimentRule
+        fields = ('hour', 'minute', 'baseline_target', 'days',)
+
+
 class ExperimentInstanceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ExperimentInstanceForm, self).__init__(*args, **kwargs)

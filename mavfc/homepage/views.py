@@ -23,7 +23,7 @@ class Homepage(View):
             if request.user.is_staff:
                 pis = Pi.objects.all()
             else:
-                pis = Pi.objects.filter(user = request.user)
+                pis = Pi.objects.filter(Q(user=request.user) | Q(experiment__instances__active=True, experiment__instances__instance_users__user__in=[request.user]))
             return render(
                 request,
                 'homepage/dashboard.html',

@@ -4,22 +4,14 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.messages import success, error
-from django.forms import ModelChoiceField
 from django.http import HttpResponseForbidden
 from django.db.models import Q
+from django.http import HttpResponse
 
 
 from .utils import ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .models import *
 from .forms import *
-from foodcomputer.models import Pi
-
-# For REST API
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
-from .serializers import ExperimentsSerializer
 
 import csv
 
@@ -131,22 +123,22 @@ class ExperimentRuleCreate(View):
         return render(
             request,
             self.template_name,
-            {'form': self.form_class(pi_pk=parent.pi.pk, isupdate = False),
+            {'form': self.form_class(pi_pk=parent.pi.pk, isupdate=False),
              'form_url': reverse('experiment:experimentrule_create', kwargs={'pk': pk}),
              'model_name': self.model_name,
              'parent_template': self.parent_template})
-
 
     @method_decorator(login_required)
     def post(self, request, pk):
         parent = get_object_or_404(self.parent_model, pk=pk)
         if not (request.user.is_staff or request.user.pis.filter(pk=parent.pi.pk)):
             return HttpResponseForbidden()
-        bound_form = self.form_class(request.POST, pi_pk=parent.pi.pk, isupdate = False)
+        bound_form = self.form_class(request.POST, pi_pk=parent.pi.pk, isupdate=False)
         if bound_form.is_valid():
-            new_obj = bound_form.save(commit = False)
+            new_obj = bound_form.save(commit=False)
             new_obj.experiment = parent
             new_obj.save()
+            bound_form.save_m2m()
             success(request, self.model_name + ' was successfully added.')
             return redirect(new_obj)
         return render(
@@ -159,7 +151,7 @@ class ExperimentRuleCreate(View):
 
 
 class ExperimentRuleUpdate(ObjectUpdateMixin, View):
-    form_class = ExperimentRuleForm
+    form_class = ExperimentRuleUpdateForm
     model = ExperimentRule
     template_name = 'experiment/update_page.html'
     parent_template = None
@@ -173,7 +165,7 @@ class ExperimentRuleUpdate(ObjectUpdateMixin, View):
         return render(
             request,
             self.template_name,
-            {'form': self.form_class(instance=obj, pi_pk = obj.experiment.pi.pk, isupdate = True),
+            {'form': self.form_class(instance=obj),
              'obj': obj,
              'model_name': self.model_name,
              'parent_template': self.parent_template})
@@ -183,7 +175,7 @@ class ExperimentRuleUpdate(ObjectUpdateMixin, View):
         obj = get_object_or_404(self.model, pk=pk)
         if not (request.user.is_staff or request.user.pis.filter(pk=obj.experiment.pi.pk)):
             return HttpResponseForbidden()
-        bound_form = self.form_class(request.POST, instance=obj, pi_pk = obj.experiment.pi.pk, isupdate = True)
+        bound_form = self.form_class(request.POST, instance=obj)
         if bound_form.is_valid():
             new_obj = bound_form.save()
             success(request, self.model_name + ' was successfully updated.')

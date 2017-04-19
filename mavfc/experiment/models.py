@@ -96,8 +96,8 @@ class ExperimentRule(models.Model):
     def get_absolute_url(self):
         return reverse('experiment:experimentrule_detail', kwargs={'pk': self.pk})
 
-    def get_create_url(self):
-        return reverse('experiment:experimentrule_create')
+    # def get_create_url(self):
+    #     return reverse('experiment:experimentrule_create')
 
     def get_update_url(self):
         return reverse('experiment:experimentrule_update', kwargs={'pk': self.pk})
