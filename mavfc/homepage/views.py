@@ -22,12 +22,14 @@ class Homepage(View):
         if request.user.is_authenticated():
             if request.user.is_staff:
                 pis = Pi.objects.all()
+                experiments = Experiment.objects.all()
             else:
-                pis = Pi.objects.filter(user = request.user)
+                experiments = Experiment.objects.filter(instances__instance_users__user = request.user).filter(pi__user = request.user)			
             return render(
                 request,
                 'homepage/dashboard.html',
                 {'pis': pis,
+                 'experiments': experiments,
                  'parent_template': parent_template})
         else:
             return render(request, 'homepage/Justpage.html', {'parent_template': parent_template})
