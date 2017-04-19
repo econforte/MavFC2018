@@ -165,7 +165,7 @@ class ExperimentRuleUpdate(ObjectUpdateMixin, View):
         return render(
             request,
             self.template_name,
-            {'form': self.form_class(instance=obj),
+            {'form': self.form_class(instance=obj, device_pk=obj.device.pk),
              'obj': obj,
              'model_name': self.model_name,
              'parent_template': self.parent_template})
@@ -175,7 +175,7 @@ class ExperimentRuleUpdate(ObjectUpdateMixin, View):
         obj = get_object_or_404(self.model, pk=pk)
         if not (request.user.is_staff or request.user.pis.filter(pk=obj.experiment.pi.pk)):
             return HttpResponseForbidden()
-        bound_form = self.form_class(request.POST, instance=obj)
+        bound_form = self.form_class(request.POST, instance=obj, device_pk=obj.device.pk)
         if bound_form.is_valid():
             new_obj = bound_form.save()
             success(request, self.model_name + ' was successfully updated.')

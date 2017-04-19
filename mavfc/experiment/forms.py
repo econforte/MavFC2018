@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 from .models import Experiment, ExperimentRule, ExperimentInstance, UserExperimentInstance
+from foodcomputer.models import Device
 
 import pytz
 import datetime
@@ -43,9 +44,36 @@ class ExperimentRuleForm(forms.ModelForm):
         model = ExperimentRule
         fields = ('device', 'hour', 'minute', 'baseline_target', 'days',)
 
+    def clean_baseline_target(self):
+        baseline_target = self.cleaned_data['baseline_target']
+        devicePK = self.cleaned_data['device']
+        dt = Device.objects.get(pk=devicePK).device_type
+        minl = False
+        maxl = False
+        if dt.unit_type.min_limit is not None and dt.data_type.min_limit is not None:
+            minl = max([dt.unit_type.min_limit, dt.data_type.min_limit])
+        elif dt.unit_type.min_limit is not None:
+            minl = dt.unit_type.min_limit
+        elif dt.data_type.min_limit is not None:
+            minl = dt.data_type.min_limit
+        if dt.unit_type.max_limit is not None and dt.data_type.max_limit is not None:
+            maxl = min([dt.unit_type.max_limit, dt.data_type.max_limit])
+        elif dt.unit_type.max_limit is not None:
+            maxl = dt.unit_type.max_limit
+        elif dt.data_type.max_limit is not None:
+            maxl = dt.data_type.max_limit
+        if minl is not None:
+            if baseline_target < minl:
+                raise forms.ValidationError('The baseline target can not be lower than ' + str(minl) + ', for the ' + str(dt.name) + ' device.')
+        if maxl is not None:
+            if baseline_target > maxl:
+                raise forms.ValidationError('The baseline target can not be greater than ' + str(maxl) + ', for the ' + str(dt.name) + ' device.')
+        return baseline_target
+
 
 class ExperimentRuleUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.device_pk = kwargs.pop('device_pk')
         super(ExperimentRuleUpdateForm, self).__init__(*args, **kwargs)
         for (field_name, field) in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
@@ -59,6 +87,31 @@ class ExperimentRuleUpdateForm(forms.ModelForm):
     class Meta:
         model = ExperimentRule
         fields = ('hour', 'minute', 'baseline_target', 'days',)
+
+    def clean_baseline_target(self):
+        baseline_target = self.cleaned_data['baseline_target']
+        dt = Device.objects.get(pk=self.device_pk).device_type
+        minl = False
+        maxl = False
+        if dt.unit_type.min_limit is not None and dt.data_type.min_limit is not None:
+            minl = max([dt.unit_type.min_limit, dt.data_type.min_limit])
+        elif dt.unit_type.min_limit is not None:
+            minl = dt.unit_type.min_limit
+        elif dt.data_type.min_limit is not None:
+            minl = dt.data_type.min_limit
+        if dt.unit_type.max_limit is not None and dt.data_type.max_limit is not None:
+            maxl = min([dt.unit_type.max_limit, dt.data_type.max_limit])
+        elif dt.unit_type.max_limit is not None:
+            maxl = dt.unit_type.max_limit
+        elif dt.data_type.max_limit is not None:
+            maxl = dt.data_type.max_limit
+        if minl is not None:
+            if baseline_target < minl:
+                raise forms.ValidationError('The baseline target can not be lower than ' + str(minl) + ', for the ' + str(dt.name) + ' device.')
+        if maxl is not None:
+            if baseline_target > maxl:
+                raise forms.ValidationError('The baseline target can not be greater than ' + str(maxl) + ', for the ' + str(dt.name) + ' device.')
+        return baseline_target
 
 
 class ExperimentInstanceForm(forms.ModelForm):
