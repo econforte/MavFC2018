@@ -34,7 +34,19 @@
         <div id="{{ listID }}{{ obj.pk }}" class="panel-collapse collapse">
     {% endif %}
             <div class="panel-body">
-                <p>{{ obj.descr }}</p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p><strong>Description:</strong> {{ obj.descr }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Food Computer:</strong> {{ obj.pi }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Data Collection Speed:</strong> {{ obj.collection_interval }}</p>
+                    </div>
+                </div>
             </div>
             {% if not experiment_detail and not clps %}
                 <div class="panel-footer">
