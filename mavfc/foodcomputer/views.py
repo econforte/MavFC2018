@@ -286,7 +286,7 @@ class PiCurrentValueAPI(APIView):
 
     def get(self, request, pk, format=None):
         # Not sure if this db call is correct/may not need timestamp
-        curVal = Data.objects.filter(pi__pk=pk).latest('timestamp')
+        curVal = get_object_or_404(Pi, pk=pk)
         jsonObj = PiSerializer(curVal, many=False)
         return Response(jsonObj.data)
 

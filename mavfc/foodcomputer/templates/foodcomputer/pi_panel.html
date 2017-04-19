@@ -57,10 +57,10 @@
             </div>
             {% if 1 %}
             <div class="col-sm-6">
-                <button type="button" class="btn btn-default" ng-click="toggle(false)" ng-if="controllerToggle{{ obj.pk }}">
+                <button type="button" class="btn btn-default" ng-click="toggle(false)" ng-if="controllerToggler{{ obj.pk }}">
                     <strong><span id="toggle2" class="glyphicon glyphicon-lock" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:70px;"></span></strong>
                 </button>
-                <button type="button" class="btn btn-default" ng-click="toggle(true)" ng-if="!controllerToggle{{ obj.pk }}">
+                <button type="button" class="btn btn-default" ng-click="toggle(true)" ng-if="!controllerToggler{{ obj.pk }}">
                     <strong><span id="toggle2" class="glyphicon glyphicon-lock" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:70px;"></span></strong>
                 </button>
             </div>
@@ -82,7 +82,7 @@
 <script>
     app.controller('theCtrldiv{{ obj.pk }}', function($scope, $http, $timeout) {
 
-        $scope.controllerToggle{{ obj.pk }} = false;
+        $scope.controllerToggler{{ obj.pk }} = false;
 
         // Function to get the data
         $scope.getData = function(){
@@ -91,14 +91,14 @@
             //And get whether or not the pi is in manual mode
             $http.get("{% url 'foodcomputer:api_pi_current_value' obj.pk %}")
                 .success(function(data, status, headers, config) {
-                    $scope.controllerToggle{{ obj.pk }} = data.data_value;
-                    console.log('Fetched data!    '+ data.data_value);
+                    $scope.controllerToggler{{ obj.pk }} = data.manual_control;
+                    console.log('Fetched data!    '+ data.manual_control);
             });
         };
 
         $scope.toggle = function(v) {
 {#            Send API to update controller here.#}
-             $scope.controllerToggle{{ obj.pk }} = v; {# Remove line when API is added #}
+             $scope.controllerToggler{{ obj.pk }} = v; {# Remove line when API is added #}
         };
 
         // Function to replicate setInterval using $timeout service.
