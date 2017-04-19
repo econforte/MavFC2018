@@ -33,7 +33,12 @@ ALLOWED_HOSTS = ['mavistfc.herokuapp.com']
 #####
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Cookie security
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # Application definition
 
@@ -195,12 +200,10 @@ LOGOUT_URL = reverse_lazy('dj-auth:logout')
 # EMAIL_HOST_USER = 'maverick.food.comp@gmail.com'
 EMAIL_USE_TLS = True
 # EMAIL_PORT = 587
-##### @elocke: Updated email parameters to use mailtrap.io account:
+
 EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = 'c6a0167593ce9f'
-# change this to '814bb531039ade' on transfer of ownership to Dr. Pawaskar
-EMAIL_HOST_PASSWORD = '007504884ec1b7'
-# change this to 'bb66fbb8a77de0' on transfer of ownership to Dr. Pawaskar
+EMAIL_HOST_USER = '814bb531039ade'
+EMAIL_HOST_PASSWORD = 'bb66fbb8a77de0'
 EMAIL_PORT = '2525'
 #####
 EMAIL_SUBJECT_PREFIX = '[MAVFC] '
