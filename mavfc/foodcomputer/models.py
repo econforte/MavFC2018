@@ -5,7 +5,18 @@ from django.db.models import Q
 
 from experiment.models import ExperimentInstance
 
-from datetime import datetime
+from datetime import datetime, timedelta
+
+
+def parse_day_of_week(day):
+    days_of_week = {'Monday':    0, 'monday':    0, 'Mon': 0, 'mon': 0, 'Mo': 0, 'mo': 0, 'M': 0, 'm': 0,
+                    'Tuesday':   1, 'tuesday':   1, 'Tue': 1, 'tue': 1, 'Tu': 1, 'tu': 1, 'T': 1, 't': 1,
+                    'Wednesday': 2, 'wednesday': 2, 'Wed': 2, 'wed': 2, 'We': 2, 'we': 2, 'W': 2, 'w': 2,
+                    'Thursday':  3, 'thursday':  3, 'Thu': 3, 'thu': 3, 'Th': 3, 'th': 3, 'R': 3, 'r': 3,
+                    'Friday':    4, 'friday':    4, 'Fri': 4, 'fri': 4, 'Fr': 4, 'fr': 4, 'F': 4, 'f': 4,
+                    'Saturday':  5, 'saturday':  5, 'Sat': 5, 'sat': 5, 'Sa': 5, 'sa': 5, 'S': 5, 's': 5,
+                    'Sunday':    6, 'sunday':    6, 'Sun': 6, 'sun': 6, 'Su': 6, 'su': 6, 'U': 6, 'u': 6, }
+    return days_of_week[day]
 
 
 class Address(models.Model):
@@ -53,6 +64,11 @@ class Address(models.Model):
             if pre:
                 bc.append(('active', pre + str(self)))
         return self.pis.all()[0].gen_breadcrumbs(bc)
+
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.pk):
+            return True
+        return False
 
 
 class Pi(models.Model):
@@ -134,6 +150,11 @@ class Pi(models.Model):
         bc.append(('/', 'Home'))
         return bc
 
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.pk):
+            return True
+        return False
+
 
 class Device(models.Model):
     pi = models.ForeignKey(Pi, on_delete=models.CASCADE, related_name="devices",)
@@ -160,9 +181,33 @@ class Device(models.Model):
     def get_delete_url(self):
         return reverse('foodcomputer:device_delete', kwargs={'pk': self.pk})
 
-    def get_active_baseline(self):
-        rules = self.pi.get_active_instance().experiment.experiment_rules.filter(device__pk=self.pk)
-        pass
+    def get_active_baseline(self): # Assumes that 0 is Monday; oh and military time
+        act_inst = self.pi.get_active_instance()
+        if act_inst:
+            # get rules
+            rules = act_inst[0].experiment.experiment_rules.filter(device__pk=self.pk)
+            if rules:
+                # get the beginning of the weeks (last monday at 0:00)
+                now = datetime.now(tz=None)
+                start_of_week = now - timedelta(days=now.weekday(), hours=now.hour, minutes=now.minute, seconds=now.second)
+
+                # create dictionary of [datetime] = rule
+                time2rule = {}
+                for rule in rules:
+                    for day in rule.days.all():
+                        time2rule[start_of_week + timedelta(days=parse_day_of_week(day.name), hours=rule.hour, minutes=rule.minute)] = rule
+
+                # determine active rule
+                sd = sorted(time2rule.keys())
+                prev_spot = sd.pop(0)
+                for spot in sd:
+                    if spot > now:
+                        break
+                    prev_spot = spot
+
+                # return baseline
+                return time2rule[prev_spot]
+        return None
 
     def get_list_url(self):
         return self.pi.get_absolute_url()
@@ -190,6 +235,11 @@ class Device(models.Model):
                 bc.append(('active', pre + self.device_type.name))
             bc.append((self.get_absolute_url, self.device_type.name))
         return self.pi.gen_breadcrumbs(bc)
+
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.pi.pk):
+            return True
+        return False
 
 
 class Data(models.Model):

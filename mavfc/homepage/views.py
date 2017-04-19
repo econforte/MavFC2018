@@ -24,7 +24,7 @@ class Homepage(View):
                 pis = Pi.objects.all()
                 experiments = Experiment.objects.all()
             else:
-                experiments = Experiment.objects.filter(instances__instance_users__user = request.user).filter(pi__user = request.user)			
+                pis = Pi.objects.filter(Q(user=request.user) | Q(experiment__instances__active=True, experiment__instances__instance_users__user__in=[request.user]))
             return render(
                 request,
                 'homepage/dashboard.html',

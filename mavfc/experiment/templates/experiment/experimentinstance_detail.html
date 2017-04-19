@@ -17,35 +17,32 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid" style="margin-top:25px">
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
-                {% include "experiment/experimentinstance_panel.html" with experimentinstance=obj experimentinstance_detail="true" %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3>Users
-                        {% if user.is_staff %}
-                            <a href="{% url 'experiment:user_experimentinstance_add' obj.pk %}" title="Create" class="btn btn-success pull-right">
-                                <span class="glyphicon glyphicon-plus"></span></a>
-                        {% endif %}</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="list-group">
-                            {% for user_exp_inst in obj.instance_users.all %}
-                                <li class="list-group-item">
-                                    {{ user_exp_inst.user.first_name }} {{ user_exp_inst.user.last_name }}
-                                    <div class="btn-group pull-right">
-                                        <a href={% url 'experiment:user_experimentinstance_update' user_exp_inst.pk %} title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
-                                        <a href={% url 'experiment:user_experimentinstance_delete' user_exp_inst.pk %} title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
-                                    </div>
-                                    <div class="clearfix"></div>
+    <div class="container" style="margin-top:25px">
+        {% include "experiment/experimentinstance_panel.html" with experimentinstance=obj experimentinstance_detail="true" %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>Users
+                {% if user.is_staff or user == obj.experiment.pi.user %}
+                    <a href="{% url 'experiment:user_experimentinstance_add' obj.pk %}" title="Create" class="btn btn-success pull-right">
+                        <span class="glyphicon glyphicon-plus"></span></a>
+                {% endif %}</h3>
+            </div>
+            <div class="panel-body">
+                <div class="list-group">
+                    {% for user_exp_inst in obj.instance_users.all %}
+                        <li class="list-group-item">
+                            {{ user_exp_inst.user.first_name }} {{ user_exp_inst.user.last_name }}
+                            {% if user.is_staff  or user == obj.experiment.pi.user %}
+                            <div class="btn-group pull-right">
+                                <a href={% url 'experiment:user_experimentinstance_update' user_exp_inst.pk %} title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a href={% url 'experiment:user_experimentinstance_delete' user_exp_inst.pk %} title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                            </div>
+                            {% endif %}
+                            <div class="clearfix"></div>
 
-                                </li>
-                            {% endfor %}
+                        </li>
+                    {% endfor %}
 
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

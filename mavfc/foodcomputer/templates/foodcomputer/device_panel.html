@@ -10,7 +10,7 @@
                 <small>{{ device.device_id }}</small>
                 <div class="btn-group pull-right">
                     <a href="{% url 'foodcomputer:device_get_csv' device.pk %}" title="Download CSV of Device Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
-                    {% if user.is_staff %}
+                    {% if user.is_staff or user == device.pi.user %}
                         <a href="{{ device.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ device.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                     {% endif %}
@@ -27,7 +27,7 @@
                     {% if clps %}
                         <a href="{{ device.get_absolute_url }}" title="Detail Page" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
                     {% endif %}
-                    {% if user.is_staff %}
+                    {% if user.is_staff or user == device.pi.user %}
                         <a href="{{ device.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ device.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                     {% endif %}
@@ -46,7 +46,7 @@
                     {% if clps %}
                         <a href="{{ device.get_absolute_url }}" title="Detail Page" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
                     {% endif %}
-                    {% if user.is_staff %}
+                    {% if user.is_staff or user == device.pi.user %}
                         <a href="{{ device.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ device.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                     {% endif %}
@@ -66,6 +66,7 @@
                 <p><strong>Residual Threshold:</strong> {{ device.residual_threshold }}</p>
                 <p><strong>Biological Threshold:</strong> {{ device.device_type.bio_threshold }}</p>
                 <p><strong>Is a Controller:</strong> {{ device.device_type.is_controller }}</p>
+                <p><strong>Active Baseline:</strong> {{ device.get_active_baseline.baseline_target }}</p>
             </div>
             <div class="col-xs-6">
                 {% if device.device_type.is_controller %}
@@ -76,7 +77,7 @@
                         <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:70px;"></span></strong>
                     </button>
                 {% else %}
-                    <div id="chart_div{{ device.pk }}" style="width: 400px; height: 120px;"></div>
+                    <div id="chart_div{{ device.pk }}" style="width: 150px; height: 120px;"></div>
                 {% endif %}
             </div>
         </div>
@@ -107,10 +108,15 @@
     function drawChart{{ device.pk }}() {
         var data = google.visualization.arrayToDataTable(datasetG{{ device.pk }});
         var options = {
-            width: 400, height: 120,
+            width: 150, height: 120,
             minorTicks: 5
             {% if device.device_type.unit_type.min_limit %}, min:{{ device.device_type.unit_type.min_limit }}{% endif %}
             {% if device.device_type.unit_type.max_limit %}, max:{{ device.device_type.unit_type.max_limit }}{% endif %}
+            {% if device.get_active_baseline.baseline_target %}
+                , greenColor: '#109618'
+                , greenFrom:({{ device.get_active_baseline.baseline_target }} - {{ device.get_threshold }})
+                , greenTo:({{ device.get_active_baseline.baseline_target }} + {{ device.get_threshold }})
+            {% endif %}
         };
         var chart = new google.visualization.Gauge(document.getElementById('chart_div{{ device.pk }}'));
         chart.draw(data, options);

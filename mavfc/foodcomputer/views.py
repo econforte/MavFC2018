@@ -9,6 +9,7 @@ from django.contrib.messages import success
 from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
+from django.http import HttpResponseForbidden
 
 # Imports used to serve JSON
 from django.views.decorators.csrf import csrf_exempt
@@ -39,7 +40,7 @@ class PiList(View):
         if request.user.is_staff:
             pis = Pi.objects.all()
         else:
-            pis = Pi.objects.filter(user=request.user)
+            pis = Pi.objects.filter(Q(user=request.user) | Q(experiment__instances__active=True, experiment__instances__instance_users__user__in=[request.user]))
         return render(
             request,
             'foodcomputer/pi_list.html',
@@ -55,7 +56,9 @@ class PiDetail(View):
 
     @method_decorator(login_required)
     def get(self, request, pk):
-        obj = get_object_or_404(self.model, pk=pk)
+        obj = None
+        if request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment__pi__pk=pk):
+            obj = get_object_or_404(self.model, pk=pk)
 
         cdp = ChartDataPreparation()
         namelist = cdp.getNameList(obj)
@@ -83,7 +86,10 @@ class PiChart(View):
 
     @method_decorator(login_required)
     def get(self, request, pk):
-        obj = get_object_or_404(self.model, pk=pk)
+        if request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment__pi__pk=pk):
+            obj = get_object_or_404(self.model, pk=pk)
+        else:
+            return HttpResponseForbidden()
         form_class = AdvancedOptionsForm(request=request, pk=pk)
 
         cdp = ChartDataPreparation()
@@ -108,6 +114,8 @@ class PiChart(View):
                        'show_anomalies':        False})
 
     def post(self, request, pk):
+        if not (request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment__pi__pk=pk)):
+            return HttpResponseForbidden()
         obj = get_object_or_404(self.model, pk=pk)
         form_class = AdvancedOptionsForm(request.POST, request=request, pk=pk)
         cdp = ChartDataPreparation()
@@ -173,6 +181,8 @@ class PiData(View):
 
     @method_decorator(login_required)
     def get(self, request, pk):
+        if not (request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment__pi__pk=pk)):
+            return HttpResponseForbidden()
         pi = get_object_or_404(Pi, pk=pk)
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="food_computer_data.csv"'
@@ -197,13 +207,15 @@ class DeviceDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-        height = "700px"
+        if not (request.user.is_staff or request.user.pis.filter(pk=obj.pi.pk) or request.user.experiment_instances.filter(experiment__pi__pk=obj.pi.pk)):
+            return HttpResponseForbidden()
 
         ddp = DeviceDataPreparation(obj)
         time2sensor = ddp.initializeDeviceDataValues(obj)
         time2sensor = ddp.subsetDataValues(time2sensor)
         prestring = ddp.constructTable(time2sensor, numdp=200)
 
+        height = "700px"
         if obj.device_type.is_controller:
             height = "200xp"
 
@@ -215,7 +227,7 @@ class DeviceDetail(View):
              'height': height,
              'model_name': self.model_name,
              'parent_template': self.parent_template,
-             'show_anomalies':        False})
+             'show_anomalies': False})
 
 
 class DeviceCreate(ObjectCreateMixin, View):
@@ -247,6 +259,8 @@ class DeviceData(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         device = get_object_or_404(Device, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=device.pi.pk) or request.user.experiment_instances.filter(experiment__pi__pk=device.pi.pk)):
+            return HttpResponseForbidden()
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="food_computer_device_'+device.device_type.name+'_data.csv"'
         writer = csv.writer(response)
@@ -266,6 +280,17 @@ class DeviceCurrentValueAPI(APIView):
         return Response(jsonObj.data)
 
 
+class PiCurrentValueAPI(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, pk, format=None):
+        # Not sure if this db call is correct/may not need timestamp
+        curVal = get_object_or_404(Pi, pk=pk)
+        jsonObj = PiSerializer(curVal, many=False)
+        return Response(jsonObj.data)
+
+
 class AddressAdd(View):
     parent = Pi
     form_class = AddressForm
@@ -275,6 +300,8 @@ class AddressAdd(View):
 
     @method_decorator(login_required)
     def get(self, request, pk):
+        if not (request.user.is_staff or request.user.pis.filter(pk=pk)):
+            return HttpResponseForbidden()
         pi = get_object_or_404(Pi, pk=pk)
         return render(
             request,
@@ -288,6 +315,8 @@ class AddressAdd(View):
 
     @method_decorator(login_required)
     def post(self, request, pk):
+        if not (request.user.is_staff or request.user.pis.filter(pk=pk)):
+            return HttpResponseForbidden()
         pi = get_object_or_404(Pi, pk=pk)
         bound_form = self.form_class(request.POST)
         if bound_form.is_valid():
