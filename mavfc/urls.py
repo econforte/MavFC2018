@@ -22,18 +22,18 @@ from django.contrib.staticfiles import views
 from rest_framework.authtoken import views as rest_auth_views
 import experiment
 
-from homepage.views import Homepage
+# from homepage.views import Homepage
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^user/', include(user_urls, app_name='user', namespace='dj-auth')),
     url(r'^food-computer/', include("foodcomputer.urls")),
     url(r'^experiment/', include("experiment.urls")),
-    url(r'^homepage/', include("homepage.urls")),
+    # url(r'^homepage/', include("homepage.urls")),
     url(r'^media/(?P<path>.*)$', views.serve),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', rest_auth_views.obtain_auth_token),
-    url(r'^$', Homepage.as_view(), name='home'),
+    # url(r'^$', Homepage.as_view(), name='home'),
     # All other URLs should be placed above this line.
     url(r'^', include(flatpage_urls)),
 ]
