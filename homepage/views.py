@@ -11,9 +11,9 @@ from foodcomputer.models import *
 from experiment.models import *
 
 
-# def home(request):
-#     # return HttpResponse("<h2>Hey!</h2>");
-#     return render(request, 'homepage/Justpage.html')
+def home(request):
+    # return HttpResponse("<h2>Hey!</h2>");
+    return render(request, 'homepage/Justpage.html')
 
 
 class Homepage(View):
