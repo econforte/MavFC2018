@@ -1,26 +1,26 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         {% if clps %}
-            <div class="col-xs-7" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">
+            <div class="col-sm-7" style="padding:0px;">
                 <h3><a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
                     {{ obj.name }}
                 </a></h3>
             </div>
-            <div class="col-xs-5" style="padding-right:0px">
+            <div class="col-sm-5" style="padding-right:0px">
                 <div class="btn-group pull-right h3">
                     <a href="{{ obj.get_absolute_url }}" title="Details" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
-                    {% if user.is_staff %}
+                    {% if user.is_staff or user == obj.pi.user %}
                         <a href="{{ obj.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                     {% endif %}
                 </div>
             </div>
         {% else %}
-            <div class="col-xs-7" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+            <div class="col-sm-7" style="padding:0px;">
                 <h3>{{ obj.name }}</h3>
             </div>
-            <div class="col-xs-5" style="padding-right:0px">
-                {% if user.is_staff %}
+            <div class="col-sm-5" style="padding-right:0px">
+                {% if user.is_staff or user == obj.pi.user %}
                     <div class="btn-group pull-right h3">
                         <a href="{{ obj.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
@@ -34,7 +34,19 @@
         <div id="{{ listID }}{{ obj.pk }}" class="panel-collapse collapse">
     {% endif %}
             <div class="panel-body">
-                <p>{{ obj.descr }}</p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p><strong>Description:</strong> {{ obj.descr }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Food Computer:</strong> {{ obj.pi }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Data Collection Speed:</strong> {{ obj.collection_interval }}</p>
+                    </div>
+                </div>
             </div>
             {% if not experiment_detail and not clps %}
                 <div class="panel-footer">

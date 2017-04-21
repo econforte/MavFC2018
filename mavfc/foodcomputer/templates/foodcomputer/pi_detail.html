@@ -20,48 +20,106 @@
     <script>
         google.charts.load('current', {packages: ['corechart', 'line', 'gauge']});
         var app = angular.module("DeviceValueUpdate", []);
+        app.config(['$httpProvider', function($httpProvider) {
+            $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+            $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+        }]);
     </script>
     <div ng-app="DeviceValueUpdate">
         <div class="container">
             {% include "foodcomputer/pi_panel.html" with pi_detail="true" %}
             {% include "foodcomputer/data_panel.html" with dp_pi_key=obj.pk %}
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 style="margin-top:10px">Device List {#% if user.is_staff %}<a href="#{% url 'foodcomputer:device_add' obj.pk %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Device</a>{% endif %#}</h3>
-                </div>
-                <div class="panel-body">
-                    {% if obj.devices.all %}
-                        <ul class="nav nav-pills pull-right">
-                            <li class="active"><a data-toggle="pill" href="#tile"><span class="glyphicon glyphicon-th"></span></a></li>
-                            <li><a data-toggle="pill" href="#list"><span class="glyphicon glyphicon-th-list"></span></a></li>
-                        </ul>
-                        <div class="clearfix" style="margin-bottom: 15px"></div>
-                        <div class="tab-content">
-                            <div id="tile" class="tab-pane fade in active">
-                                <div class="row" style="margin-top:5px">
-                                    {% for device in obj.devices.all %}
-                                        <div class="col-md-6">
-                                            {% include "foodcomputer/device_panel.html" %}
-                                        </div>
-                                        {% cycle '' '<div class="clearfix visible-md visible-lg"></div>' %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <div id="list" class="tab-pane fade">
-                                {% with listID='deviceListID' %}
-                                    <div class="panel-group" id="{{ listID }}">
+
+
+
+
+
+            <ul class="nav nav-tabs" style="margin-bottom:15px;">
+                <li class="active"><a data-toggle="pill" href="#devices">Devices</a></li>
+                <li><a data-toggle="pill" href="#instances">Instances</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="devices" class="panel panel-default tab-pane fade in active">
+                    <div class="panel-heading">
+                        <h3 style="margin-top:10px">Device List {#% if user.is_staff %}<a href="#{% url 'foodcomputer:device_add' obj.pk %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Device</a>{% endif %#}</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% if obj.devices.all %}
+                            <ul class="nav nav-pills pull-right">
+                                <li class="active"><a data-toggle="pill" href="#tile"><span class="glyphicon glyphicon-th"></span></a></li>
+                                <li><a data-toggle="pill" href="#list"><span class="glyphicon glyphicon-th-list"></span></a></li>
+                            </ul>
+                            <div class="clearfix" style="margin-bottom: 15px"></div>
+                            <div class="tab-content">
+                                <div id="tile" class="tab-pane fade in active">
+                                    <div class="row" style="margin-top:5px">
                                         {% for device in obj.devices.all %}
-                                            {% include "foodcomputer/device_panel.html" with clps='true' %}
+                                            <div class="col-md-6">
+                                                {% include "foodcomputer/device_panel.html" %}
+                                            </div>
+                                            {% cycle '' '<div class="clearfix visible-md visible-lg"></div>' %}
                                         {% endfor %}
                                     </div>
-                                {% endwith %}
+                                </div>
+                                <div id="list" class="tab-pane fade">
+                                    {% with listID='deviceListID' %}
+                                        <div class="panel-group" id="{{ listID }}">
+                                            {% for device in obj.devices.all %}
+                                                {% include "foodcomputer/device_panel.html" with clps='true' %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endwith %}
+                                </div>
                             </div>
-                        </div>
-                    {% else %}
-                        <p>There are no Devices.</p>
-                    {% endif %}
+                        {% else %}
+                            <p>No Devices were found.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div id="instances" class="panel panel-default tab-pane fade">
+                    <div class="panel-heading">
+                        <h3 style="margin-top:10px">Instances List
+{#                            {% if user.is_staff or user == obj.pi.user %}#}
+{#                                <a href="{% url 'experiment:experimentinstance_add' obj.pk %}" title="Add a new Instance" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>#}
+{#                            {% endif %}#}
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        {% if obj.get_all_instances %}
+                            <ul class="nav nav-pills pull-right">
+                                <li class="active"><a data-toggle="pill" href="#tileI"><span class="glyphicon glyphicon-th"></span></a></li>
+                                <li><a data-toggle="pill" href="#listI"><span class="glyphicon glyphicon-th-list"></span></a></li>
+                            </ul>
+                            <div class="clearfix" style="margin-bottom: 15px"></div>
+                            <div class="tab-content">
+                                <div id="tileI" class="tab-pane fade in active">
+                                    <div class="row" style="margin-top:5px">
+                                        {% for instance in obj.get_all_instances %}
+                                            <div class="col-md-6">
+                                                {% include "experiment/experimentinstance_panel.html" with obj=instance %}
+                                            </div>
+                                            {% cycle '' '<div class="clearfix visible-md visible-lg"></div>' %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div id="listI" class="tab-pane fade">
+                                    {% with listID='instanceID' %}
+                                        <div class="panel-group" id="{{ listID }}">
+                                            {% for instance in obj.get_all_instances %}
+                                                {% include "experiment/experimentinstance_panel.html" with obj=instance clps='true' %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <p>There are no instances available for this {{ model_name }}.</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 {% endblock %}

@@ -9,6 +9,7 @@ from django.contrib.messages import success
 from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
+from django.http import HttpResponseForbidden
 
 # Imports used to serve JSON
 from django.views.decorators.csrf import csrf_exempt
@@ -39,7 +40,7 @@ class PiList(View):
         if request.user.is_staff:
             pis = Pi.objects.all()
         else:
-            pis = Pi.objects.filter(user=request.user)
+            pis = Pi.objects.filter(Q(user=request.user) | Q(experiment__instances__active=True, experiment__instances__instance_users__user__in=[request.user]))
         return render(
             request,
             'foodcomputer/pi_list.html',
@@ -55,7 +56,9 @@ class PiDetail(View):
 
     @method_decorator(login_required)
     def get(self, request, pk):
-        obj = get_object_or_404(self.model, pk=pk)
+        obj = None
+        if request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=pk):
+            obj = get_object_or_404(self.model, pk=pk)
 
         cdp = ChartDataPreparation()
         namelist = cdp.getNameList(obj)
@@ -83,7 +86,10 @@ class PiChart(View):
 
     @method_decorator(login_required)
     def get(self, request, pk):
-        obj = get_object_or_404(self.model, pk=pk)
+        if request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=pk):
+            obj = get_object_or_404(self.model, pk=pk)
+        else:
+            return HttpResponseForbidden()
         form_class = AdvancedOptionsForm(request=request, pk=pk)
 
         cdp = ChartDataPreparation()
@@ -108,6 +114,8 @@ class PiChart(View):
                        'show_anomalies':        False})
 
     def post(self, request, pk):
+        if not (request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=pk)):
+            return HttpResponseForbidden()
         obj = get_object_or_404(self.model, pk=pk)
         form_class = AdvancedOptionsForm(request.POST, request=request, pk=pk)
         cdp = ChartDataPreparation()
@@ -173,6 +181,8 @@ class PiData(View):
 
     @method_decorator(login_required)
     def get(self, request, pk):
+        if not (request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=pk)):
+            return HttpResponseForbidden()
         pi = get_object_or_404(Pi, pk=pk)
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="food_computer_data.csv"'
@@ -197,13 +207,15 @@ class DeviceDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-        height = "700px"
+        if not (request.user.is_staff or request.user.pis.filter(pk=obj.pi.pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=obj.pi.pk)):
+            return HttpResponseForbidden()
 
         ddp = DeviceDataPreparation(obj)
         time2sensor = ddp.initializeDeviceDataValues(obj)
         time2sensor = ddp.subsetDataValues(time2sensor)
         prestring = ddp.constructTable(time2sensor, numdp=200)
 
+        height = "700px"
         if obj.device_type.is_controller:
             height = "200xp"
 
@@ -215,7 +227,7 @@ class DeviceDetail(View):
              'height': height,
              'model_name': self.model_name,
              'parent_template': self.parent_template,
-             'show_anomalies':        False})
+             'show_anomalies': False})
 
 
 class DeviceCreate(ObjectCreateMixin, View):
@@ -247,6 +259,8 @@ class DeviceData(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         device = get_object_or_404(Device, pk=pk)
+        if not (request.user.is_staff or request.user.pis.filter(pk=device.pi.pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=device.pi.pk)):
+            return HttpResponseForbidden()
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="food_computer_device_'+device.device_type.name+'_data.csv"'
         writer = csv.writer(response)
@@ -265,22 +279,97 @@ class DeviceCurrentValueAPI(APIView):
         jsonObj = dataSerializer(curVal, many=False)
         return Response(jsonObj.data)
 
+
+class DeviceCtrlAPI(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        serializer = ControllerUpdateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PiCurrentValueAPI(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, pk, format=None):
+        # Not sure if this db call is correct/may not need timestamp
+        curVal = get_object_or_404(Pi, pk=pk)
+        jsonObj = PiManualCtrlSerializer(curVal, many=False)
+        return Response(jsonObj.data)
+
+    def put(self, request, pk, format=None):
+        curVal = get_object_or_404(Pi, pk=pk)
+        serializer = PiManualCtrlSerializer(curVal, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AddressAdd(View):
+    parent = Pi
+    form_class = AddressForm
+    template_name = 'foodcomputer/create_page.html'
+    parent_template = None
+    model_name = 'Address'
+
+    @method_decorator(login_required)
+    def get(self, request, pk):
+        if not (request.user.is_staff or request.user.pis.filter(pk=pk)):
+            return HttpResponseForbidden()
+        pi = get_object_or_404(Pi, pk=pk)
+        return render(
+            request,
+            self.template_name,
+            {'form': self.form_class,
+             'form_url': reverse('foodcomputer:address_add', kwargs={'pk': pk}),
+             'cancel_url': reverse('foodcomputer:pi_detail', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'breadcrumb_list': pi.get_add_address_breadcrumbs(),
+             'parent_template': self.parent_template})
+
+    @method_decorator(login_required)
+    def post(self, request, pk):
+        if not (request.user.is_staff or request.user.pis.filter(pk=pk)):
+            return HttpResponseForbidden()
+        pi = get_object_or_404(Pi, pk=pk)
+        bound_form = self.form_class(request.POST)
+        if bound_form.is_valid():
+            new_obj = bound_form.save()
+            pi.address = new_obj
+            pi.save()
+            success(request, self.model_name + ' was successfully added.')
+            return redirect(pi)
+        return render(
+            request,
+            self.template_name,
+            {'form': bound_form,
+             'form_url': reverse('foodcomputer:address_add', kwargs={'pk': pk}),
+             'cancel_url': reverse('foodcomputer:pi_detail', kwargs={'pk': pk}),
+             'model_name': self.model_name,
+             'breadcrumb_list': pi.get_add_address_breadcrumbs(),
+             'parent_template': self.parent_template})
+
+
+class AddressUpdate(ObjectUpdateMixin, View):
+    model = Address
+    form_class = AddressForm
+    template_name = 'foodcomputer/update_page.html'
+    parent_template = None
+    model_name = 'Address'
+
+
 class AddressDelete(ObjectDeleteMixin, View):
     model = Address
-    success_url = reverse_lazy('address:pi_list')
-    template_name = 'address/delete_confirm.html'
+    success_url = reverse_lazy('foodcomputer:pi_list')
+    template_name = 'foodcomputer/delete_confirm.html'
     parent_template = None
-    model_name = 'Adress'
-
-
-class JSONResponse(HttpResponse):
-    """
-    An HttpResponse that renders its content into JSON.
-    """
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
+    model_name = 'Address'
 
 
 #----------Pi Send-------------

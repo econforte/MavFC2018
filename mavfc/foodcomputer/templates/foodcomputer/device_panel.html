@@ -10,7 +10,7 @@
                 <small>{{ device.device_id }}</small>
                 <div class="btn-group pull-right">
                     <a href="{% url 'foodcomputer:device_get_csv' device.pk %}" title="Download CSV of Device Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
-                    {% if user.is_staff %}
+                    {% if user.is_staff or user == device.pi.user %}
                         <a href="{{ device.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ device.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                     {% endif %}
@@ -27,26 +27,26 @@
                     {% if clps %}
                         <a href="{{ device.get_absolute_url }}" title="Detail Page" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
                     {% endif %}
-                    {% if user.is_staff %}
+                    {% if user.is_staff or user == device.pi.user %}
                         <a href="{{ device.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ device.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                     {% endif %}
                 </div>
             </h4>
         {% else %}
-            <div class="col-xs-7" style="overflow:hidden;white-space:nowrap;padding:0px;">
+            <div class="col-sm-7" style="padding:0px;">
                 <h4>
                     {{ device.device_type.name }}
                     <small>{{ device.device_id }}</small>
                 </h4>
             </div>
-            <div class="col-xs-5" style="padding-right:0px">
+            <div class="col-sm-5" style="padding-right:0px">
                 <div class="btn-group pull-right h4">
                     <a href="{% url 'foodcomputer:device_get_csv' device.pk %}" title="Download CSV of Device Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
                     {% if clps %}
                         <a href="{{ device.get_absolute_url }}" title="Detail Page" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
                     {% endif %}
-                    {% if user.is_staff %}
+                    {% if user.is_staff or user == device.pi.user %}
                         <a href="{{ device.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="{{ device.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
                     {% endif %}
@@ -60,25 +60,28 @@
     {% endif %}
     <div class="panel-body">
         <div class="row">
-            <div class="col-xs-6">
+            <div class="col-sm-6">
                 <p><strong>Unit Type:</strong> {{ device.device_type.unit_type }}</p>
                 <p><strong>Data Type:</strong> {{ device.device_type.data_type }}</p>
                 <p><strong>Residual Threshold:</strong> {{ device.residual_threshold }}</p>
                 <p><strong>Biological Threshold:</strong> {{ device.device_type.bio_threshold }}</p>
                 <p><strong>Is a Controller:</strong> {{ device.device_type.is_controller }}</p>
+                <p><strong>Active Baseline:</strong> {{ device.get_active_baseline.baseline_target }}</p>
             </div>
-            <div class="col-xs-6">
-                {% if device.device_type.is_controller %}
-                    <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ device.pk }} == 1.0">
-                        <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:70px;"></span></strong>
-                    </button>
-                    <button type="button" class="btn btn-default" ng-click="toggle(1.0)" ng-if="controllerToggle{{ device.pk }} == 0.0">
-                        <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:70px;"></span></strong>
-                    </button>
-                {% else %}
-                    <div id="chart_div{{ device.pk }}" style="width: 400px; height: 120px;"></div>
-                {% endif %}
-            </div>
+            {% if not listID %}
+                <div class="col-sm-6">
+                    {% if device.device_type.is_controller %}
+                        <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ device.pk }} == 1.0" style="margin:25px;" ng-cloak ng-disabled="!manualControlToggler{{ device.pi.pk }}">
+                            <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:50px;"></span></strong>
+                        </button>
+                        <button type="button" class="btn btn-default" ng-click="toggle(1.0)" ng-if="controllerToggle{{ device.pk }} == 0.0" style="margin:25px;" ng-cloak ng-disabled="!manualControlToggler{{ device.pi.pk }}">
+                            <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:50px;"></span></strong>
+                        </button>
+                    {% else %}
+                        <div id="chart_div{{ device.pk }}" style="width: 150px; height: 120px;"></div>
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
     </div>
 
@@ -107,10 +110,15 @@
     function drawChart{{ device.pk }}() {
         var data = google.visualization.arrayToDataTable(datasetG{{ device.pk }});
         var options = {
-            width: 400, height: 120,
+            width: 150, height: 120,
             minorTicks: 5
             {% if device.device_type.unit_type.min_limit %}, min:{{ device.device_type.unit_type.min_limit }}{% endif %}
             {% if device.device_type.unit_type.max_limit %}, max:{{ device.device_type.unit_type.max_limit }}{% endif %}
+            {% if device.get_active_baseline.baseline_target %}
+                , greenColor: '#109618'
+                , greenFrom:({{ device.get_active_baseline.baseline_target }} - {{ device.get_threshold }})
+                , greenTo:({{ device.get_active_baseline.baseline_target }} + {{ device.get_threshold }})
+            {% endif %}
         };
         var chart = new google.visualization.Gauge(document.getElementById('chart_div{{ device.pk }}'));
         chart.draw(data, options);
@@ -124,10 +132,6 @@
     {% endif %}
 
     app.controller('myCtrldiv{{ device.pk }}', function($scope, $http, $timeout) {
-
-        {% if device.device_type.is_controller %}
-            $scope.controllerToggle{{ device.pk }} = 0;
-        {% endif %}
 
         // Function to get the data
         $scope.getData = function(){
@@ -144,12 +148,46 @@
             });
         };
 
+        $scope.getData();
 
         {% if device.device_type.is_controller %}
-        $scope.toggle = function(v) {
-{#            Send API to update controller here.#}
-             $scope.controllerToggle{{ device.pk }} = v; {# Remove line when API is added #}
-        };
+
+            $scope.toggle = function(v) {
+                var json = {"device":{{ device.pk }}, "turn_on":v}
+                $http.post("{% url 'foodcomputer:api_device_controller' %}", JSON.stringify(json), {"Content-Type": "application/json"})
+                    .then(function mySuccess(response) {
+                        $scope.controllerResult{{ device.pk }} = response.data.manual_control;
+                        console.log(response);
+                    }, function myError(response) {
+                        $scope.controllerError{{ device.pk }} = response.statusText;
+                        console.log(response);
+                });
+            };
+
+            $scope.manualControlToggler{{ device.pi.pk }} = false;
+
+            {% if user.is_staff or device.pi.user == user %}
+
+                $scope.getPiData = function(){
+                    $http.get("{% url 'foodcomputer:api_pi_current_value' device.pi.pk %}")
+                        .success(function(data, status, headers, config) {
+                            $scope.manualControlToggler{{ device.pi.pk }} = data.manual_control;
+                            console.log('Fetched data!    '+ data.manual_control);
+                    });
+                };
+                $scope.getPiData();
+
+                $scope.intervalPiFunction = function(){
+                    $timeout(function() {
+                        $scope.getPiData();
+                        $scope.intervalPiFunction();
+                    }, 10000)
+                };
+
+                $scope.intervalPiFunction();
+
+            {% endif %}
+
         {% endif %}
 
         // Function to replicate setInterval using $timeout service.
@@ -157,7 +195,7 @@
             $timeout(function() {
                 $scope.getData();
                 $scope.intervalFunction();
-            }, 20000)
+            }, 10000)
         };
 
         // Kick off the interval

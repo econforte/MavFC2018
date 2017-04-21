@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.messages import success, error
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseForbidden
 
 from .models import Data, Device
 import collections
@@ -29,6 +30,7 @@ class ObjectCreateMixin:
     
     @method_decorator(login_required)
     def get(self, request):
+        if not request.user.is_staff: return HttpResponseForbidden()
         return render(
             request,
             self.template_name,
@@ -41,6 +43,7 @@ class ObjectCreateMixin:
     
     @method_decorator(login_required)
     def post(self, request):
+        if not request.user.is_staff: return HttpResponseForbidden()
         bound_form = self.form_class(request.POST)
         if bound_form.is_valid():
             new_obj = bound_form.save()
@@ -61,11 +64,12 @@ class ObjectUpdateMixin:
     form_class = None
     model = None
     template_name = ''
-    parent_template=None
+    parent_template = None
     
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        if not obj.user_cud_authorized(request.user): return HttpResponseForbidden()
         return render(
             request,
             self.template_name,
@@ -77,6 +81,7 @@ class ObjectUpdateMixin:
     @method_decorator(login_required)
     def post(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        if not obj.user_cud_authorized(request.user): return HttpResponseForbidden()
         bound_form = self.form_class(request.POST, instance=obj)
         if bound_form.is_valid():
             new_obj = bound_form.save()
@@ -100,6 +105,7 @@ class ObjectDeleteMixin:
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        if not obj.user_cud_authorized(request.user): return HttpResponseForbidden()
         return render(
             request,
             self.template_name,
@@ -110,6 +116,7 @@ class ObjectDeleteMixin:
     @method_decorator(login_required)
     def post(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
+        if not obj.user_cud_authorized(request.user): return HttpResponseForbidden()
         obj.delete()
         success(request, self.model_name+' was successfully deleted.')
         return HttpResponseRedirect(self.success_url)

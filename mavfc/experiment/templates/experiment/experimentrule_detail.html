@@ -17,12 +17,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid" style="margin-top:25px">
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
-                {% include "experiment/experimentrule_panel.html" with experimentrule=obj experimentrule_detail="true" %}
-            </div>
-        </div>
+    <div class="container" style="margin-top:25px">
+        {% include "experiment/experimentrule_panel.html" with experimentrule=obj experimentrule_detail="true" %}
     </div>
 {% endblock %}

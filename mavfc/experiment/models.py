@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.db.models import Q
 
 
 class Experiment(models.Model):
@@ -56,6 +57,11 @@ class Experiment(models.Model):
         bc.append(('/', 'Home'))
         return bc
 
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.pi.pk):
+            return True
+        return False
+
 
 class Day(models.Model):
     name = models.CharField(max_length=9, )
@@ -90,8 +96,8 @@ class ExperimentRule(models.Model):
     def get_absolute_url(self):
         return reverse('experiment:experimentrule_detail', kwargs={'pk': self.pk})
 
-    def get_create_url(self):
-        return reverse('experiment:experimentrule_create')
+    # def get_create_url(self):
+    #     return reverse('experiment:experimentrule_create')
 
     def get_update_url(self):
         return reverse('experiment:experimentrule_update', kwargs={'pk': self.pk})
@@ -119,6 +125,11 @@ class ExperimentRule(models.Model):
                 bc.append(('active', pre + self.device.device_type.name + ' Rule'))
             bc.append((self.get_absolute_url, self.device.device_type.name + ' Rule'))
         return self.experiment.gen_breadcrumbs(bc)
+
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.experiment.pi.pk):
+            return True
+        return False
 
 
 class ExperimentInstance(models.Model):
@@ -166,6 +177,11 @@ class ExperimentInstance(models.Model):
             bc.append((self.get_absolute_url, self.start.strftime("%m/%d/%y") + ' - ' + self.end.strftime("%m/%d/%y") + 'Instance'))
         return self.experiment.gen_breadcrumbs(bc)
 
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.experiment.pi.pk):
+            return True
+        return False
+
 
 class UserExperimentInstance(models.Model):
     experiment_instance = models.ForeignKey(ExperimentInstance, on_delete=models.CASCADE, related_name="instance_users", )
@@ -207,3 +223,8 @@ class UserExperimentInstance(models.Model):
                 bc.append(('active', pre + str(self.user)))
             # bc.append((self.get_absolute_url, str(self.user)))
         return self.experiment_instance.gen_breadcrumbs(bc)
+
+    def user_cud_authorized(self, user):
+        if user.is_staff or user.pis.filter(pk=self.experiment_instance.experiment.pi.pk):
+            return True
+        return False
