@@ -104,7 +104,13 @@
             <div class="col-md-4">
                 <h3>Disconnected Food Computers</h3><hr>
                 <ul class="list-group">
-                    <a href="#"></a>
+                    {% if dcPis %}
+                        {% for pi in dcPis %}
+                            <a href="{{ pi.get_absolute_url }}" class="list-group-item list-group-item-danger">{{ pi }}</a>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item list-group-item-info">There are no found disconnected Pis over 60min.</li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
