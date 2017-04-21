@@ -55,6 +55,12 @@ class PiSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PiManualCtrlSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pi
+        fields = ('manual_control',)
+
+
 class PiPKSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pi

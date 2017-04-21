@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
-    # 'homepage',
+    'homepage',
     'rest_framework.authtoken',
 ]
 
@@ -191,6 +191,7 @@ from django.core.urlresolvers import reverse_lazy
 
 
 LOGIN_REDIRECT_URL = '/'
+
 LOGIN_URL = reverse_lazy('dj-auth:login')
 LOGOUT_URL = reverse_lazy('dj-auth:logout')
 

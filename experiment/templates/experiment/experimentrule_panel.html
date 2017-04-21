@@ -1,27 +1,30 @@
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3>
-            {% if clps %}
-                <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
+        <div class="col-sm-7" style="padding:0px">
+            <h3>
+                {% if clps %}
+                    <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
+                        {{ obj.experiment.name }}: {{ obj.device.device_type.name|title }} Rule
+                    </a>
+                {% else %}
                     {{ obj.experiment.name }}: {{ obj.device.device_type.name|title }} Rule
-                </a>
-            {% else %}
-                {{ obj.experiment.name }}: {{ obj.device.device_type.name|title }} Rule
-            {% endif %}
-            {% if user.is_staff %}
-                <div class="btn-group pull-right">
-                    {% if experimentrule_detail %}
-                        <a href="{{ obj.experiment.get_absolute_url }}" title="Current Rules" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>
-                    {% endif %}
-                    {% if clps %}
-                        <a href="{{ obj.get_absolute_url }}" title="Details" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
-                    {% endif %}
+                {% endif %}
+            </h3>
+        </div>
+        <div class="col-sm-5" style="padding-right:0px">
+            <div class="btn-group pull-right h3">
+                {% if experimentrule_detail %}
+                    <a href="{{ obj.experiment.get_absolute_url }}" title="Go to rule experiment" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>
+                {% endif %}
+                {% if clps %}
+                    <a href="{{ obj.get_absolute_url }}" title="Details" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
+                {% endif %}
+                {% if user.is_staff or user == obj.experiment.pi.user %}
                     <a href="{{ obj.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
                     <a href="{{ obj.get_delete_url }}" title="Delete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
-                </div>
-            {% endif %}
-            <div class="btn-group pull-right">
-        </h3>
+                {% endif %}
+            </div>
+        </div>
         <div class="clearfix"></div>
     </div>
     {% if clps %}
