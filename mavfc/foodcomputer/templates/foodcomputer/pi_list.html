@@ -16,12 +16,12 @@
 
 {% block content %}
 		<script>
-				google.charts.load('current', {packages: ['corechart', 'line', 'gauge']});
-				var app = angular.module("DeviceValueUpdate", []);
-				app.config(['$httpProvider', function($httpProvider) {
-                    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
-                    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-                }]);
+            google.charts.load('current', {packages: ['corechart', 'line', 'gauge']});
+            var app = angular.module("DeviceValueUpdate", []);
+            app.config(['$httpProvider', function($httpProvider) {
+                $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+                $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+            }]);
 		</script>
 		<div ng-app="DeviceValueUpdate">
     <div class="container" style="margin-top:25px">
