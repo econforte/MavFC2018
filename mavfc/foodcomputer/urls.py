@@ -33,6 +33,8 @@ urlpatterns = [
     url(r'^device/(?P<pk>[0-9]+)/get/csv/$', DeviceData.as_view(), name='device_get_csv'),
     # ex: /food-computer/api/v1/sensorValues/(foodComputerKey.pk, [data])
     url(r'^api/v1/device/(?P<pk>[0-9]+)/current/value/$', DeviceCurrentValueAPI.as_view(), name='api_device_current_value'),
+    # ex: /food-computer/api/v1/sensorValues/(foodComputerKey.pk, [data])
+    url(r'^api/v1/device/controller/$', DeviceCtrlAPI.as_view(), name='api_device_controller'),
     # ex: /food-computer/api/v1/pi/(foodComputerKey.pk)/current/value/
     url(r'^api/v1/pi/(?P<pk>[0-9]+)/current/value/$', PiCurrentValueAPI.as_view(), name='api_pi_current_value'),
     # ex: /food-computer/address/(address.pk)/delete/

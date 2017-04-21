@@ -34,13 +34,13 @@
                 </div>
             </h4>
         {% else %}
-            <div class="col-xs-7" style="overflow:hidden;white-space:nowrap;padding:0px;">
+            <div class="col-sm-7" style="padding:0px;">
                 <h4>
                     {{ device.device_type.name }}
                     <small>{{ device.device_id }}</small>
                 </h4>
             </div>
-            <div class="col-xs-5" style="padding-right:0px">
+            <div class="col-sm-5" style="padding-right:0px">
                 <div class="btn-group pull-right h4">
                     <a href="{% url 'foodcomputer:device_get_csv' device.pk %}" title="Download CSV of Device Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
                     {% if clps %}
@@ -60,7 +60,7 @@
     {% endif %}
     <div class="panel-body">
         <div class="row">
-            <div class="col-xs-6">
+            <div class="col-sm-6">
                 <p><strong>Unit Type:</strong> {{ device.device_type.unit_type }}</p>
                 <p><strong>Data Type:</strong> {{ device.device_type.data_type }}</p>
                 <p><strong>Residual Threshold:</strong> {{ device.residual_threshold }}</p>
@@ -68,7 +68,7 @@
                 <p><strong>Is a Controller:</strong> {{ device.device_type.is_controller }}</p>
                 <p><strong>Active Baseline:</strong> {{ device.get_active_baseline.baseline_target }}</p>
             </div>
-            <div class="col-xs-6">
+            <div class="col-sm-6">
                 {% if device.device_type.is_controller %}
                     <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ device.pk }} == 1.0">
                         <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:70px;"></span></strong>

@@ -3,7 +3,7 @@
 {% endif %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <div class="col-xs-6" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">
+        <div class="col-sm-6" style="padding:0px;">
             {% if clps %}
                 <h3>
                     <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
@@ -18,7 +18,7 @@
                 </h3>
             {% endif %}
         </div>
-        <div class="col-xs-6" style="padding-right:0px">
+        <div class="col-sm-6" style="padding-right:0px">
             <div class="btn-group pull-right h3">
                 <a href="#" class="btn btn-success" title="Current Experiment Instance"><span class="glyphicon glyphicon-grain"></span></a>
                 <a href="{% url 'foodcomputer:pi_get_csv' obj.pk %}" title="Download CSV of the Food Computer's Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
@@ -52,16 +52,15 @@
                 <p><strong>Serial Number:</strong> {{ obj.pi_SN }}</p>
                 <p><strong>Owner:</strong> {{ obj.user.get_full_name }}</p>
                 <p><strong>Address:</strong> {{ obj.address.get_single_line_str }}</p>
-                <p><strong>In Manual Mode:</strong> {{ obj.manual_control }}</p>
                 <p><strong>Device Number:</strong> {{ obj.get_device_num }}</p>
             </div>
             {% if 1 %}
             <div class="col-sm-6">
-                <button type="button" class="btn btn-default" ng-click="toggle(false)" ng-if="controllerToggler{{ obj.pk }}">
-                    <strong><span id="toggle2" class="glyphicon glyphicon-lock" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:70px;"></span></strong>
+                <button type="button" class="btn btn-default" ng-click="toggle(false)" ng-if="manualControlToggler{{ obj.pk }}" ng-cloak title="Manual Control is ON" style="margin-top:15px;">
+                    <strong><span style="font-size:50px;">On</span> <span id="toggleOn{{ obj.pk }}" class="glyphicon glyphicon-asterisk" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:50px;"></span></strong>
                 </button>
-                <button type="button" class="btn btn-default" ng-click="toggle(true)" ng-if="!controllerToggler{{ obj.pk }}">
-                    <strong><span id="toggle2" class="glyphicon glyphicon-lock" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:70px;"></span></strong>
+                <button type="button" class="btn btn-default" ng-click="toggle(true)" ng-if="!manualControlToggler{{ obj.pk }}" ng-cloak title="Manual Control is OFF" style="margin-top:15px;">
+                    <strong><span style="font-size:50px;margin-right:5px;">Off</span> <span id="toggleOff{{ obj.pk }}" class="glyphicon glyphicon-lock" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:50px;"></span></strong>
                 </button>
             </div>
             {% endif %}
@@ -82,7 +81,7 @@
 <script>
     app.controller('theCtrldiv{{ obj.pk }}', function($scope, $http, $timeout) {
 
-        $scope.controllerToggler{{ obj.pk }} = false;
+{#        $scope.manualControlToggler{{ obj.pk }} = false;#}
 
         // Function to get the data
         $scope.getData = function(){
@@ -91,14 +90,20 @@
             //And get whether or not the pi is in manual mode
             $http.get("{% url 'foodcomputer:api_pi_current_value' obj.pk %}")
                 .success(function(data, status, headers, config) {
-                    $scope.controllerToggler{{ obj.pk }} = data.manual_control;
+                    $scope.manualControlToggler{{ obj.pk }} = data.manual_control;
                     console.log('Fetched data!    '+ data.manual_control);
             });
         };
 
         $scope.toggle = function(v) {
-{#            Send API to update controller here.#}
-             $scope.controllerToggler{{ obj.pk }} = v; {# Remove line when API is added #}
+            $http.put("{% url 'foodcomputer:api_pi_current_value' obj.pk %}", JSON.stringify({"manual_control": v}), {"Content-Type": "application/json"})
+                .then(function mySuccess(response) {
+                    $scope.manualControlToggler{{ obj.pk }} = response.data.manual_control;
+                    console.log(response);
+                }, function myError(response) {
+                    $scope.manualControlError{{ obj.pk }} = response.statusText;
+                    console.log(response);
+            });
         };
 
         // Function to replicate setInterval using $timeout service.
@@ -106,10 +111,11 @@
             $timeout(function() {
                 $scope.getData();
                 $scope.intervalFunction();
-            }, 20000)
+            }, 10000)
         };
 
         // Kick off the interval
+        $scope.getData();
         $scope.intervalFunction();
     });
 </script>

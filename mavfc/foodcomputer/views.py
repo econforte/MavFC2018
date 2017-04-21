@@ -280,6 +280,18 @@ class DeviceCurrentValueAPI(APIView):
         return Response(jsonObj.data)
 
 
+class DeviceCtrlAPI(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        serializer = ControllerUpdateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class PiCurrentValueAPI(APIView):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (permissions.IsAuthenticated,)
@@ -287,8 +299,16 @@ class PiCurrentValueAPI(APIView):
     def get(self, request, pk, format=None):
         # Not sure if this db call is correct/may not need timestamp
         curVal = get_object_or_404(Pi, pk=pk)
-        jsonObj = PiSerializer(curVal, many=False)
+        jsonObj = PiManualCtrlSerializer(curVal, many=False)
         return Response(jsonObj.data)
+
+    def put(self, request, pk, format=None):
+        curVal = get_object_or_404(Pi, pk=pk)
+        serializer = PiManualCtrlSerializer(curVal, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AddressAdd(View):
