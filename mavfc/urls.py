@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'^user/', include(user_urls, app_name='user', namespace='dj-auth')),
     url(r'^food-computer/', include("foodcomputer.urls")),
     url(r'^experiment/', include("experiment.urls")),
-    # url(r'^homepage/', include("homepage.urls")),
+    url(r'^homepage/', include("homepage.urls")),
     url(r'^media/(?P<path>.*)$', views.serve),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', rest_auth_views.obtain_auth_token),
