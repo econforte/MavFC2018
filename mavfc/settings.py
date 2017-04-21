@@ -71,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'mavfc.urls'
@@ -146,6 +147,8 @@ USE_L10N = True
 USE_TZ = True
 
 
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 ##### @elocke: Removed below based on Heroku documentation:
@@ -164,13 +167,13 @@ USE_TZ = True
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # _ROOT = os.path.join(BASE_DIR, 'static')
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
-)
+# STATICFILES_DIRS = (
+#     os.path.join(PROJECT_ROOT, 'static'),
+# )
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
@@ -186,9 +189,7 @@ SITE_ID = 2
 
 from django.core.urlresolvers import reverse_lazy
 
-
-LOGIN_REDIRECT_URL = '/homepage/'
-
+LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = reverse_lazy('dj-auth:login')
 LOGOUT_URL = reverse_lazy('dj-auth:logout')
 
