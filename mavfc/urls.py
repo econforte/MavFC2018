@@ -22,7 +22,7 @@ from django.contrib.staticfiles import views
 from rest_framework.authtoken import views as rest_auth_views
 import experiment
 
-# from homepage.views import Homepage
+from homepage.views import Homepage
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
