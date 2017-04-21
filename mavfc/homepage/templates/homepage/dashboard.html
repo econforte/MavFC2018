@@ -10,111 +10,102 @@
 <script>
     google.charts.load('current', {packages: ['corechart', 'line', 'gauge']});
     var app = angular.module("DeviceValueUpdate", []);
+    app.config(['$httpProvider', function($httpProvider) {
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+    }]);
 </script>
 <div ng-app="DeviceValueUpdate">
-   <div class="container-fluid" style="margin-top:25px">
-        <ul class="nav nav-tabs" style="margin-bottom:15px;">
-            <li class="active"><a data-toggle="pill" href="#fc-lists">Food Computer Lists</a></li>
-            <li><a data-toggle="pill" href="#exp-lists">Experiments List</a></li>
-        </ul>
-        <div class="tab-content">
-            <div id="fc-lists" class="panel panel-default tab-pane fade in active">
-                <div class="row">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-10">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h1>
-                                    Food Computer Lists
-        {#                            {% if user.is_staff %}#}
-        {#                                <a href="{% url 'foodcomputer:pi_create' %}" title="Create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>#}
-        {#                            {% endif %}#}
-                                </h1>
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="panel-body">
-                                {% if pis %}
-                                    <ul class="nav nav-pills pull-right">
-                                        <li class="active"><a data-toggle="pill" href="#tile"><span class="glyphicon glyphicon-th"></span></a></li>
-                                        <li><a data-toggle="pill" href="#list"><span class="glyphicon glyphicon-th-list"></span></a></li>
-                                    </ul>
-                                    <div class="clearfix" style="margin-bottom: 15px"></div>
-                                    <div class="tab-content">
-                                        <div id="tile" class="tab-pane fade in active">
-                                            <div class="row" style="margin-top:5px">
-                                                {% for pi in pis %}
-                                                    <div class="col-md-6">
-                                                        {% include "foodcomputer/pi_panel.html" with obj=pi %}
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                        <div id="list" class="tab-pane fade">
-                                            {% with listID='piListID' %}
-                                                <div class="panel-group" id="{{ listID }}">
-                                                    {% for pi in pis %}
-                                                        {% include "foodcomputer/pi_panel.html" with obj=pi clps='true' %}
-                                                    {% endfor %}
+    <div class="container-fluid" style="margin-top:25px">
+        <div class="row">
+            <div class="col-md-8">
+                <ul class="nav nav-tabs" style="margin-bottom:15px;">
+                    <li class="active"><a data-toggle="pill" href="#fc-list">Food Computers</a></li>
+                    <li><a data-toggle="pill" href="#exp-list">Experiments</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="fc-list" class="panel panel-default tab-pane fade in active">
+                        <div class="panel-heading">
+                            <h3>Food Computer List</h3>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="panel-body">
+                            {% if pis %}
+                                <ul class="nav nav-pills pull-right">
+                                    <li class="active"><a data-toggle="pill" href="#fcTile"><span class="glyphicon glyphicon-th"></span></a></li>
+                                    <li><a data-toggle="pill" href="#fcList"><span class="glyphicon glyphicon-th-list"></span></a></li>
+                                </ul>
+                                <div class="clearfix" style="margin-bottom: 15px"></div>
+                                <div class="tab-content">
+                                    <div id="fcTile" class="tab-pane fade in active">
+                                        <div class="row" style="margin-top:5px">
+                                            {% for pi in pis %}
+                                                <div class="col-md-6">
+                                                    {% include "foodcomputer/pi_panel.html" with obj=pi %}
                                                 </div>
-                                            {% endwith %}
+                                                {% cycle '' '<div class="clearfix visible-md visible-lg"></div>' %}
+                                            {% endfor %}
                                         </div>
                                     </div>
-                                {% else %}
-                                    <p>There are no Food Computers.</p>
-                                {% endif %}
-                            </div>
+                                    <div id="fcList" class="tab-pane fade">
+                                        {% with listID='piListID' %}
+                                            <div class="panel-group" id="{{ listID }}">
+                                                {% for pi in pis %}
+                                                    {% include "foodcomputer/pi_panel.html" with obj=pi clps='true' %}
+                                                {% endfor %}
+                                            </div>
+                                        {% endwith %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <p>No Food Computers were found.</p>
+                            {% endif %}
                         </div>
                     </div>
-                    <div class="col-md-1"></div>
+                    <div id="exp-list" class="panel panel-default tab-pane fade">
+                        <div class="panel-heading">
+                            <h3>Experiment List</h3>
+                        </div>
+                        <div class="panel-body">
+                            {% if experiments %}
+                                <ul class="nav nav-pills pull-right">
+                                    <li class="active"><a data-toggle="pill" href="#xpTile"><span class="glyphicon glyphicon-th"></span></a></li>
+                                    <li><a data-toggle="pill" href="#xpList"><span class="glyphicon glyphicon-th-list"></span></a></li>
+                                </ul>
+                                <div class="clearfix" style="margin-bottom: 15px"></div>
+                                <div class="tab-content">
+                                    <div id="xpTile" class="tab-pane fade in active">
+                                        <div class="row" style="margin-top:5px">
+                                            {% for experiment in experiments %}
+                                                <div class="col-md-6">
+                                                    {% include "experiment/experiment_panel.html" with obj=experiment %}
+                                                </div>
+                                                {% cycle '' '<div class="clearfix visible-md visible-lg"></div>' %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div id="xpList" class="tab-pane fade">
+                                        {% with listID='experimentListID' %}
+                                            <div class="panel-group" id="{{ listID }}">
+                                                {% for experiment in experiments %}
+                                                    {% include "experiment/experiment_panel.html" with obj=experiment clps='true' %}
+                                                {% endfor %}
+                                            </div>
+                                        {% endwith %}
+                                    </div>
+                                 </div>
+                            {% else %}
+                                <p>No experiments were found.</p>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div id="exp-lists" class="panel panel-default tab-pane fade">
-        		<div class="row">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-10">
-                        <div class="panel panel-default">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h1>Experiment List {% if user.is_staff %}<a href="{% url 'experiment:experiment_create' %}" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span></a>{% endif %}</h1>
-                                </div>                    
-                                <div class="panel-body">
-                                    {% if experiments %}
-                                        <ul class="nav nav-pills pull-right">
-                                            <li class="active"><a data-toggle="pill" href="#tile"><span class="glyphicon glyphicon-th"></span></a></li>
-                                            <li><a data-toggle="pill" href="#list"><span class="glyphicon glyphicon-th-list"></span></a></li>
-                                        </ul>
-                                        <div class="clearfix" style="margin-bottom: 15px"></div>
-                                        <div class="tab-content">
-                                            <div id="tile" class="tab-pane fade in active">
-                                                <div class="row" style="margin-top:5px">
-                                                    {% for experiment in experiments %}
-                                                        <div class="col-md-6">
-                                                            {% include "experiment/experiment_panel.html" with obj=experiment %}
-                                                        </div>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                            <div id="list" class="tab-pane fade">
-                                                {% with listID='experimentListID' %}
-                                                    <div class="panel-group" id="{{ listID }}">
-                                                        {% for experiment in experiments %}
-                                                            {% include "experiment/experiment_panel.html" with obj=experiment clps='true' %}
-                                                        {% endfor %}
-                                                    </div>
-                                                {% endwith %}
-                                            </div>
-            								{% else %}
-            									<p>No experiments found.</p>
-            								{% endif %}
-    							         </div>
-                                         
-            					</div>
-        				    </div>
-        				    <div class="col-md-1"></div>
-                        </div>
-        			</div>
-                </div>
+            <div class="col-md-4">
+                <h3>Disconnected Food Computers</h3><hr>
+                <ul class="list-group">
+                    <a href="#"></a>
+                </ul>
             </div>
         </div>
     </div>

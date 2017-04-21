@@ -68,18 +68,20 @@
                 <p><strong>Is a Controller:</strong> {{ device.device_type.is_controller }}</p>
                 <p><strong>Active Baseline:</strong> {{ device.get_active_baseline.baseline_target }}</p>
             </div>
-            <div class="col-sm-6">
-                {% if device.device_type.is_controller %}
-                    <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ device.pk }} == 1.0" style="margin:25px;" ng-cloak ng-disabled="!manualControlToggler{{ device.pi.pk }}">
-                        <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:50px;"></span></strong>
-                    </button>
-                    <button type="button" class="btn btn-default" ng-click="toggle(1.0)" ng-if="controllerToggle{{ device.pk }} == 0.0" style="margin:25px;" ng-cloak ng-disabled="!manualControlToggler{{ device.pi.pk }}">
-                        <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:50px;"></span></strong>
-                    </button>
-                {% else %}
-                    <div id="chart_div{{ device.pk }}" style="width: 150px; height: 120px;"></div>
-                {% endif %}
-            </div>
+            {% if not listID %}
+                <div class="col-sm-6">
+                    {% if device.device_type.is_controller %}
+                        <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ device.pk }} == 1.0" style="margin:25px;" ng-cloak ng-disabled="!manualControlToggler{{ device.pi.pk }}">
+                            <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:50px;"></span></strong>
+                        </button>
+                        <button type="button" class="btn btn-default" ng-click="toggle(1.0)" ng-if="controllerToggle{{ device.pk }} == 0.0" style="margin:25px;" ng-cloak ng-disabled="!manualControlToggler{{ device.pi.pk }}">
+                            <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:50px;"></span></strong>
+                        </button>
+                    {% else %}
+                        <div id="chart_div{{ device.pk }}" style="width: 150px; height: 120px;"></div>
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
     </div>
 

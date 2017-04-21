@@ -30,6 +30,10 @@
             {% include "foodcomputer/pi_panel.html" with pi_detail="true" %}
             {% include "foodcomputer/data_panel.html" with dp_pi_key=obj.pk %}
 
+
+
+
+
             <ul class="nav nav-tabs" style="margin-bottom:15px;">
                 <li class="active"><a data-toggle="pill" href="#devices">Devices</a></li>
                 <li><a data-toggle="pill" href="#instances">Instances</a></li>
@@ -68,7 +72,7 @@
                                 </div>
                             </div>
                         {% else %}
-                            <p>There are no Devices.</p>
+                            <p>No Devices were found.</p>
                         {% endif %}
                     </div>
                 </div>

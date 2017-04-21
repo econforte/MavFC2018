@@ -54,7 +54,7 @@
                 <p><strong>Address:</strong> {{ obj.address.get_single_line_str }}</p>
                 <p><strong>Device Number:</strong> {{ obj.get_device_num }}</p>
             </div>
-            {% if 1 %}
+            {% if not listID %}
             <div class="col-sm-6">
                 <button type="button" class="btn btn-default" ng-click="toggle(false)" ng-if="manualControlToggler{{ obj.pk }}" ng-cloak title="Manual Control is ON" style="margin-top:15px;" ng-disabled="!authenticated{{ obj.pk }}">
                     <strong><span style="font-size:50px;">On</span> <span id="toggleOn{{ obj.pk }}" class="glyphicon glyphicon-asterisk" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:50px;"></span></strong>
