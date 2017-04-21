@@ -149,7 +149,7 @@ SITE_ID = 2
 from django.core.urlresolvers import reverse_lazy
 
 
-LOGIN_REDIRECT_URL = '/homepage/'
+LOGIN_REDIRECT_URL = '/'
 
 LOGIN_URL = reverse_lazy('dj-auth:login')
 LOGOUT_URL = reverse_lazy('dj-auth:logout')

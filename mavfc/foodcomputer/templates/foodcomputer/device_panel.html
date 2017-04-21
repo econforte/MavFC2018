@@ -70,10 +70,10 @@
             </div>
             <div class="col-sm-6">
                 {% if device.device_type.is_controller %}
-                    <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ device.pk }} == 1.0" style="margin:25px;">
+                    <button type="button" class="btn btn-default" ng-click="toggle(0.0)" ng-if="controllerToggle{{ device.pk }} == 1.0" style="margin:25px;" ng-cloak ng-disabled="!manualControlToggler{{ device.pi.pk }}">
                         <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:50px;"></span></strong>
                     </button>
-                    <button type="button" class="btn btn-default" ng-click="toggle(1.0)" ng-if="controllerToggle{{ device.pk }} == 0.0" style="margin:25px;">
+                    <button type="button" class="btn btn-default" ng-click="toggle(1.0)" ng-if="controllerToggle{{ device.pk }} == 0.0" style="margin:25px;" ng-cloak ng-disabled="!manualControlToggler{{ device.pi.pk }}">
                         <strong><span id="toggle2" class="glyphicon glyphicon-off" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:50px;"></span></strong>
                     </button>
                 {% else %}
@@ -131,10 +131,6 @@
 
     app.controller('myCtrldiv{{ device.pk }}', function($scope, $http, $timeout) {
 
-        {% if device.device_type.is_controller %}
-            $scope.controllerToggle{{ device.pk }} = 0;
-        {% endif %}
-
         // Function to get the data
         $scope.getData = function(){
             $http.get("{% url 'foodcomputer:api_device_current_value' device.pk %}")
@@ -150,19 +146,46 @@
             });
         };
 
+        $scope.getData();
 
         {% if device.device_type.is_controller %}
-        $scope.toggle = function(v) {
-            var json = {"device":{{ device.pk }}, "turn_on":v}
-            $http.post("{% url 'foodcomputer:api_device_controller' %}", JSON.stringify(json), {"Content-Type": "application/json"})
-                .then(function mySuccess(response) {
-                    $scope.controllerResult{{ device.pk }} = response.data.manual_control;
-                    console.log(response);
-                }, function myError(response) {
-                    $scope.controllerError{{ device.pk }} = response.statusText;
-                    console.log(response);
-            });
-        };
+
+            $scope.toggle = function(v) {
+                var json = {"device":{{ device.pk }}, "turn_on":v}
+                $http.post("{% url 'foodcomputer:api_device_controller' %}", JSON.stringify(json), {"Content-Type": "application/json"})
+                    .then(function mySuccess(response) {
+                        $scope.controllerResult{{ device.pk }} = response.data.manual_control;
+                        console.log(response);
+                    }, function myError(response) {
+                        $scope.controllerError{{ device.pk }} = response.statusText;
+                        console.log(response);
+                });
+            };
+
+            $scope.manualControlToggler{{ device.pi.pk }} = false;
+
+            {% if user.is_staff or device.pi.user == user %}
+
+                $scope.getPiData = function(){
+                    $http.get("{% url 'foodcomputer:api_pi_current_value' device.pi.pk %}")
+                        .success(function(data, status, headers, config) {
+                            $scope.manualControlToggler{{ device.pi.pk }} = data.manual_control;
+                            console.log('Fetched data!    '+ data.manual_control);
+                    });
+                };
+                $scope.getPiData();
+
+                $scope.intervalPiFunction = function(){
+                    $timeout(function() {
+                        $scope.getPiData();
+                        $scope.intervalPiFunction();
+                    }, 10000)
+                };
+
+                $scope.intervalPiFunction();
+
+            {% endif %}
+
         {% endif %}
 
         // Function to replicate setInterval using $timeout service.

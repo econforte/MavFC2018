@@ -55,7 +55,7 @@ class ExperimentDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-        if not (request.user.is_staff or request.user.pis.filter(pk=obj.pi.pk) or request.user.experiment_instances.filter(experiment__pk=pk)):
+        if not (request.user.is_staff or request.user.pis.filter(pk=obj.pi.pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pk=pk)):
             return HttpResponseForbidden()
         return render(
             request,
@@ -98,7 +98,7 @@ class ExperimentRuleDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-        if not (request.user.is_staff or request.user.pis.filter(pk=obj.experiment.pi.pk) or request.user.experiment_instances.filter(experiment__pk=obj.experiment.pk)):
+        if not (request.user.is_staff or request.user.pis.filter(pk=obj.experiment.pi.pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pk=obj.experiment.pk)):
             return HttpResponseForbidden()
         return render(
             request,
@@ -206,7 +206,7 @@ class ExperimentInstanceDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-        if not (request.user.is_staff or request.user.pis.filter(pk=obj.experiment.pi.pk) or request.user.experiment_instances.filter(experiment__pk=obj.experiment.pk)):
+        if not (request.user.is_staff or request.user.pis.filter(pk=obj.experiment.pi.pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pk=obj.experiment.pk)):
             return HttpResponseForbidden()
         return render(
             request,
@@ -289,7 +289,7 @@ class ExperimentInstanceData(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         expInst = get_object_or_404(ExperimentInstance, pk=pk)
-        if not (request.user.is_staff or request.user.pis.filter(pk=expInst.experiment.pi.pk) or request.user.experiment_instances.filter(experiment__pk=expInst.experiment.pk)):
+        if not (request.user.is_staff or request.user.pis.filter(pk=expInst.experiment.pi.pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pk=expInst.experiment.pk)):
             return HttpResponseForbidden()
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="experiment_instance_data.csv"'

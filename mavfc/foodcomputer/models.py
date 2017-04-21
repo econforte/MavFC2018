@@ -96,6 +96,12 @@ class Pi(models.Model):
     def get_list_url(self):
         return reverse('foodcomputer:pi_list')
 
+    def get_active_instance_url(self):
+        ai = self.get_active_instance()
+        if ai:
+            return ai[0].get_absolute_url()
+        return None
+
     def get_active_instance(self):
         instance = ExperimentInstance.objects.filter(active=True, experiment__pi__pk=self.pk)
         if instance:

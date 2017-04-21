@@ -20,7 +20,7 @@
         </div>
         <div class="col-sm-6" style="padding-right:0px">
             <div class="btn-group pull-right h3">
-                <a href="#" class="btn btn-success" title="Current Experiment Instance"><span class="glyphicon glyphicon-grain"></span></a>
+                <a href="{{ obj.get_active_instance_url }}" class="btn btn-success" title="Current Experiment Instance"><span class="glyphicon glyphicon-grain"></span></a>
                 <a href="{% url 'foodcomputer:pi_get_csv' obj.pk %}" title="Download CSV of the Food Computer's Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
                 {% if clps %}
                     <a href="{{ obj.get_absolute_url }}" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
@@ -56,10 +56,10 @@
             </div>
             {% if 1 %}
             <div class="col-sm-6">
-                <button type="button" class="btn btn-default" ng-click="toggle(false)" ng-if="manualControlToggler{{ obj.pk }}" ng-cloak title="Manual Control is ON" style="margin-top:15px;">
+                <button type="button" class="btn btn-default" ng-click="toggle(false)" ng-if="manualControlToggler{{ obj.pk }}" ng-cloak title="Manual Control is ON" style="margin-top:15px;" ng-disabled="!authenticated{{ obj.pk }}">
                     <strong><span style="font-size:50px;">On</span> <span id="toggleOn{{ obj.pk }}" class="glyphicon glyphicon-asterisk" style="color:darkgreen;text-shadow: 0px 0px 25px green;font-size:50px;"></span></strong>
                 </button>
-                <button type="button" class="btn btn-default" ng-click="toggle(true)" ng-if="!manualControlToggler{{ obj.pk }}" ng-cloak title="Manual Control is OFF" style="margin-top:15px;">
+                <button type="button" class="btn btn-default" ng-click="toggle(true)" ng-if="!manualControlToggler{{ obj.pk }}" ng-cloak title="Manual Control is OFF" style="margin-top:15px;" ng-disabled="!authenticated{{ obj.pk }}">
                     <strong><span style="font-size:50px;margin-right:5px;">Off</span> <span id="toggleOff{{ obj.pk }}" class="glyphicon glyphicon-lock" style="color:darkred;text-shadow: 0px 0px 25px red;font-size:50px;"></span></strong>
                 </button>
             </div>
@@ -85,9 +85,6 @@
 
         // Function to get the data
         $scope.getData = function(){
-            //This needs to make an api call that does not exist yet
-            //This api call will be api_pi_current_value
-            //And get whether or not the pi is in manual mode
             $http.get("{% url 'foodcomputer:api_pi_current_value' obj.pk %}")
                 .success(function(data, status, headers, config) {
                     $scope.manualControlToggler{{ obj.pk }} = data.manual_control;
@@ -117,6 +114,11 @@
         // Kick off the interval
         $scope.getData();
         $scope.intervalFunction();
+        $scope.authenticated{{ obj.pk }} = false;
+        {% if user.is_staff or obj.user == user %}
+            $scope.authenticated{{ obj.pk }} = true;
+        {% endif %}
+
     });
 </script>
 {% endif %}

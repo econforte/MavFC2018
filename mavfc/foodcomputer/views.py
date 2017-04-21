@@ -57,7 +57,7 @@ class PiDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = None
-        if request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment__pi__pk=pk):
+        if request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=pk):
             obj = get_object_or_404(self.model, pk=pk)
 
         cdp = ChartDataPreparation()
@@ -86,7 +86,7 @@ class PiChart(View):
 
     @method_decorator(login_required)
     def get(self, request, pk):
-        if request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment__pi__pk=pk):
+        if request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=pk):
             obj = get_object_or_404(self.model, pk=pk)
         else:
             return HttpResponseForbidden()
@@ -114,7 +114,7 @@ class PiChart(View):
                        'show_anomalies':        False})
 
     def post(self, request, pk):
-        if not (request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment__pi__pk=pk)):
+        if not (request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=pk)):
             return HttpResponseForbidden()
         obj = get_object_or_404(self.model, pk=pk)
         form_class = AdvancedOptionsForm(request.POST, request=request, pk=pk)
@@ -181,7 +181,7 @@ class PiData(View):
 
     @method_decorator(login_required)
     def get(self, request, pk):
-        if not (request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment__pi__pk=pk)):
+        if not (request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=pk)):
             return HttpResponseForbidden()
         pi = get_object_or_404(Pi, pk=pk)
         response = HttpResponse(content_type='text/csv')
@@ -207,7 +207,7 @@ class DeviceDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         obj = get_object_or_404(self.model, pk=pk)
-        if not (request.user.is_staff or request.user.pis.filter(pk=obj.pi.pk) or request.user.experiment_instances.filter(experiment__pi__pk=obj.pi.pk)):
+        if not (request.user.is_staff or request.user.pis.filter(pk=obj.pi.pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=obj.pi.pk)):
             return HttpResponseForbidden()
 
         ddp = DeviceDataPreparation(obj)
@@ -259,7 +259,7 @@ class DeviceData(View):
     @method_decorator(login_required)
     def get(self, request, pk):
         device = get_object_or_404(Device, pk=pk)
-        if not (request.user.is_staff or request.user.pis.filter(pk=device.pi.pk) or request.user.experiment_instances.filter(experiment__pi__pk=device.pi.pk)):
+        if not (request.user.is_staff or request.user.pis.filter(pk=device.pi.pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=device.pi.pk)):
             return HttpResponseForbidden()
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="food_computer_device_'+device.device_type.name+'_data.csv"'
