@@ -1,6 +1,10 @@
-<div class="panel panel-default">
+{% if obj.active %}
+    <div class="panel panel-info">
+{% else %}
+    <div class="panel panel-default">
+{% endif %}
     <div class="panel-heading">
-        <div class="col-xs-6" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px">
+        <div class="col-sm-7" style="padding:0px">
             <h3>
                 {% if clps %}
                     <a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
@@ -11,7 +15,7 @@
                 {% endif %}
             </h3>
         </div>
-        <div class="col-xs-6" style="padding-right:0px">
+        <div class="col-sm-5" style="padding-right:0px">
             <div class="btn-group pull-right h3">
                 {% if experimentinstance_detail %}
                     <a href="{{ obj.experiment.get_absolute_url }}" class="btn btn-success"><span class="glyphicon glyphicon-grain"></span></a>

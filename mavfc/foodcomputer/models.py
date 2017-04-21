@@ -130,6 +130,13 @@ class Pi(models.Model):
         else:
             return None
 
+    def get_all_instances(self):
+        instances = ExperimentInstance.objects.filter(experiment__pi__pk=self.pk)
+        if instances:
+            return instances
+        else:
+            return None
+
     def get_device_num(self):
         return len(self.devices.all())
 

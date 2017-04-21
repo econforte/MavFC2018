@@ -1,12 +1,12 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         {% if clps %}
-            <div class="col-xs-7" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">
+            <div class="col-sm-7" style="padding:0px;">
                 <h3><a data-toggle="collapse" data-parent="#{{ listID }}" href="#{{ listID }}{{ obj.pk }}">
                     {{ obj.name }}
                 </a></h3>
             </div>
-            <div class="col-xs-5" style="padding-right:0px">
+            <div class="col-sm-5" style="padding-right:0px">
                 <div class="btn-group pull-right h3">
                     <a href="{{ obj.get_absolute_url }}" title="Details" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
                     {% if user.is_staff or user == obj.pi.user %}
@@ -16,10 +16,10 @@
                 </div>
             </div>
         {% else %}
-            <div class="col-xs-7" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+            <div class="col-sm-7" style="padding:0px;">
                 <h3>{{ obj.name }}</h3>
             </div>
-            <div class="col-xs-5" style="padding-right:0px">
+            <div class="col-sm-5" style="padding-right:0px">
                 {% if user.is_staff or user == obj.pi.user %}
                     <div class="btn-group pull-right h3">
                         <a href="{{ obj.get_update_url }}" title="Edit" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
