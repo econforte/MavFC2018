@@ -33,7 +33,7 @@ urlpatterns = [
     url(r'^media/(?P<path>.*)$', views.serve),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', rest_auth_views.obtain_auth_token),
-    # url(r'^$', Homepage.as_view(), name='home'),
+    url(r'^$', Homepage.as_view(), name='home'),
     # All other URLs should be placed above this line.
     url(r'^', include(flatpage_urls)),
 ]
