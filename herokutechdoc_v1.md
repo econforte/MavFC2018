@@ -82,18 +82,18 @@ To deploy to Heroku:
 *	Navigate to the root directory of the project.
 
 *	Enter command
-```
-heroku create
-```
+  ```
+  heroku create
+  ```
 A Heroku app is created with a randomly generated name,
 unless a name is specified (random name used here for documentation purposes).
 
   ![6](https://cloud.githubusercontent.com/assets/9102699/25315176/b8e04fe0-2816-11e7-86ce-8ca20069f814.png)
 
 *	Enter command
-```
-git push heroku master
-```
+  ```
+  git push heroku master
+  ```
 Heroku will recognize and install the Python
 buildpack, download and install the package dependencies, copy static files, discover
 process types, and deploy.
@@ -126,11 +126,6 @@ https://fierce-beach-23417.herokuapp.com/admin/) and log in with the superuser
 credentials created:
 
   ![13](https://cloud.githubusercontent.com/assets/9102699/25315182/b8f067fe-2816-11e7-815e-904f4bf0a3df.png)
-
-*	Create a flat page by clicking on Add and entering URL “/”, Title “Home Page” and Site
-“example.com”:
-
-  ![14](https://cloud.githubusercontent.com/assets/9102699/25315170/b8d5e366-2816-11e7-9cf3-d2d70b167b64.png)
 
 *	The site is now navigable and all features should be operable. Changes to code may be
 pushed directly to Heroku, or a Github repository may be linked for deployment.
