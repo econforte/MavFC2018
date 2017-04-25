@@ -31,4 +31,5 @@ urlpatterns = [
     url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', ActivateAccount.as_view(), name='activate'),
     url(r'^activate/resend/$', ResendActivationEmail.as_view(), name='resend_activation'),
     url(r'^activate', RedirectView.as_view( pattern_name=( 'dj-auth:resend_activation'), permanent=False)),
+	url(r'^help', TemplateView.as_view(template_name='user/help.html'), name='help'),
 ]
