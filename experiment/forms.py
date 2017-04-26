@@ -12,6 +12,9 @@ import pytz
 import datetime
 
 
+tz = pytz.timezone('America/Chicago')
+
+
 class ExperimentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ExperimentForm, self).__init__(*args, **kwargs)
@@ -160,8 +163,8 @@ class ExperimentInstanceAddForm(forms.ModelForm):
 
     def clean_start(self):
         start = self.cleaned_data['start']
-        if start < (datetime.datetime.now(tz=pytz.timezone('America/Chicago')) - datetime.timedelta(hours=1)):
-            raise forms.ValidationError('The start ('+str(start)+') can not be in the past.'+str(datetime.datetime.now(tz=pytz.timezone('America/Chicago')) - datetime.timedelta(hours=1)))
+        if ((start) < (datetime.datetime.now(tz=tz) - datetime.timedelta(hours=1)):
+            raise forms.ValidationError('The start ('+str((start))+') can not be in the past.'+str(datetime.datetime.now(tz=tz) - datetime.timedelta(hours=1)))
         return start
 
     def clean_end(self):
