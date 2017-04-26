@@ -7,6 +7,11 @@ from experiment.models import ExperimentInstance
 
 from datetime import datetime, timedelta
 
+import pytz
+
+
+tz = pytz.timezone('America/Chicago')
+
 
 def parse_day_of_week(day):
     days_of_week = {'Monday':    0, 'monday':    0, 'Mon': 0, 'mon': 0, 'Mo': 0, 'mo': 0, 'M': 0, 'm': 0,
@@ -78,6 +83,8 @@ class Pi(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True, related_name="pis",)
     manual_control = models.BooleanField(default=False,)
 
+    tz = pytz.timezone('America/Chicago')
+
     def __str__(self):
         return self.name + ': ' + self.pi_SN
 
@@ -110,21 +117,21 @@ class Pi(models.Model):
             return None
 
     def get_current_instance(self):
-        instance = ExperimentInstance.objects.filter(start__lte=datetime.now(), end__gt=datetime.now(), experiment__pi__pk=self.pk)
+        instance = ExperimentInstance.objects.filter(start__lte=datetime.now(tz=self.tz), end__gt=datetime.now(tz=self.tz), experiment__pi__pk=self.pk)
         if instance:
             return instance
         else:
             return None
 
     def get_start_instance(self):
-        instance = ExperimentInstance.objects.filter(active=False, start__lte=datetime.now(), end__gt=datetime.now(), experiment__pi__pk=self.pk)
+        instance = ExperimentInstance.objects.filter(active=False, start__lte=datetime.now(tz=self.tz), end__gt=datetime.now(tz=self.tz), experiment__pi__pk=self.pk)
         if instance:
             return instance
         else:
             return None
 
     def get_end_instance(self):
-        instance = ExperimentInstance.objects.filter(Q(active=True, experiment__pi__pk=self.pk) & (Q(start__gt=datetime.now()) | Q(end__lte=datetime.now())))
+        instance = ExperimentInstance.objects.filter(Q(active=True, experiment__pi__pk=self.pk) & (Q(start__gt=datetime.now(tz=self.tz)) | Q(end__lte=datetime.now(tz=self.tz))))
         if instance:
             return instance
         else:
@@ -358,5 +365,5 @@ class DataType(models.Model):
 class ControllerUpdate(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="Updates",)
     turn_on = models.BooleanField()
-    timestamp = models.DateTimeField(default=datetime.now())
+    timestamp = models.DateTimeField(default=datetime.now(tz=tz))
     executed =models.BooleanField(default=False)
