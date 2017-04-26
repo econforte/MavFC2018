@@ -20,7 +20,9 @@
         </div>
         <div class="col-sm-6" style="padding-right:0px">
             <div class="btn-group pull-right h3">
-                <a href="{{ obj.get_active_instance_url }}" class="btn btn-success" title="Current Experiment Instance"><span class="glyphicon glyphicon-grain"></span></a>
+                {% if obj.get_active_instance_url %}
+                    <a href="{{ obj.get_active_instance_url }}" class="btn btn-success" title="Current Experiment Instance"><span class="glyphicon glyphicon-grain"></span></a>
+                {% endif %}
                 <a href="{% url 'foodcomputer:pi_get_csv' obj.pk %}" title="Download CSV of the Food Computer's Data" class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span></a>
                 {% if clps %}
                     <a href="{{ obj.get_absolute_url }}" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span></a>
