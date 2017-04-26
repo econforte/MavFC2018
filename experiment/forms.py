@@ -47,9 +47,9 @@ class ExperimentRuleForm(forms.ModelForm):
     def clean_baseline_target(self):
         baseline_target = self.cleaned_data['baseline_target']
         devicePK = self.cleaned_data['device']
-        dt = Device.objects.get(pk=devicePK).device_type
-        minl = False
-        maxl = False
+        dt = devicePK.device_type
+        minl = None
+        maxl = None
         if dt.unit_type.min_limit is not None and dt.data_type.min_limit is not None:
             minl = max([dt.unit_type.min_limit, dt.data_type.min_limit])
         elif dt.unit_type.min_limit is not None:
