@@ -17,6 +17,7 @@
 {% endblock %} 
 
 {% block content %}
+    <div id="dolphinChart">
     <script>
         $(document).ready(function () { //someone elses code used here for this function but it works
         	function download(filename, text) {
@@ -66,5 +67,6 @@
                 {% include "foodcomputer/pi_advanced_options.html" %}
 			</div>
 		</div>
+	</div>
 	</div>
 {% endblock %}
