@@ -10,6 +10,10 @@ from .models import Data, Device
 import collections
 import math
 from datetime import datetime
+import pytz
+
+
+tz = pytz.timezone('America/Chicago')
 
 
 def get_create_bcs(model_name):
@@ -169,7 +173,7 @@ class DeviceDataPreparation():
 
         
 class ChartDataPreparation():
-    def __init__(self, start_date=datetime.min, end_date=datetime.now(), experiment=None, show_anomalies=False, sensors=None):
+    def __init__(self, start_date=datetime.min, end_date=datetime.now(tz=tz), experiment=None, show_anomalies=False, sensors=None):
         self.start_date = start_date.replace(tzinfo=None)
         self.end_date = end_date.replace(tzinfo=None)
         self.experiment = experiment

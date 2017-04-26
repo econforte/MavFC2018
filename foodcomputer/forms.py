@@ -6,6 +6,10 @@ from experiment.models import ExperimentInstance
 from django.forms.widgets import CheckboxSelectMultiple, DateInput,\
     SelectDateWidget, TimeInput
 import datetime
+import pytz
+
+
+tz = pytz.timezone('America/Chicago')
 
 
 class AddressForm(forms.ModelForm):
@@ -47,7 +51,7 @@ class AdvancedOptionsForm(forms.Form):
                                  initial=datetime.datetime.strftime(datetime.datetime.min, '%Y-%m-%dT%H:%M'))
     end_date = forms.CharField(required=False, label="End Date",\
                                  widget=forms.DateTimeInput(attrs={'type':'datetime-local', 'class':'form-control'}),\
-                                 initial=datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%dT%H:%M'))
+                                 initial=datetime.datetime.strftime(datetime.datetime.now(tz=tz), '%Y-%m-%dT%H:%M'))
     experiments = forms.ModelChoiceField(required=False, label="Experiments", queryset=ExperimentInstance.objects.all())
     show_anomalies = forms.BooleanField(required=False, label='Show Anomalies')
     devices = forms.ModelMultipleChoiceField(required=False, label='Sensors and Actuators',\
