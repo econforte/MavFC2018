@@ -1,0 +1,1 @@
+web: gunicorn mavfc.wsgi --log-file -
