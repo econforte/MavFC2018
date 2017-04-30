@@ -506,9 +506,10 @@ class ServerPushAPI(APIView):
                 activeInstance = data['activeInstance']
                 newActInst = ExperimentInstance.objects.get(pk=activeInstance)
                 if not newActInst.active:
-                    actInst = pi.get_active_instance()[0]
-                    actInst.active = False
-                    actInst.save()
+                    if pi.get_active_instance():
+                        actInst = pi.get_active_instance()[0]
+                        actInst.active = False
+                        actInst.save()
                     newActInst.active = True
                     newActInst.save()
             # Generate Push Response
