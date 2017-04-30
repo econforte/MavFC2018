@@ -365,5 +365,5 @@ class DataType(models.Model):
 class ControllerUpdate(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="Updates",)
     turn_on = models.BooleanField()
-    timestamp = models.DateTimeField(default=datetime.now(tz=tz))
+    timestamp = models.DateTimeField(default=datetime.now(tz=tz).replace(tzinfo=None))
     executed =models.BooleanField(default=False)
