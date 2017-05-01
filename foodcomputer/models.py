@@ -35,6 +35,9 @@ class Address(models.Model):
     def __str__(self):
         return "{p} {n}: {c}, {s}".format(p=self.pk, n=self.name, c=self.city, s=self.state)
 
+    def get_absolute_url(self):
+        return reverse('foodcomputer:pi_list')
+
     def get_create_url(self):
         return reverse('foodcomputer:address_create')
 
