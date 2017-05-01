@@ -60,7 +60,7 @@ class PiDetail(View):
         if request.user.is_staff or request.user.pis.filter(pk=pk) or request.user.experiment_instances.filter(experiment_instance__experiment__pi__pk=pk):
             obj = get_object_or_404(self.model, pk=pk)
 
-        cdp = ChartDataPreparation()
+        cdp = ChartDataPreparation(start_date=datetime.datetime.now(tz=tz).replace(tzinfo=None) - datetime.timedelta(days=1))
         namelist = cdp.getNameList(obj)
         isActuator = cdp.getActuatorDictionary(obj)
         time2sensor = cdp.initializeDataValues(obj)
