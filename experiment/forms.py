@@ -169,7 +169,7 @@ class ExperimentInstanceAddForm(forms.ModelForm):
 
     def clean_end(self):
         end = self.cleaned_data['end']
-        if end.replace(tzinfo=None) < (datetime.datetime.now(tz=tz) - datetime.timedelta(hours=1).replace(tzinfo=None)):
+        if end.replace(tzinfo=None) < (datetime.datetime.now(tz=tz) - datetime.timedelta(hours=1)).replace(tzinfo=None):
             raise forms.ValidationError('The end ('+str(end)+') can not be in the past.')
         return end
 
