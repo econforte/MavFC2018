@@ -30,7 +30,7 @@ The navigation bar can be used to access any component of the webpage at any tim
 the site will redirect to that experiment.
 6. The user tab allows for access to account options, such as the admin page which can be seen below:
 
-![im8] (https://cloud.githubusercontent.com/assets/25069295/25568051/6682103a-2dc0-11e7-8e59-b5383a51f80f.JPG)
+![im8](https://cloud.githubusercontent.com/assets/25069295/25568051/6682103a-2dc0-11e7-8e59-b5383a51f80f.JPG)
 
 # Food Computers
 
@@ -45,9 +45,9 @@ Upon clicking the "Food Computer List" button, a list of food computers will app
 5. This button controls the manual pi override on the food computer. When this is on, the experiment is able to be manipulated by manual control of the food computer's actuators. 
 6. This button redirects to an in-depth look at the food computer's data and a graphical analysis of that data. The graphical analysis of the pi data as well as the various sensor readings can be seen below:
 
-![im9] (https://cloud.githubusercontent.com/assets/25069295/25568052/6c3e81e8-2dc0-11e7-8c03-a1ee422b7003.JPG)
+![im9](https://cloud.githubusercontent.com/assets/25069295/25568052/6c3e81e8-2dc0-11e7-8c03-a1ee422b7003.JPG)
 
-![im10] (https://cloud.githubusercontent.com/assets/25069295/25568054/7275c2ba-2dc0-11e7-9e5b-6ab2609a76c4.JPG)
+![im10](https://cloud.githubusercontent.com/assets/25069295/25568054/7275c2ba-2dc0-11e7-9e5b-6ab2609a76c4.JPG)
 
 # Experiments
 
