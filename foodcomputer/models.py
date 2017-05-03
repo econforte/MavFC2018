@@ -120,21 +120,21 @@ class Pi(models.Model):
             return None
 
     def get_current_instance(self):
-        instance = ExperimentInstance.objects.filter(start__lte=datetime.now(tz=self.tz), end__gt=datetime.now(tz=self.tz), experiment__pi__pk=self.pk)
+        instance = ExperimentInstance.objects.filter(start__lte=datetime.now(tz=self.tz).replace(tzinfo=None), end__gt=datetime.now(tz=self.tz).replace(tzinfo=None), experiment__pi__pk=self.pk)
         if instance:
             return instance
         else:
             return None
 
     def get_start_instance(self):
-        instance = ExperimentInstance.objects.filter(active=False, start__lte=datetime.now(tz=self.tz), end__gt=datetime.now(tz=self.tz), experiment__pi__pk=self.pk)
+        instance = ExperimentInstance.objects.filter(active=False, start__lte=datetime.now(tz=self.tz).replace(tzinfo=None), end__gt=datetime.now(tz=self.tz).replace(tzinfo=None), experiment__pi__pk=self.pk)
         if instance:
             return instance
         else:
             return None
 
     def get_end_instance(self):
-        instance = ExperimentInstance.objects.filter(Q(active=True, experiment__pi__pk=self.pk) & (Q(start__gt=datetime.now(tz=self.tz)) | Q(end__lte=datetime.now(tz=self.tz))))
+        instance = ExperimentInstance.objects.filter(Q(active=True, experiment__pi__pk=self.pk) & (Q(start__gt=datetime.now(tz=self.tz).replace(tzinfo=None)) | Q(end__lte=datetime.now(tz=self.tz).replace(tzinfo=None))))
         if instance:
             return instance
         else:

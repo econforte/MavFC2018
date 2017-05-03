@@ -28,7 +28,7 @@ class Homepage(View):
             if request.user.is_staff:
                 pis = Pi.objects.all()
                 experiments = Experiment.objects.all()
-                dcPis = Pi.objects.exclude(devices__data__timestamp__gt=datetime.now(tz=tz) - timedelta(minutes=60))
+                dcPis = Pi.objects.exclude(devices__data__timestamp__gt=datetime.now(tz=tz).replace(tzinfo=None) - timedelta(minutes=60))
             else:
                 pis = Pi.objects.filter(Q(user=request.user) | Q(experiment__instances__active=True, experiment__instances__instance_users__user__in=[request.user]))
                 experiments = Experiment.objects.filter(Q(pi__user__pk=request.user.pk) | Q(instances__instance_users__user__pk=request.user.pk))
