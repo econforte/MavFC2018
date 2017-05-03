@@ -120,12 +120,33 @@ class ExperimentRuleUpdateForm(forms.ModelForm):
 class ExperimentInstanceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ExperimentInstanceForm, self).__init__(*args, **kwargs)
+        self.fields['start'].widget=forms.DateTimeInput(attrs={'type':'datetime-local'}, format='%Y-%m-%dT%H:%M')
+        self.fields['start'].input_formats=('%Y-%m-%dT%H:%M',)
+        self.fields['end'].widget=forms.DateTimeInput(attrs={'type':'datetime-local'}, format='%Y-%m-%dT%H:%M')
+        self.fields['end'].input_formats=('%Y-%m-%dT%H:%M',)
         for (field_name, field) in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
 
     class Meta:
         model = ExperimentInstance
         fields = '__all__'
+
+    def clean(self):
+        cleaned_data = super(ExperimentInstanceForm, self).clean()
+        start = cleaned_data.get("start")
+        end = cleaned_data.get("end")
+        if start and end:
+            if start >= end:
+                raise forms.ValidationError("The start occurs after or equal to the end.")
+            exp = cleaned_data.get("experiment")
+            instances = ExperimentInstance.objects.filter(experiment__pi__pk=exp.pi.pk).exclude(id=self.instance.pk)
+            for instance in instances:
+                if end >= instance.start and end < instance.end:
+                    raise forms.ValidationError("The end occurs within another instance scheduled for this pi.")
+                if start >= instance.start and start < instance.end:
+                    raise forms.ValidationError("The start occurs within another instance scheduled for this pi.")
+                if instance.start >= start and instance.end < end:
+                    raise forms.ValidationError("Another instance scheduled during this time period for this pi.")
 
 
 class ExperimentInstanceAddForm(forms.ModelForm):
