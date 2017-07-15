@@ -136,7 +136,7 @@ MEDIA_URL = '/media/'
 
 
 
-SITE_ID = 2
+SITE_ID = 1
 
 
 
