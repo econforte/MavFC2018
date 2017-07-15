@@ -13,7 +13,10 @@ CSRF_COOKIE_SECURE = True
 
 
 
-ALLOWED_HOSTS = ['mavistfc.herokuapp.com']
+ALLOWED_HOSTS = ['mavfc.herokuapp.com',
+                 'mavfc-stage.herokuapp.com',
+                 'mavfc-dev.herokuapp.com',
+                 'mavistfc.herokuapp.com',]
 
 
 MIDDLEWARE = [
