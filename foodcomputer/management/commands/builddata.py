@@ -12,7 +12,7 @@ class Command(BaseCommand):
         db = DataBuilder()
         num = db.clear_tables()
         if num:
-            self.stdout.write(num[0] + ' days were deleted and ' + num[1] + ' device types were deleted.')
+            self.stdout.write(str(num[0]) + ' days were deleted and ' + str(num[1]) + ' device types were deleted.')
         if db.build_days():
             self.stdout.write('days built')
         if db.build_unit_types():
