@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ExperimentInstance, Experiment, ExperimentRule, Day
+from .models import ExperimentInstance, Experiment, ExperimentRule, UserExperimentInstance, Day
 
 class ExperimentsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,3 +39,31 @@ class ExperimentInstanceSerializer(serializers.ModelSerializer):
         fields = ('id', 'start', 'end', 'active', 'experiment')
         # fields = '__all__'
         # depth = 1
+
+
+class ExperimentBasicSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Experiment
+        fields = '__all__'
+
+
+class ExperimentRuleBasicSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ExperimentRule
+        fields = '__all__'
+
+
+class ExperimentInstanceBasicSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ExperimentInstance
+        fields = '__all__'
+
+
+class UserExperimentInstanceBasicSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserExperimentInstance
+        fields = '__all__'
