@@ -4,7 +4,7 @@ from foodcomputer.models import *
 from foodcomputer.serializers import *
 from experiment.serializers import *
 
-#from ._sample_data import data
+from ._sample_data import data
 
 
 class Command(BaseCommand):
