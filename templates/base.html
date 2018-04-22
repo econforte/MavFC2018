@@ -105,16 +105,8 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <!-- Page Navigation -->
             <ul class="nav navbar-nav">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        Pages <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        {% for page in flatpages %}
-                            <li><a href="{{ page.get_absolute_url }}">{{ page.title }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </li>
+
+
                 <li><a href="{% url 'foodcomputer:pi_list' %}">Food Computer List</a></li>
                 <li><a href="{% url 'experiment:experiment_list' %}">Experiment List</a></li>
             </ul>
@@ -244,6 +236,6 @@
     {% block content %}
         Default Content
     {% endblock %}
-    <marquee style="background-color: #87CEFA;">🐬</marquee>
+
 </body>
 </html>
