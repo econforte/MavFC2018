@@ -23,7 +23,7 @@ The navigation bar can be used to access any component of the webpage at any tim
 ![im1](https://cloud.githubusercontent.com/assets/25069295/25438439/139eb0c6-2a5f-11e7-9c4c-76b5276625a5.JPG)
 
 1. The "MAVFC" button redirects to the homepage.
-2. The "Pages" button is a dropdown list of all pages on site.
+2. The "Pages" button is a dropdown list of all pages on site. This was disabled for this version of the food computer, but exists in earlier versions.
 3. The "Food Computer List" button redirects to a list of food computers.
 4. The "Experiment List" button redirects to a list of food experiments.
 5. The "Search Experiments" search bar allows for search-by-name of experiments. Upon valid search,
@@ -62,3 +62,19 @@ Upon clicking the "Experiment List" button, a list of experiments will appear in
 
 ![im7](https://cloud.githubusercontent.com/assets/25069295/25567311/4e233eac-2db0-11e7-9202-84532edf80ce.jpg)
 
+# Other Admin Features
+**Groups or Roles Creation**
+
+The admin can create other roles and assign them relevant screens for them to view or manage data relevant only to them. 
+1. The Admin has to go to Authentication and Authorization Menu. 
+2. Then choose the Groups sub-menu.
+3. Click Add Group. The following screen will be displayed:
+![im8](https://github.com/econforte/MavFC2018/blob/master/docs/Before%20Group%20Creation.PNG)
+
+4. Capture details of the group they are creating and save. The group will also be displayed under the existing groups if any exists.
+5. Assign various permissions to the group:
+![im9](https://github.com/econforte/MavFC2018/blob/master/docs/Group%20Creation.PNG)
+
+6. A user can then be linked to a group by going to the Authentication and Authorization Menu
+7. Select user of interest and link to a relevant group as shown in:
+![im10](https://github.com/econforte/MavFC2018/blob/master/docs/Linking%20User%20to%20Group.PNG)
