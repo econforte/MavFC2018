@@ -32,4 +32,4 @@ To run a test server navigate to the folder containing manage.py and run the com
 
 Navigate to http://127.0.0.1:8000/ to go to the home page.
 
-To login to the application, refer to the material under the docs folder.
+For more information, including on how to login into the application, refer to the material under the docs folder, especially mavfcinstalldoc_v1.md and userhelp.md documents.
