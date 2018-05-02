@@ -3,10 +3,11 @@ The official repository of the maverick food computer for Spring 2018 class
 
 Written in Python/Django
 
+- Python Version 3.6
 
-Python Version 3.6
-Django Version 1.11
-Django REST Framework 3.6.2
+- Django Version 1.11
+
+- Django REST Framework 3.6.2
 
 The source is setup as an Eclipse, PyDev Django Project but could also be set as a project on PyCharm once cloned to a local environment.
 
