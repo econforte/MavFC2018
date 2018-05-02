@@ -148,7 +148,7 @@ python manage.py builddata
 ```
 python manage.py buildsample
 ```
-After loading this, you can login using the user genericFCUser. Password for this user can be found in the file _builder_handler search for it in this file.
+After loading this, you can login using the user “genericFCUser”. Password for this user can be found in the file “_builder_handler”  search for it in this file.
 
 You can also create a super user for your application using the following command. This user is the admin. Provide the user details as and when prompted
 
