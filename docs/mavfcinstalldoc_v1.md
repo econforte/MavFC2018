@@ -1,6 +1,6 @@
 ## Install Django Web Framework  
 
-Follow the directions below to install Django.
+Follow the directions below to install Django. Install the relevant version. The documentation below refers to version 3.5x but as of April 2018, the same steps can be used for python 3.6x.
 > See [How to Install Django](https://docs.djangoproject.com/en/1.10/topics/install/) for more detail and helpful links.
 
 ### Install Python Programming Language
@@ -87,12 +87,12 @@ Once installed, verify by running
 ```
  django-admin --version
 ```
-The command should return the version (1.10.6 at the time of this writing).
+The command should return the relevant django version (1.11.3 at the time of this writing).
 
 ### Clone the mavfc git repository
-Clone the mavfc repository into your new virtualenv by running
+Clone this mavfc repository into your new virtualenv by running
 ```
-git clone https://github.com/SachinPawaskarUNO/mavfc.git
+git clone https://github.com/econforte/MavFC2018/mavfc.git
 ```
 If you are not logged in to Github, you will be prompted to input your username and password.
 
@@ -127,7 +127,7 @@ directory.
 **{this section needs to be modified}**
 
 The database used at the time of this writing is a SQLite binary file.
-In a command prompt, navigate to the mavfc/mavfc directory. Run python manage.py makemigrations, then run python manage.py migrate.
+If migrations have not yet been done, in a command prompt, navigate to the mavfc/mavfc directory. Run python manage.py makemigrations, then run python manage.py migrate.
 
 ### Run the mavfc application on local host
 In a command prompt, navigate to the /mavfc/mavfc directory. Run
@@ -135,6 +135,25 @@ In a command prompt, navigate to the /mavfc/mavfc directory. Run
 python manage.py runserver
 ```
 Open a browser window and navigate to http://127.0.0.1:8000/. The home page of the mavfc application will
-display. To view the contents, click on Login at the top right and enter the credentials “admin” and
-“pass1234”. Clicking on the Adminstrator dropdown and selecting Admin will bring up the Django
-administration menu.
+display. 
+
+Open another command window to run other commands. To load sample data into your local environment, run the following commands in the given order.
+
+```
+python manage.py buildsample
+```
+```
+python manage.py builddata
+```
+```
+python manage.py buildsample
+```
+After loading this, you can login using the user genericFCUser. Password for this user can be found in the file _builder_handler search for it in this file.
+
+You can also create a super user for your application using the following command. This user is the admin. Provide the user details as and when prompted
+
+```
+python manage.py createsuperuser
+```
+
+Refresh your browser. To view the contents, click on Login at the top right and enter the credentials “genericFCuser” or the superuser credentials you created above. Provide the relevant password. Clicking on the Administrator dropdown and selecting Admin will bring up the Django administration menu.
